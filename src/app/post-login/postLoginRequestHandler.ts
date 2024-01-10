@@ -30,9 +30,11 @@ export class PostLoginRequestHandler {
     // - Just get en email from the claims
     // - Check authorization (e.g. by using AD groups)
 
+    // Match against a whitelist of allowed email adreses.
     const email = claims.email;
-    const adGroups = JSON.parse(claims.groups) as string [];
-    const authorized = adGroups.some((group: string) => group === process.env.AUTHORIZED_AD_GROUP);
+    const allowedUsers = process.env.AUTHORIZED_USER_EMAILS?.split(',') ?? [];
+    const authorized = allowedUsers.includes(email);
+    
     if (!authorized) {
       await session.createSession({
         loggedin: { BOOL: false },

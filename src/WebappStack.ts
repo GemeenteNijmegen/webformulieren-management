@@ -11,6 +11,7 @@ import { ResubmitFunction } from './app/resbumit/resubmit-function';
 import { Configurable } from './Configuration';
 import { Statics } from './statics';
 import { WebappConstruct } from './WebappConstruct';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 export interface WebappStackProps extends StackProps, Configurable {}
 
@@ -51,6 +52,12 @@ export class WebappStack extends Stack {
     const apiKeySecret = new Secret(this, 'api-key-secret', {
       description: 'The API KEY secret for the management api of webformulieren',
       secretName: Statics.ssmApiKeySecretWebformsManagment,
+    });
+
+    new StringParameter(this, 'authorized-user-emails', {
+      parameterName: Statics.ssmAuthorizedUserEmails,
+      stringValue: '-', // Filled manually to keep emails from the code base
+      description: 'Comma separated list of emails that are authorized to use the webapp',
     });
 
     // Setup a table to keep track of recent resubmissions
@@ -131,6 +138,9 @@ export class WebappStack extends Stack {
     return new ApiFunction(this, 'post-login-function', {
       description: 'Post-login lambda',
       apiFunction: PostloginFunction,
+      environment: {
+        AUTHORIZED_USER_EMAILS: StringParameter.valueForStringParameter(this, Statics.ssmAuthorizedUserEmails),
+      }
     });
   }
 
