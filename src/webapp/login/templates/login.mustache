@@ -1,0 +1,18 @@
+{{>header}}
+
+<main>
+    <!-- START: template component(s) -->
+    <div class="container" id="section-1">
+            <h1>Webformulieren management</h1>
+            <p class="lead">Inloggen op de webformulieren management interface.</p>
+            {{#authenticationOptions}}
+            <a href="{{{authUrl}}}" class="btn btn-primary waves-effect waves-light display-table {{class}}">
+                <span class="assistive">{{title}}</span>
+            </a>
+            {{/authenticationOptions}}
+        </div>
+    </div>
+    <!-- END: template component(s) -->
+</main>
+
+{{>footer}}

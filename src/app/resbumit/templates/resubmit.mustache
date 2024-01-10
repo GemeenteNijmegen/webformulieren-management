@@ -1,0 +1,61 @@
+{{>header}}
+
+<main>
+    <!-- START: template component(s) -->
+    <div class="container" id="section-1">
+        <div class="row">
+            <div class="col-12">
+                <h1>Webformulieren opnieuw inzenden</h1>
+                <p class="lead">Stuur webformulier opnieuw in.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <span class="badge {{#resubmittedSuccess}}badge-success{{/resubmittedSuccess}} {{^resubmittedSuccess}}badge-danger{{/resubmittedSuccess}}">{{resubmitted}}</span>
+                <form method="GET" class="md-form" >
+                    <label for="reference">Referentie:</label>
+                    <input type="text" id="reference" class="form-control" name="reference" placeholder="TDL10.001">
+                    <input type="submit" value="Opnieuw insturen" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h1>Opnieuw ingezonden formulieren</h1>
+                <p class="lead">Deze formulieren zijn opnieuw ingezonden. Let op: dit gaat maximaal 30 dagen terug of geeft de laatste 30 weer.</p>
+
+                <table class="responsive-table">
+                    <caption>History</caption>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Referentie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#recents}}
+                        <tr>
+                            <td>{{timestamp}}</td>
+                            <td>{{ref}}</td>
+                        </tr>
+                        {{/recents}}
+                        {{^recents}}
+                        <tr>
+                            <td>No items found</td>
+                            <td></td>
+                        </tr>
+                        {{/recents}}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- END: template component(s) -->
+</main>
+
+{{>footer}}
