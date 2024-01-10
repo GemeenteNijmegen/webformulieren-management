@@ -17,15 +17,8 @@ export class PipelineStack extends Stack {
     Aspects.of(this).add(new PermissionsBoundaryAspect());
     this.branchName = props.configuration.branch;
 
-    let source = undefined;
-    if (props.configuration.sandobxDeployment != true) {
-      const connectionArn = new CfnParameter(this, 'connectionArn');
-      source = this.connectionSource(connectionArn);
-    } else {
-      console.log('Creating codecommit repo...');
-      const repository = this.repository();
-      source = pipelines.CodePipelineSource.codeCommit(repository, props.configuration.branch, {});
-    }
+    const connectionArn = new CfnParameter(this, 'connectionArn');
+    const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source, props);
 
@@ -64,7 +57,7 @@ export class PipelineStack extends Stack {
   }
 
   private connectionSource(connectionArn: CfnParameter): pipelines.CodePipelineSource {
-    return pipelines.CodePipelineSource.connection('GemeenteNijmegen/dummy', this.branchName, {
+    return pipelines.CodePipelineSource.connection('GemeenteNijmegen/webformulieren-management', this.branchName, {
       connectionArn: connectionArn.valueAsString,
     });
   }

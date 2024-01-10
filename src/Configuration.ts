@@ -35,18 +35,11 @@ export interface Configuration {
   deploymentEnvironment: Environment;
 
   /**
-   * Sandbox deployment
-   * @default false
-   */
-  sandobxDeployment?: boolean;
-
-  /**
    * The CDK name of the pipeline stack (can be removed after
    * moving to new lz)
    */
   pipelineStackCdkName: string;
   pipelineName: string;
-
   /**
    * URL for the webforms management api
    */
@@ -61,7 +54,6 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     deploymentEnvironment: Statics.gnSandboxMarnix,
     pipelineStackCdkName: 'webformulieren-management-interface-sandbox-marnix',
     pipelineName: 'webformulieren-management-interface-sandbox-marnix',
-    sandobxDeployment: true,
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-dev.csp-nijmegen.nl',
   },
 };

@@ -2,6 +2,7 @@ import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy } from
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
@@ -11,7 +12,6 @@ import { ResubmitFunction } from './app/resbumit/resubmit-function';
 import { Configurable } from './Configuration';
 import { Statics } from './statics';
 import { WebappConstruct } from './WebappConstruct';
-import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 export interface WebappStackProps extends StackProps, Configurable {}
 
@@ -140,7 +140,7 @@ export class WebappStack extends Stack {
       apiFunction: PostloginFunction,
       environment: {
         AUTHORIZED_USER_EMAILS: StringParameter.valueForStringParameter(this, Statics.ssmAuthorizedUserEmails),
-      }
+      },
     });
   }
 

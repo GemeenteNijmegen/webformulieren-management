@@ -34,7 +34,7 @@ export class PostLoginRequestHandler {
     const email = claims.email;
     const allowedUsers = process.env.AUTHORIZED_USER_EMAILS?.split(',') ?? [];
     const authorized = allowedUsers.includes(email);
-    
+
     if (!authorized) {
       await session.createSession({
         loggedin: { BOOL: false },
