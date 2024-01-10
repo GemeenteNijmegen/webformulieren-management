@@ -1,6 +1,6 @@
-import { Stack, Stage } from "aws-cdk-lib";
-import { StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Statics } from "./statics";
+import { Stack, Stage } from 'aws-cdk-lib';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { Statics } from './statics';
 
 export class ParameterStage extends Stage {
   constructor(scope: any, id: string, props?: any) {
