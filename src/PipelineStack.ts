@@ -4,6 +4,7 @@ import { Repository } from 'aws-cdk-lib/aws-codecommit';
 import { Construct } from 'constructs';
 import { AppStage } from './AppStage';
 import { Configurable } from './Configuration';
+import { ParameterStage } from './ParameterStage';
 import { Statics } from './statics';
 
 export interface PipelineStackProps extends StackProps, Configurable {}
@@ -21,6 +22,10 @@ export class PipelineStack extends Stack {
     const source = this.connectionSource(connectionArn);
 
     const pipeline = this.pipeline(source, props);
+
+    pipeline.addStage(new ParameterStage(this, 'webformulieren-management-parameters', {
+      env: props.configuration.deploymentEnvironment,
+    }));
 
     pipeline.addStage(new AppStage(this, 'webformulieren-managment', {
       env: props.configuration.deploymentEnvironment,

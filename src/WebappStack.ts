@@ -54,12 +54,6 @@ export class WebappStack extends Stack {
       secretName: Statics.ssmApiKeySecretWebformsManagment,
     });
 
-    new StringParameter(this, 'authorized-user-emails', {
-      parameterName: Statics.ssmAuthorizedUserEmails,
-      stringValue: '-', // Filled manually to keep emails from the code base
-      description: 'Comma separated list of emails that are authorized to use the webapp',
-    });
-
     // Setup a table to keep track of recent resubmissions
     const resubmissionTable = new DynamoDB.Table(this, 'resubmission-table', {
       partitionKey: { name: 'id', type: DynamoDB.AttributeType.STRING },
