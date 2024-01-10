@@ -6,7 +6,9 @@ import { Construct } from 'constructs';
 import { ApiConstruct } from './ApiConstruct';
 import { ApiFunction } from './ApiFunction';
 import { CloudfrontConstruct } from './CloudfrontStack';
+import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { SessionsTable } from './SessionsTable';
+
 
 export interface WebappConstructOptions {
   /**
@@ -58,6 +60,11 @@ export interface WebappConstructOptions {
    * Note: responsibility of creating the lambda lies by the user of this construct.
    */
   defaultPath: string;
+
+  /**
+   * OpenID Connect connection profiles
+   */
+  oidcProfiles: OpenIdConnectConnectionProfile[];
 }
 
 
@@ -85,8 +92,9 @@ export class WebappConstruct extends Construct implements IGrantable {
       applicationName: props.applicationName,
       lambdaRole: this.grantPrincipal as IRole, // The IGrantable interface only lets us use an IPrincipal, so cast
       usePostLoginProcessor: props.postLoginProcessor != undefined,
-      additionalSourceFilesDir: props.additionalSourceFilesDir,
+      customLambdaLayerDir: props.additionalSourceFilesDir,
       sessionLifetime: 60,
+      oidcProfiles: props.oidcProfiles,
     });
     this.api.node.addDependency(this.sessions);
 

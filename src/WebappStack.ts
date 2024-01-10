@@ -70,11 +70,12 @@ export class WebappStack extends Stack {
       applicationName: Statics.projectName,
       cloudFrontCertificate: certificate,
       domainName: `${hostedZone.zoneName}`,
-      additionalSourceFilesDir: props.configuration.resources,
+      additionalSourceFilesDir: 'src/resources',
       hostedZone: hostedZone,
       staticResourcesDirectory: './src/app/static-resources/',
       defaultPath: '/home',
       postLoginProcessor: this.postLoginHook(),
+      oidcProfiles: props.configuration.oidcProfiles,
     });
 
     /**
