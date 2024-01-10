@@ -2,6 +2,7 @@ import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy } from
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
@@ -131,6 +132,9 @@ export class WebappStack extends Stack {
     return new ApiFunction(this, 'post-login-function', {
       description: 'Post-login lambda',
       apiFunction: PostloginFunction,
+      environment: {
+        AUTHORIZED_USER_EMAILS: StringParameter.valueForStringParameter(this, Statics.ssmAuthorizedUserEmails),
+      },
     });
   }
 
