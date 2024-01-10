@@ -44,6 +44,12 @@ export interface Configuration {
    * URL for the webforms management api
    */
   webformsManagementApiBaseUrl: string;
+
+  /**
+   * Path to directory containing resources that are bundled
+   * into all lambdas.
+   */
+  resources: string;
 }
 
 
@@ -55,6 +61,25 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     pipelineStackCdkName: 'webformulieren-management-interface-sandbox-marnix',
     pipelineName: 'webformulieren-management-interface-sandbox-marnix',
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-dev.csp-nijmegen.nl',
+    resources: 'src/resources-marnix',
+  },
+  acceptance: {
+    branch: 'acceptance',
+    buildEnvironment: Statics.gnBuild,
+    deploymentEnvironment: Statics.gnWebformsAccp,
+    pipelineStackCdkName: 'webformulieren-management-acceptance-pipeline-stack',
+    pipelineName: 'webformulieren-management-acceptance',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-accp.csp-nijmegen.nl',
+    resources: 'src/resources-accp',
+  },
+  main: {
+    branch: 'main',
+    buildEnvironment: Statics.gnBuild,
+    deploymentEnvironment: Statics.gnWebformsProd,
+    pipelineStackCdkName: 'webformulieren-management-production-pipeline-stack',
+    pipelineName: 'webformulieren-management-production',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-prod.csp-nijmegen.nl',
+    resources: 'src/resources-prod',
   },
 };
 
