@@ -72,11 +72,14 @@ export class ResubmitRequestHandler {
       TableName: process.env.RESUBMISSION_TABLE_NAME,
       Limit: 30,
     }));
-    return recents.Items?.map(item => {
+    const mapped = recents.Items?.map(item => {
       return {
         ref: item.reference.S,
         timestamp: item.timestamp.S,
       };
+    });
+    return mapped?.sort((a: any, b: any) => {
+      return b.timestamp?.localeCompare(a.timestamp);
     });
   }
 
