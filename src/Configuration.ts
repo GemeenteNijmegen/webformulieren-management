@@ -92,7 +92,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
         name: 'microsoft',
         title: 'Gemeente Nijmegen account',
         cssClass: 'btn-microsoft',
-        clientId: 'todo',
+        clientId: 'yxtUvlHufAHyLZjLICDaQfAsGRJj1BmS',
         clientSecretArn: 'todo',
         applicationBaseUrl: 'https://webformulieren-management.webforms-prod.csp-nijmegen.nl',
         authenticationBaseUrl: 'https://authenticatie.nijmegen.nl',
