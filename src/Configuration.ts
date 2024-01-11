@@ -94,7 +94,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
         cssClass: 'btn-microsoft',
         clientId: 'NLQoT5arUEkxEvcq4dRsyMGjhs1fxXJI',
         clientSecretArn: 'arn:aws:secretsmanager:eu-central-1:338472043295:secret:/cdk/webformulieren-management/secrets/oidc/client-secret-DjnIhi',
-        applicationBaseUrl: 'https://webformulieren-management.webforms-accp.csp-nijmegen.nl',
+        applicationBaseUrl: 'https://eform-api.webformulieren.accp.csp-nijmegen.nl',
         authenticationBaseUrl: 'https://authenticatie-accp.nijmegen.nl',
         scope: 'openid idp_scoping:microsoft',
         immediateRedirect: false,
