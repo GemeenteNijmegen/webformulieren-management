@@ -38,6 +38,7 @@ test/__snapshots__/*
 .DS_Store
 test/playwright/report
 test/playwright/screenshots
+!/.projenrc.js
 /test-reports/
 junit.xml
 /coverage/
@@ -67,4 +68,3 @@ junit.xml
 !/src/webapp/logout/logout-function.ts
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
-!/.projenrc.js
