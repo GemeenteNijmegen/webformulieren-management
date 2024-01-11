@@ -57,43 +57,21 @@ export interface Configuration {
 
 
 const EnvironmentConfigurations: {[key:string]: Configuration} = {
-  marnix: {
-    branch: 'marnix',
-    buildEnvironment: Statics.gnSandboxMarnix,
-    deploymentEnvironment: Statics.gnSandboxMarnix,
-    pipelineStackCdkName: 'webformulieren-management-interface-sandbox-marnix',
-    pipelineName: 'webformulieren-management-interface-sandbox-marnix',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-dev.csp-nijmegen.nl',
-    resources: 'src/resources-marnix',
-    oidcProfiles: [
-      {
-        name: 'microsoft',
-        title: 'Gemeente Nijmegen account',
-        cssClass: 'btn-microsoft',
-        clientId: 'NLQoT5arUEkxEvcq4dRsyMGjhs1fxXJI',
-        clientSecretArn: 'arn:aws:secretsmanager:eu-central-1:049753832279:secret:/cdk/webformulieren-management/secrets/oidc/client-secret-BTOdKD',
-        applicationBaseUrl: 'https://webformulieren-management.sandbox-marnix.csp-nijmegen.nl',
-        authenticationBaseUrl: 'https://authenticatie-accp.nijmegen.nl',
-        scope: 'openid idp_scoping:microsoft idp_scoping:simulator',
-        immediateRedirect: false,
-      },
-    ],
-  },
   acceptance: {
     branch: 'acceptance',
     buildEnvironment: Statics.gnBuild,
     deploymentEnvironment: Statics.gnWebformsAccp,
     pipelineStackCdkName: 'webformulieren-management-acceptance-pipeline-stack',
     pipelineName: 'webformulieren-management-acceptance',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-accp.csp-nijmegen.nl',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.accp.csp-nijmegen.nl',
     resources: 'src/resources-accp',
     oidcProfiles: [
       {
         name: 'microsoft',
         title: 'Gemeente Nijmegen account',
         cssClass: 'btn-microsoft',
-        clientId: 'todo',
-        clientSecretArn: 'todo',
+        clientId: 'NLQoT5arUEkxEvcq4dRsyMGjhs1fxXJI',
+        clientSecretArn: 'arn:aws:secretsmanager:eu-central-1:338472043295:secret:/cdk/webformulieren-management/secrets/oidc/client-secret-DjnIhi',
         applicationBaseUrl: 'https://webformulieren-management.webforms-accp.csp-nijmegen.nl',
         authenticationBaseUrl: 'https://authenticatie-accp.nijmegen.nl',
         scope: 'openid idp_scoping:microsoft',
@@ -107,14 +85,14 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     deploymentEnvironment: Statics.gnWebformsProd,
     pipelineStackCdkName: 'webformulieren-management-production-pipeline-stack',
     pipelineName: 'webformulieren-management-production',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-prod.csp-nijmegen.nl',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.auth-prod.csp-nijmegen.nl',
     resources: 'src/resources-prod',
     oidcProfiles: [
       {
         name: 'microsoft',
         title: 'Gemeente Nijmegen account',
         cssClass: 'btn-microsoft',
-        clientId: 'todo',
+        clientId: 'yxtUvlHufAHyLZjLICDaQfAsGRJj1BmS',
         clientSecretArn: 'todo',
         applicationBaseUrl: 'https://webformulieren-management.webforms-prod.csp-nijmegen.nl',
         authenticationBaseUrl: 'https://authenticatie.nijmegen.nl',

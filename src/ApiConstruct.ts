@@ -153,6 +153,7 @@ export class ApiConstruct extends Construct {
     handler.addLambdaLayer(this.configurationLambdaLayer);
     handler.setSessionLifetime(this.props.sessionLifetime ?? 15);
     handler.monitor(this.props.applicationName);
+    handler.addStandardEnvironment(this.props.applicationName);
     this.api.addRoutes({
       path,
       methods,

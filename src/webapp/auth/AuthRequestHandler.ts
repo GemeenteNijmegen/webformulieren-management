@@ -2,7 +2,6 @@ import { Logger } from '@aws-lambda-powertools/logger';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
-import { Statics } from '../../statics';
 import { OpenIDConnect } from '../util/OpenIDConnect';
 
 interface requestProps {
@@ -21,7 +20,7 @@ export class AuthRequestHandler {
   }
 
   async handleRequest() {
-    const logger = new Logger({ serviceName: Statics.projectName });
+    const logger = new Logger({ serviceName: process.env.WEBAPP_NAME });
 
     // Check for active session
     let session = new Session(this.config.cookies, this.config.dynamoDBClient, {

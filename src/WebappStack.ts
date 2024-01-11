@@ -1,7 +1,7 @@
 import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
-import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
@@ -108,7 +108,7 @@ export class WebappStack extends Stack {
    * @param apiKeySecret
    * @param props
    */
-  addResubmitPage(webapp: WebappConstruct, resubmissionTable: DynamoDB.Table, apiKeySecret: Secret, props: WebappStackProps) {
+  addResubmitPage(webapp: WebappConstruct, resubmissionTable: DynamoDB.Table, apiKeySecret: ISecret, props: WebappStackProps) {
     const resubmitFunction = new ApiFunction(this, 'resubmit-function', {
       description: 'Resubmit lambda',
       apiFunction: ResubmitFunction,
