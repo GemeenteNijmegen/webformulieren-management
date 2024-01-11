@@ -85,7 +85,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     deploymentEnvironment: Statics.gnWebformsAccp,
     pipelineStackCdkName: 'webformulieren-management-acceptance-pipeline-stack',
     pipelineName: 'webformulieren-management-acceptance',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-accp.csp-nijmegen.nl',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.accp.csp-nijmegen.nl',
     resources: 'src/resources-accp',
     oidcProfiles: [
       {
@@ -94,7 +94,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
         cssClass: 'btn-microsoft',
         clientId: 'NLQoT5arUEkxEvcq4dRsyMGjhs1fxXJI',
         clientSecretArn: 'arn:aws:secretsmanager:eu-central-1:338472043295:secret:/cdk/webformulieren-management/secrets/oidc/client-secret-DjnIhi',
-        applicationBaseUrl: 'https://eform-api.webformulieren.accp.csp-nijmegen.nl',
+        applicationBaseUrl: 'https://webformulieren-management.webforms-accp.csp-nijmegen.nl',
         authenticationBaseUrl: 'https://authenticatie-accp.nijmegen.nl',
         scope: 'openid idp_scoping:microsoft',
         immediateRedirect: false,
@@ -107,7 +107,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     deploymentEnvironment: Statics.gnWebformsProd,
     pipelineStackCdkName: 'webformulieren-management-production-pipeline-stack',
     pipelineName: 'webformulieren-management-production',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-prod.csp-nijmegen.nl',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.auth-prod.csp-nijmegen.nl',
     resources: 'src/resources-prod',
     oidcProfiles: [
       {
