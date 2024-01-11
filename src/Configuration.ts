@@ -93,7 +93,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
         title: 'Gemeente Nijmegen account',
         cssClass: 'btn-microsoft',
         clientId: 'yxtUvlHufAHyLZjLICDaQfAsGRJj1BmS',
-        clientSecretArn: 'todo',
+        clientSecretArn: 'arn:aws:secretsmanager:eu-central-1:147064197580:secret:/cdk/webformulieren-management/secrets/oidc/client-secret-VBIqUi',
         applicationBaseUrl: 'https://webformulieren-management.webforms-prod.csp-nijmegen.nl',
         authenticationBaseUrl: 'https://authenticatie.nijmegen.nl',
         scope: 'openid idp_scoping:microsoft',
