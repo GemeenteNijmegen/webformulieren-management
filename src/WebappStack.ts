@@ -1,7 +1,7 @@
 import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
-import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
@@ -43,16 +43,10 @@ export class WebappStack extends Stack {
     });
 
     // Setup OIDC client secret
-    const clientSecret = new Secret(this, 'oidc-client-secret', {
-      description: 'The OIDC client secret for the Signicat connection',
-      secretName: Statics.ssmOIDCClientSecret,
-    });
+    const clientSecret = Secret.fromSecretNameV2(this, 'oidc-client', Statics.ssmOIDCClientSecret);
 
     // Setup API key secret (eform-api)
-    const apiKeySecret = new Secret(this, 'api-key-secret', {
-      description: 'The API KEY secret for the management api of webformulieren',
-      secretName: Statics.ssmApiKeySecretWebformsManagment,
-    });
+    const apiKeySecret = Secret.fromSecretNameV2(this, 'api-key', Statics.ssmApiKeySecretWebformsManagment);
 
     // Setup a table to keep track of recent resubmissions
     const resubmissionTable = new DynamoDB.Table(this, 'resubmission-table', {
@@ -108,7 +102,7 @@ export class WebappStack extends Stack {
    * @param apiKeySecret
    * @param props
    */
-  addResubmitPage(webapp: WebappConstruct, resubmissionTable: DynamoDB.Table, apiKeySecret: Secret, props: WebappStackProps) {
+  addResubmitPage(webapp: WebappConstruct, resubmissionTable: DynamoDB.Table, apiKeySecret: ISecret, props: WebappStackProps) {
     const resubmitFunction = new ApiFunction(this, 'resubmit-function', {
       description: 'Resubmit lambda',
       apiFunction: ResubmitFunction,
