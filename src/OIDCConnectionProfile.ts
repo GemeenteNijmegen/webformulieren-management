@@ -13,12 +13,10 @@ export interface OpenIdConnectConnectionProfile {
   cssClass: string;
   /**
    * OIDC client ID
-   * Note: if client ID ssm parameter is provided, this will be overwritten
    */
-  clientId?: string;
+  clientId: string;
   /**
-   * Arn of the secretsmanager secret to lookup the
-   * client secret.
+   * OIDC client secret arn of the secretsmanager secret.
    */
   clientSecretArn: string;
   /**

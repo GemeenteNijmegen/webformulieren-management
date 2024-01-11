@@ -37,4 +37,19 @@ export abstract class Statics {
     region: 'eu-central-1',
   };
 
+  static readonly gnBuild = {
+    account: '836443378780',
+    region: 'eu-central-1',
+  };
+
+  static readonly gnWebformsAccp = {
+    account: '338472043295',
+    region: 'eu-central-1',
+  };
+
+  static readonly gnWebformsProd = {
+    account: '147064197580',
+    region: 'eu-central-1',
+  };
+
 }

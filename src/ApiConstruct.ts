@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
@@ -7,6 +8,7 @@ import { IRole } from 'aws-cdk-lib/aws-iam';
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
+import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { SessionsTable } from './SessionsTable';
 import { AuthFunction } from './webapp/auth/auth-function';
 import { LoginFunction } from './webapp/login/login-function';
@@ -29,8 +31,9 @@ export interface ApiConstructProps {
   /**
    * Path to the source directory of additional files to pack into the lambda
    * e.g. header.mustache, config.json
+   * @default - no custom lambda layer is created
    */
-  additionalSourceFilesDir: string;
+  customLambdaLayerDir?: string;
   /**
    * The role to be used by the lambdas
    */
@@ -40,6 +43,11 @@ export interface ApiConstructProps {
    * @default 15
    */
   sessionLifetime?: number;
+
+  /**
+   * The OIDC profile configuration to pass to the lambda.
+   */
+  oidcProfiles: OpenIdConnectConnectionProfile[];
 }
 
 /**
@@ -49,7 +57,8 @@ export interface ApiConstructProps {
  */
 export class ApiConstruct extends Construct {
   private sessionsTable: Table;
-  private lambdaLayer: LayerVersion;
+  private customLambdaLayer?: LayerVersion;
+  private configurationLambdaLayer: LayerVersion;
   private props: ApiConstructProps;
   api: apigatewayv2.HttpApi;
 
@@ -57,7 +66,8 @@ export class ApiConstruct extends Construct {
     super(scope, id);
     this.props = props;
     this.sessionsTable = props.sessionsTable.table;
-    this.lambdaLayer = this.setupLambdaLayer(props);
+    this.customLambdaLayer = this.setupCustomLambdaLayer(props.customLambdaLayerDir);
+    this.configurationLambdaLayer = this.setupConfigurationLambdaLayer(props.oidcProfiles);
 
     this.api = new apigatewayv2.HttpApi(this, 'gateway', {
       description: `API Gateway webapp: ${props.applicationName}`,
@@ -72,9 +82,31 @@ export class ApiConstruct extends Construct {
    * registerd in this webapp.
    * @param props
    */
-  setupLambdaLayer(props: ApiConstructProps) {
+  setupCustomLambdaLayer(customLambdaLayerDir?: string) {
+    if (!customLambdaLayerDir) { return; }
     return new lambda.LayerVersion(this, 'layer', {
-      code: lambda.Code.fromAsset(props.additionalSourceFilesDir),
+      code: lambda.Code.fromAsset(customLambdaLayerDir),
+    });
+  }
+
+  /**
+   * Create a configuration lambda layer that contains the configuration files
+   * for the lambda.
+   * @param profiles
+   */
+  setupConfigurationLambdaLayer(profiles: OpenIdConnectConnectionProfile[]) {
+    // Create temp directory (use projen assets dir)
+    const tempDir = './assets/webapp/configuration-layer';
+    fs.mkdirSync(tempDir, { recursive: true });
+
+    // Write configuration objects to JSON files in temp dir
+    const authenticationJson = JSON.stringify(profiles);
+    fs.writeFileSync(`${tempDir}/authentication.json`, authenticationJson);
+
+    // Make layer using the temp directory
+    return new lambda.LayerVersion(this, 'configuration-layer', {
+      code: lambda.Code.fromAsset(tempDir),
+      description: 'Webapp construct managed layer to inject configuration files in lambdas',
     });
   }
 
@@ -117,7 +149,8 @@ export class ApiConstruct extends Construct {
    */
   addRoute(id: string, handler: ApiFunction, path: string, methods: HttpMethod[]) {
     handler.allowSessionAccess(this.sessionsTable);
-    handler.addLambdaLayer(this.lambdaLayer);
+    if (this.customLambdaLayer) { handler.addLambdaLayer(this.customLambdaLayer); }
+    handler.addLambdaLayer(this.configurationLambdaLayer);
     handler.setSessionLifetime(this.props.sessionLifetime ?? 15);
     handler.monitor(this.props.applicationName);
     this.api.addRoutes({

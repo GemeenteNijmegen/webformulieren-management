@@ -67,14 +67,15 @@ export class WebappStack extends Stack {
      * Create the webapp!
      */
     const webapp = new WebappConstruct(this, 'app', {
-      applicationName: 'webformulieren-management',
+      applicationName: Statics.projectName,
       cloudFrontCertificate: certificate,
-      domainName: 'webformulieren-management.sandbox-marnix.csp-nijmegen.nl',
-      additionalSourceFilesDir: 'src/inject',
+      domainName: `${hostedZone.zoneName}`,
+      additionalSourceFilesDir: 'src/resources',
       hostedZone: hostedZone,
       staticResourcesDirectory: './src/app/static-resources/',
       defaultPath: '/home',
       postLoginProcessor: this.postLoginHook(),
+      oidcProfiles: props.configuration.oidcProfiles,
     });
 
     /**
