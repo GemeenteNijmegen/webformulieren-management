@@ -32,11 +32,6 @@ export abstract class Statics {
 
   // ENVIRONMENTS
 
-  static readonly gnSandboxMarnix = {
-    account: '049753832279',
-    region: 'eu-central-1',
-  };
-
   static readonly gnBuild = {
     account: '836443378780',
     region: 'eu-central-1',

@@ -57,28 +57,6 @@ export interface Configuration {
 
 
 const EnvironmentConfigurations: {[key:string]: Configuration} = {
-  marnix: {
-    branch: 'marnix',
-    buildEnvironment: Statics.gnSandboxMarnix,
-    deploymentEnvironment: Statics.gnSandboxMarnix,
-    pipelineStackCdkName: 'webformulieren-management-interface-sandbox-marnix',
-    pipelineName: 'webformulieren-management-interface-sandbox-marnix',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-dev.csp-nijmegen.nl',
-    resources: 'src/resources-marnix',
-    oidcProfiles: [
-      {
-        name: 'microsoft',
-        title: 'Gemeente Nijmegen account',
-        cssClass: 'btn-microsoft',
-        clientId: 'NLQoT5arUEkxEvcq4dRsyMGjhs1fxXJI',
-        clientSecretArn: 'arn:aws:secretsmanager:eu-central-1:049753832279:secret:/cdk/webformulieren-management/secrets/oidc/client-secret-BTOdKD',
-        applicationBaseUrl: 'https://webformulieren-management.sandbox-marnix.csp-nijmegen.nl',
-        authenticationBaseUrl: 'https://authenticatie-accp.nijmegen.nl',
-        scope: 'openid idp_scoping:microsoft idp_scoping:simulator',
-        immediateRedirect: false,
-      },
-    ],
-  },
   acceptance: {
     branch: 'acceptance',
     buildEnvironment: Statics.gnBuild,
