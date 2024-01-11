@@ -43,10 +43,16 @@ export class WebappStack extends Stack {
     });
 
     // Setup OIDC client secret
-    const clientSecret = Secret.fromSecretNameV2(this, 'oidc-client', Statics.ssmOIDCClientSecret);
+    const clientSecret = new Secret(this, 'oidc-client-secret', {
+      description: 'The OIDC client secret for the Signicat connection',
+      secretName: Statics.ssmOIDCClientSecret,
+    });
 
     // Setup API key secret (eform-api)
-    const apiKeySecret = Secret.fromSecretNameV2(this, 'api-key', Statics.ssmApiKeySecretWebformsManagment);
+    const apiKeySecret = new Secret(this, 'api-key-secret', {
+      description: 'The API KEY secret for the management api of webformulieren',
+      secretName: Statics.ssmApiKeySecretWebformsManagment,
+    });
 
     // Setup a table to keep track of recent resubmissions
     const resubmissionTable = new DynamoDB.Table(this, 'resubmission-table', {
