@@ -30,7 +30,7 @@ import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { Construct } from 'constructs';
 
-export interface CloudFrontConstructProps {
+export interface CloudFrontProps {
   /**
    * The domain name of the API gateway to forward requests to.
    */
@@ -64,11 +64,11 @@ export interface CloudFrontConstructProps {
   defaultPath: string;
 }
 
-export class CloudfrontConstruct extends Construct {
+export class Cloudfront extends Construct {
 
   cloudfront: Distribution;
 
-  constructor(scope: Construct, id: string, props: CloudFrontConstructProps) {
+  constructor(scope: Construct, id: string, props: CloudFrontProps) {
     super(scope, id);
     this.cloudfront = this.setupCloudfront(props);
     this.addStaticResources(props, this.cloudfront);
@@ -83,7 +83,7 @@ export class CloudfrontConstruct extends Construct {
    *
    * @param cloudfrontDistribution the distribution for these resources
    */
-  private addStaticResources(props: CloudFrontConstructProps, cloudfrontDistribution: Distribution) {
+  private addStaticResources(props: CloudFrontProps, cloudfrontDistribution: Distribution) {
     const staticResourcesBucket = this.staticResourcesBucket();
     const originAccessIdentity = new OriginAccessIdentity(this, 'publicresourcesbucket-oia');
     this.allowOriginAccessIdentityAccessToBucket(originAccessIdentity, staticResourcesBucket);
@@ -117,7 +117,7 @@ export class CloudfrontConstruct extends Construct {
    * @param {string} apiGatewayDomain the domain the api gateway can be reached at
    * @returns {Distribution} the cloudfront distribution
    */
-  setupCloudfront(props: CloudFrontConstructProps): Distribution {
+  setupCloudfront(props: CloudFrontProps): Distribution {
 
     const distribution = new Distribution(this, 'cf-distribution', {
       priceClass: PriceClass.PRICE_CLASS_100,
@@ -176,7 +176,7 @@ export class CloudfrontConstruct extends Construct {
    *
    * @param distribution the cloudfront distribution
    */
-  addDnsRecords(distribution: Distribution, props: CloudFrontConstructProps) {
+  addDnsRecords(distribution: Distribution, props: CloudFrontProps) {
 
     new Route53.ARecord(this, 'a-record', {
       zone: props.hostedZone,
@@ -216,7 +216,7 @@ export class CloudfrontConstruct extends Construct {
    * Get a set of (security) response headers to inject into the response
    * @returns {ResponseHeadersPolicy} cloudfront responseHeadersPolicy
    */
-  responseHeadersPolicy(props: CloudFrontConstructProps): ResponseHeadersPolicy {
+  responseHeadersPolicy(props: CloudFrontProps): ResponseHeadersPolicy {
 
     const csp = props.cspHeaderValue ?? this.cspHeaderValue();
     const responseHeadersPolicy = new ResponseHeadersPolicy(this, 'headers', {
@@ -320,7 +320,7 @@ export class CloudfrontConstruct extends Construct {
    * @param bucket s3.Bucket
    * @param distribution Distribution
    */
-  deployBucket(props: CloudFrontConstructProps, bucket: S3.Bucket, distribution: Distribution) {
+  deployBucket(props: CloudFrontProps, bucket: S3.Bucket, distribution: Distribution) {
 
     // Do some synth time validation on the directory provided!
     const staticDir = path.join(props.staticResourcesDirectory, 'static');

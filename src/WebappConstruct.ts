@@ -3,14 +3,14 @@ import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { IGrantable, IPrincipal, IRole, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { Construct } from 'constructs';
-import { ApiConstruct } from './ApiConstruct';
-import { ApiFunction } from './ApiFunction';
-import { CloudfrontConstruct } from './CloudfrontStack';
+import { Api } from './ApiConstruct';
+import { Webpage } from './ApiFunction';
+import { Cloudfront } from './CloudfrontStack';
 import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { SessionsTable } from './SessionsTable';
 
 
-export interface WebappConstructOptions {
+export interface WebappOptions {
   /**
    * The name of the application, can only contain alphanumeric and hypens.
    */
@@ -21,7 +21,7 @@ export interface WebappConstructOptions {
    * note: you are reponsible for redirecting the user to the home page after post login processing.
    * @default none
    */
-  postLoginProcessor?: ApiFunction;
+  postLoginProcessor?: Webpage;
   /**
    * The certificate to use for the cloudfront distribution
    * (should be in us-east-1)
@@ -68,14 +68,14 @@ export interface WebappConstructOptions {
 }
 
 
-export class WebappConstruct extends Construct implements IGrantable {
-  readonly api: ApiConstruct;
-  readonly cloudfront: CloudfrontConstruct;
+export class Webapp extends Construct implements IGrantable {
+  readonly api: Api;
+  readonly cloudfront: Cloudfront;
   readonly sessions: SessionsTable;
 
   grantPrincipal: IPrincipal;
 
-  constructor(scope: Construct, id: string, props: WebappConstructOptions) {
+  constructor(scope: Construct, id: string, props: WebappOptions) {
     super(scope, id);
 
     // Principal used by lambdas
@@ -87,7 +87,7 @@ export class WebappConstruct extends Construct implements IGrantable {
     });
 
     // API gateway
-    this.api = new ApiConstruct(this, 'api', {
+    this.api = new Api(this, 'api', {
       sessionsTable: this.sessions,
       applicationName: props.applicationName,
       lambdaRole: this.grantPrincipal as IRole, // The IGrantable interface only lets us use an IPrincipal, so cast
@@ -99,7 +99,7 @@ export class WebappConstruct extends Construct implements IGrantable {
     this.api.node.addDependency(this.sessions);
 
     // Cloudfront distribution
-    this.cloudfront = new CloudfrontConstruct(this, 'cloudfront', {
+    this.cloudfront = new Cloudfront(this, 'cloudfront', {
       certificate: props.cloudFrontCertificate,
       hostedZone: props.hostedZone,
       apiGatewayDomain: this.api.domain(),
@@ -116,7 +116,7 @@ export class WebappConstruct extends Construct implements IGrantable {
 
   }
 
-  private setupLambdaExecutionRole(props: WebappConstructOptions) {
+  private setupLambdaExecutionRole(props: WebappOptions) {
     return new Role(this, 'role', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       description: `Role used for lambdas in webapp ${props.applicationName}`,
@@ -126,7 +126,7 @@ export class WebappConstruct extends Construct implements IGrantable {
     });
   }
 
-  private cloudfrontDomainNames(props: WebappConstructOptions) {
+  private cloudfrontDomainNames(props: WebappOptions) {
     let cloudfrontDomainNames = props.alternativeDomainNames ?? [];
     cloudfrontDomainNames.push(props.domainName);
     return cloudfrontDomainNames;
@@ -139,7 +139,7 @@ export class WebappConstruct extends Construct implements IGrantable {
    * @param methods
    * @param handler
    */
-  addPage(id: string, handler: ApiFunction, path: string, methods: HttpMethod[] = [HttpMethod.GET] ) {
+  addPage(id: string, handler: Webpage, path: string, methods: HttpMethod[] = [HttpMethod.GET] ) {
     this.api.addRoute(id, handler, path, methods);
   }
 

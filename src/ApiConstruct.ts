@@ -7,14 +7,14 @@ import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { IRole } from 'aws-cdk-lib/aws-iam';
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
-import { ApiFunction } from './ApiFunction';
+import { Webpage } from './ApiFunction';
 import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { SessionsTable } from './SessionsTable';
 import { AuthFunction } from './webapp/auth/auth-function';
 import { LoginFunction } from './webapp/login/login-function';
 import { LogoutFunction } from './webapp/logout/logout-function';
 
-export interface ApiConstructProps {
+export interface ApiProps {
   /**
    * The dynamodb session table
    */
@@ -55,14 +55,14 @@ export interface ApiConstructProps {
  * lambda's. It requires supporting resources (such as the
  * DynamoDB sessions table to be provided and thus created first)
  */
-export class ApiConstruct extends Construct {
+export class Api extends Construct {
   private sessionsTable: Table;
   private customLambdaLayer?: LayerVersion;
   private configurationLambdaLayer: LayerVersion;
-  private props: ApiConstructProps;
+  private props: ApiProps;
   api: apigatewayv2.HttpApi;
 
-  constructor(scope: Construct, id: string, props: ApiConstructProps) {
+  constructor(scope: Construct, id: string, props: ApiProps) {
     super(scope, id);
     this.props = props;
     this.sessionsTable = props.sessionsTable.table;
@@ -114,22 +114,22 @@ export class ApiConstruct extends Construct {
    * Create and configure lambda's for all api routes, and
    * add routes to the gateway.
    */
-  setFunctions(props: ApiConstructProps) {
-    const loginFunction = new ApiFunction(this, 'login-function', {
+  setFunctions(props: ApiProps) {
+    const loginFunction = new Webpage(this, 'login-function', {
       description: `Login page for webapp ${props.applicationName}.`,
       apiFunction: LoginFunction,
       role: props.lambdaRole,
     });
     this.addRoute('login', loginFunction, '/login', [apigatewayv2.HttpMethod.GET]);
 
-    const logoutFunction = new ApiFunction(this, 'logout-function', {
+    const logoutFunction = new Webpage(this, 'logout-function', {
       description: `Logout page for webapp ${props.applicationName}.`,
       apiFunction: LogoutFunction,
       role: props.lambdaRole,
     });
     this.addRoute('logout', logoutFunction, '/logout', [apigatewayv2.HttpMethod.GET]);
 
-    const authFunction = new ApiFunction(this, 'auth-function', {
+    const authFunction = new Webpage(this, 'auth-function', {
       description: `Auth landingpoint for webapp ${props.applicationName}.`,
       role: props.lambdaRole,
       apiFunction: AuthFunction,
@@ -147,7 +147,7 @@ export class ApiConstruct extends Construct {
    * @param path
    * @param methods
    */
-  addRoute(id: string, handler: ApiFunction, path: string, methods: HttpMethod[]) {
+  addRoute(id: string, handler: Webpage, path: string, methods: HttpMethod[]) {
     handler.allowSessionAccess(this.sessionsTable);
     if (this.customLambdaLayer) { handler.addLambdaLayer(this.customLambdaLayer); }
     handler.addLambdaLayer(this.configurationLambdaLayer);

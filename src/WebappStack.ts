@@ -5,13 +5,13 @@ import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
-import { ApiFunction } from './ApiFunction';
+import { Webpage } from './ApiFunction';
 import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
 import { ResubmitFunction } from './app/resbumit/resubmit-function';
 import { Configurable } from './Configuration';
 import { Statics } from './statics';
-import { WebappConstruct } from './WebappConstruct';
+import { Webapp } from './WebappConstruct';
 
 export interface WebappStackProps extends StackProps, Configurable {}
 
@@ -66,7 +66,7 @@ export class WebappStack extends Stack {
     /**
      * Create the webapp!
      */
-    const webapp = new WebappConstruct(this, 'app', {
+    const webapp = new Webapp(this, 'app', {
       applicationName: Statics.projectName,
       cloudFrontCertificate: certificate,
       domainName: `${hostedZone.zoneName}`,
@@ -93,8 +93,8 @@ export class WebappStack extends Stack {
    * Add a home page to the webapp
    * @param webapp
    */
-  addHomePage(webapp: WebappConstruct) {
-    const homeFunction = new ApiFunction(this, 'home-function', {
+  addHomePage(webapp: Webapp) {
+    const homeFunction = new Webpage(this, 'home-function', {
       description: 'Home lambda',
       apiFunction: HomeFunction,
     });
@@ -108,8 +108,8 @@ export class WebappStack extends Stack {
    * @param apiKeySecret
    * @param props
    */
-  addResubmitPage(webapp: WebappConstruct, resubmissionTable: DynamoDB.Table, apiKeySecret: ISecret, props: WebappStackProps) {
-    const resubmitFunction = new ApiFunction(this, 'resubmit-function', {
+  addResubmitPage(webapp: Webapp, resubmissionTable: DynamoDB.Table, apiKeySecret: ISecret, props: WebappStackProps) {
+    const resubmitFunction = new Webpage(this, 'resubmit-function', {
       description: 'Resubmit lambda',
       apiFunction: ResubmitFunction,
       environment: {
@@ -131,7 +131,7 @@ export class WebappStack extends Stack {
    * @returns
    */
   postLoginHook() {
-    return new ApiFunction(this, 'post-login-function', {
+    return new Webpage(this, 'post-login-function', {
       description: 'Post-login lambda',
       apiFunction: PostloginFunction,
       environment: {
