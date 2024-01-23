@@ -13,6 +13,7 @@ async function init() {
   const apiClient = new ApiClient({
     apiKey: apiKey,
     baseUrl: process.env.MANAGEMENT_API_BASE_URL!,
+    timeout: 4000,
   });
   const dynamoDBClient = new DynamoDBClient({});
   requestHandler = new ResubmitRequestHandler(dynamoDBClient, apiClient);

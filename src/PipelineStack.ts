@@ -1,6 +1,5 @@
 import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-cdk-lib';
-import { Repository } from 'aws-cdk-lib/aws-codecommit';
 import { Construct } from 'constructs';
 import { AppStage } from './AppStage';
 import { Configurable } from './Configuration';
@@ -32,13 +31,6 @@ export class PipelineStack extends Stack {
       configuration: props.configuration,
     }));
 
-  }
-
-
-  repository() {
-    return new Repository(this, 'repository', {
-      repositoryName: Statics.projectName,
-    });
   }
 
   pipeline(source: pipelines.CodePipelineSource, props: PipelineStackProps): pipelines.CodePipeline {
