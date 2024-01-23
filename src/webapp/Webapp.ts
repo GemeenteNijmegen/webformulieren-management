@@ -3,11 +3,11 @@ import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { IGrantable, IPrincipal, IRole, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { Construct } from 'constructs';
-import { Api } from './ApiConstruct';
-import { Webpage } from './ApiFunction';
-import { Cloudfront } from './CloudfrontStack';
+import { Api } from './Api';
+import { Cloudfront } from './Cloudfront';
 import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { SessionsTable } from './SessionsTable';
+import { Webpage } from './Webpage';
 
 
 export interface WebappOptions {

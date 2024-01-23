@@ -7,12 +7,12 @@ import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { IRole } from 'aws-cdk-lib/aws-iam';
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
-import { Webpage } from './ApiFunction';
+import { AuthFunction } from './auth/auth-function';
+import { LoginFunction } from './login/login-function';
+import { LogoutFunction } from './logout/logout-function';
 import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { SessionsTable } from './SessionsTable';
-import { AuthFunction } from './webapp/auth/auth-function';
-import { LoginFunction } from './webapp/login/login-function';
-import { LogoutFunction } from './webapp/logout/logout-function';
+import { Webpage } from './Webpage';
 
 export interface ApiProps {
   /**

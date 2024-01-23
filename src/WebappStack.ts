@@ -5,13 +5,13 @@ import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
-import { Webpage } from './ApiFunction';
 import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
 import { ResubmitFunction } from './app/resbumit/resubmit-function';
 import { Configurable } from './Configuration';
 import { Statics } from './statics';
-import { Webapp } from './WebappConstruct';
+import { Webapp } from './webapp/Webapp';
+import { Webpage } from './webapp/Webpage';
 
 export interface WebappStackProps extends StackProps, Configurable {}
 
