@@ -35,15 +35,9 @@ export interface CloudFrontProps extends WebappConfigurable {
    */
   apiGatewayDomain: string;
   /**
-   * A list of domain names cloudfront should answer to.
-   */
-  cloudfrontDomainNames: string[];
-
-  /**
    * The value for the CSP header
    */
   cspHeaderValue?: string;
-
 }
 
 export class Cloudfront extends Construct {
@@ -108,7 +102,7 @@ export class Cloudfront extends Construct {
 
     const distribution = new Distribution(this, 'cf-distribution', {
       priceClass: PriceClass.PRICE_CLASS_100,
-      domainNames: props.cloudfrontDomainNames,
+      domainNames: this.domainNames(props),
       certificate: props.webappOptions.cloudFrontCertificate,
       defaultBehavior: {
         origin: new HttpOrigin(props.apiGatewayDomain),
@@ -328,4 +322,11 @@ export class Cloudfront extends Construct {
       distributionPaths: ['/static/*', '/.well-known/'],
     });
   }
+
+  private domainNames(props: CloudFrontProps) {
+    let cloudfrontDomainNames = props.webappOptions.alternativeDomainNames ?? [];
+    cloudfrontDomainNames.push(props.webappOptions.domainName);
+    return cloudfrontDomainNames;
+  }
+
 }

@@ -40,7 +40,6 @@ export class Webapp extends Construct implements IGrantable {
     this.cloudfront = new Cloudfront(this, 'cloudfront', {
       webappOptions: props,
       apiGatewayDomain: this.api.domain(),
-      cloudfrontDomainNames: this.cloudfrontDomainNames(props),
     });
     this.cloudfront.node.addDependency(this.api);
 
@@ -59,12 +58,6 @@ export class Webapp extends Construct implements IGrantable {
         ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
       ],
     });
-  }
-
-  private cloudfrontDomainNames(props: WebappOptions) {
-    let cloudfrontDomainNames = props.alternativeDomainNames ?? [];
-    cloudfrontDomainNames.push(props.domainName);
-    return cloudfrontDomainNames;
   }
 
   /**
