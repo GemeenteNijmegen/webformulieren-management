@@ -61,7 +61,7 @@
     "jest-junit": "^15",
     "projen": "^0.78.8",
     "standard-version": "^9",
-    "ts-jest": "^29.1.1",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   },
