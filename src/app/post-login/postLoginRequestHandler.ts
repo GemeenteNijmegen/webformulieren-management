@@ -17,7 +17,7 @@ export class PostLoginRequestHandler {
     if (session.isLoggedIn() == false && session.getValue('status') === 'pre-login') {
       return this.handleLoggedinRequest(session);
     }
-    if(session.isLoggedIn() == true){
+    if (session.isLoggedIn() == true) {
       return Response.redirect('/');
     }
     return Response.redirect('/login');

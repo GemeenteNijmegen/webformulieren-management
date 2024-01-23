@@ -12,6 +12,11 @@ export interface ApiFunctionProps {
   description: string;
   environment?: {[key: string]: string};
   role?: IRole;
+  /**
+   * Set a lambda timeout in miliseconds
+   * @default 3000 (ms)
+   */
+  timeout?: Duration;
 }
 
 export class ApiFunction extends Construct {
@@ -29,6 +34,7 @@ export class ApiFunction extends Construct {
       code: Lambda.Code.fromInline('empty'), // required but overwritten
       description: props.description,
       role: props.role,
+      timeout: props.timeout,
       memorySize: 512,
       insightsVersion: Lambda.LambdaInsightsVersion.fromInsightVersionArn(insightsArn),
       logRetention: RetentionDays.ONE_MONTH,

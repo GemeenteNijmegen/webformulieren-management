@@ -1,4 +1,4 @@
-import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy } from 'aws-cdk-lib';
+import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy, Duration } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -117,6 +117,7 @@ export class WebappStack extends Stack {
         MANAGEMENT_API_KEY_SECRET_ARN: apiKeySecret.secretArn,
         MANAGEMENT_API_BASE_URL: props.configuration.webformsManagementApiBaseUrl,
       },
+      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
     });
     apiKeySecret.grantRead(resubmitFunction.lambda);
     resubmissionTable.grantReadWriteData(resubmitFunction.lambda);

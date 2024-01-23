@@ -38,5 +38,5 @@ function getBranchToBuild() {
       console.error(`${githubBaseBranchName} has no valid configuration, using default`);
     }
   }
-  return 'marnix';
+  return 'main';
 }
