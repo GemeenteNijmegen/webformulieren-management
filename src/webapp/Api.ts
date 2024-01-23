@@ -4,7 +4,7 @@ import { HttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
-import { IRole } from 'aws-cdk-lib/aws-iam';
+import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 import { AuthFunction } from './auth/auth-function';
@@ -20,10 +20,6 @@ export interface ApiProps extends WebappConfigurable {
    * The dynamodb session table
    */
   sessionsTable: SessionsTable;
-  /**
-   * The role to be used by the lambdas
-   */
-  lambdaRole: IRole;
 }
 
 /**
@@ -32,11 +28,13 @@ export interface ApiProps extends WebappConfigurable {
  * DynamoDB sessions table to be provided and thus created first)
  */
 export class Api extends Construct {
+
   private sessionsTable: Table;
   private customLambdaLayer?: LayerVersion;
   private configurationLambdaLayer: LayerVersion;
   private props: ApiProps;
   api: apigatewayv2.HttpApi;
+  role: Role;
 
   constructor(scope: Construct, id: string, props: ApiProps) {
     super(scope, id);
@@ -45,6 +43,7 @@ export class Api extends Construct {
     this.customLambdaLayer = this.setupCustomLambdaLayer(props.webappOptions.additionalSourceFilesDir);
     this.configurationLambdaLayer = this.setupConfigurationLambdaLayer(props.webappOptions.oidcProfiles);
 
+    this.role = this.setupLambdaExecutionRole(props.webappOptions.applicationName);
     this.api = new apigatewayv2.HttpApi(this, 'gateway', {
       description: `API Gateway webapp: ${props.webappOptions.applicationName}`,
     });
@@ -94,20 +93,20 @@ export class Api extends Construct {
     const loginFunction = new Webpage(this, 'login-function', {
       description: `Login page for webapp ${props.webappOptions.applicationName}.`,
       apiFunction: LoginFunction,
-      role: props.lambdaRole,
+      role: this.role,
     });
     this.addRoute('login', loginFunction, '/login', [apigatewayv2.HttpMethod.GET]);
 
     const logoutFunction = new Webpage(this, 'logout-function', {
       description: `Logout page for webapp ${props.webappOptions.applicationName}.`,
       apiFunction: LogoutFunction,
-      role: props.lambdaRole,
+      role: this.role,
     });
     this.addRoute('logout', logoutFunction, '/logout', [apigatewayv2.HttpMethod.GET]);
 
     const authFunction = new Webpage(this, 'auth-function', {
       description: `Auth landingpoint for webapp ${props.webappOptions.applicationName}.`,
-      role: props.lambdaRole,
+      role: this.role,
       apiFunction: AuthFunction,
       environment: {
         REDIRECT_TO_POST_LOGIN_HOOK: props.webappOptions.postLoginProcessor ? 'true' : 'false',
@@ -151,6 +150,16 @@ export class Api extends Construct {
       .replace(/^https?:\/\//, '') //protocol
       .replace(/\/$/, ''); //optional trailing slash
     return cleanedUrl;
+  }
+
+  private setupLambdaExecutionRole(applicationName: string) {
+    return new Role(this, 'role', {
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      description: `Role used for lambdas in webapp ${applicationName}`,
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+      ],
+    });
   }
 
 }

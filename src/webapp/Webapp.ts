@@ -1,5 +1,5 @@
 import { HttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
-import { IGrantable, IPrincipal, IRole, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { IGrantable, IPrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { Api } from './Api';
 import { Cloudfront } from './Cloudfront';
@@ -12,16 +12,11 @@ export class Webapp extends Construct implements IGrantable {
   readonly cloudfront: Cloudfront;
   readonly sessions: SessionsTable;
 
-  grantPrincipal: IPrincipal;
-
   constructor(scope: Construct, id: string, props: WebappOptions) {
     super(scope, id);
 
     // Defaults
     props.sessionLifetime = props.sessionLifetime ?? 15;
-
-    // Principal used by lambdas
-    this.grantPrincipal = this.setupLambdaExecutionRole(props);
 
     // Sessions
     this.sessions = new SessionsTable(this, 'sessions', {
@@ -32,7 +27,6 @@ export class Webapp extends Construct implements IGrantable {
     this.api = new Api(this, 'api', {
       webappOptions: props,
       sessionsTable: this.sessions,
-      lambdaRole: this.grantPrincipal as IRole, // The IGrantable interface only lets us use an IPrincipal, so cast
     });
     this.api.node.addDependency(this.sessions);
 
@@ -50,14 +44,8 @@ export class Webapp extends Construct implements IGrantable {
 
   }
 
-  private setupLambdaExecutionRole(props: WebappOptions) {
-    return new Role(this, 'role', {
-      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-      description: `Role used for lambdas in webapp ${props.applicationName}`,
-      managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
-      ],
-    });
+  get grantPrincipal() : IPrincipal { // Hack to keep the role in the API construct
+    return this.api.role;
   }
 
   /**

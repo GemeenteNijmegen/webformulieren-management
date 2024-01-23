@@ -74,4 +74,9 @@ export interface WebappOptions {
    * @default 15
    */
   sessionLifetime?: number;
+
+  /**
+   * Overwrites the default CSP header value
+   */
+  cspHeaderValue?: string;
 }

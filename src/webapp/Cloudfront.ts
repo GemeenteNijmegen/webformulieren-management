@@ -34,10 +34,6 @@ export interface CloudFrontProps extends WebappConfigurable {
    * The domain name of the API gateway to forward requests to.
    */
   apiGatewayDomain: string;
-  /**
-   * The value for the CSP header
-   */
-  cspHeaderValue?: string;
 }
 
 export class Cloudfront extends Construct {
@@ -199,7 +195,7 @@ export class Cloudfront extends Construct {
    */
   responseHeadersPolicy(props: CloudFrontProps): ResponseHeadersPolicy {
 
-    const csp = props.cspHeaderValue ?? this.cspHeaderValue();
+    const csp = props.webappOptions.cspHeaderValue ?? this.cspHeaderValue();
     const responseHeadersPolicy = new ResponseHeadersPolicy(this, 'headers', {
       securityHeadersBehavior: {
         contentSecurityPolicy: { contentSecurityPolicy: csp, override: true },
