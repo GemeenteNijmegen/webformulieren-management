@@ -12,42 +12,18 @@ import { LoginFunction } from './login/login-function';
 import { LogoutFunction } from './logout/logout-function';
 import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { SessionsTable } from './SessionsTable';
+import { WebappConfigurable } from './WebappOptions';
 import { Webpage } from './Webpage';
 
-export interface ApiProps {
+export interface ApiProps extends WebappConfigurable {
   /**
    * The dynamodb session table
    */
   sessionsTable: SessionsTable;
   /**
-   * The name of this application
-   */
-  applicationName: string;
-  /**
-   * Flag to incidate if the user should be redirected to
-   * the /post-login endpoint with the post login handler.
-   */
-  usePostLoginProcessor: boolean;
-  /**
-   * Path to the source directory of additional files to pack into the lambda
-   * e.g. header.mustache, config.json
-   * @default - no custom lambda layer is created
-   */
-  customLambdaLayerDir?: string;
-  /**
    * The role to be used by the lambdas
    */
   lambdaRole: IRole;
-  /**
-   * Session lifetime in minutes
-   * @default 15
-   */
-  sessionLifetime?: number;
-
-  /**
-   * The OIDC profile configuration to pass to the lambda.
-   */
-  oidcProfiles: OpenIdConnectConnectionProfile[];
 }
 
 /**
@@ -66,11 +42,11 @@ export class Api extends Construct {
     super(scope, id);
     this.props = props;
     this.sessionsTable = props.sessionsTable.table;
-    this.customLambdaLayer = this.setupCustomLambdaLayer(props.customLambdaLayerDir);
-    this.configurationLambdaLayer = this.setupConfigurationLambdaLayer(props.oidcProfiles);
+    this.customLambdaLayer = this.setupCustomLambdaLayer(props.webappOptions.additionalSourceFilesDir);
+    this.configurationLambdaLayer = this.setupConfigurationLambdaLayer(props.webappOptions.oidcProfiles);
 
     this.api = new apigatewayv2.HttpApi(this, 'gateway', {
-      description: `API Gateway webapp: ${props.applicationName}`,
+      description: `API Gateway webapp: ${props.webappOptions.applicationName}`,
     });
 
     this.setFunctions(props);
@@ -116,25 +92,25 @@ export class Api extends Construct {
    */
   setFunctions(props: ApiProps) {
     const loginFunction = new Webpage(this, 'login-function', {
-      description: `Login page for webapp ${props.applicationName}.`,
+      description: `Login page for webapp ${props.webappOptions.applicationName}.`,
       apiFunction: LoginFunction,
       role: props.lambdaRole,
     });
     this.addRoute('login', loginFunction, '/login', [apigatewayv2.HttpMethod.GET]);
 
     const logoutFunction = new Webpage(this, 'logout-function', {
-      description: `Logout page for webapp ${props.applicationName}.`,
+      description: `Logout page for webapp ${props.webappOptions.applicationName}.`,
       apiFunction: LogoutFunction,
       role: props.lambdaRole,
     });
     this.addRoute('logout', logoutFunction, '/logout', [apigatewayv2.HttpMethod.GET]);
 
     const authFunction = new Webpage(this, 'auth-function', {
-      description: `Auth landingpoint for webapp ${props.applicationName}.`,
+      description: `Auth landingpoint for webapp ${props.webappOptions.applicationName}.`,
       role: props.lambdaRole,
       apiFunction: AuthFunction,
       environment: {
-        REDIRECT_TO_POST_LOGIN_HOOK: props.usePostLoginProcessor ? 'true' : 'false',
+        REDIRECT_TO_POST_LOGIN_HOOK: props.webappOptions.postLoginProcessor ? 'true' : 'false',
       },
     });
     this.addRoute('auth', authFunction, '/auth', [apigatewayv2.HttpMethod.GET]);
@@ -151,9 +127,9 @@ export class Api extends Construct {
     handler.allowSessionAccess(this.sessionsTable);
     if (this.customLambdaLayer) { handler.addLambdaLayer(this.customLambdaLayer); }
     handler.addLambdaLayer(this.configurationLambdaLayer);
-    handler.setSessionLifetime(this.props.sessionLifetime ?? 15);
-    handler.monitor(this.props.applicationName);
-    handler.addStandardEnvironment(this.props.applicationName);
+    handler.setSessionLifetime(this.props.webappOptions.sessionLifetime ?? 15);
+    handler.monitor(this.props.webappOptions.applicationName);
+    handler.addStandardEnvironment(this.props.webappOptions.applicationName);
     this.api.addRoutes({
       path,
       methods,

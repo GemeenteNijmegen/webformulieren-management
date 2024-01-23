@@ -76,6 +76,7 @@ export class WebappStack extends Stack {
       defaultPath: '/home',
       postLoginProcessor: this.postLoginHook(),
       oidcProfiles: props.configuration.oidcProfiles,
+      sessionLifetime: 60,
     });
 
     /**
