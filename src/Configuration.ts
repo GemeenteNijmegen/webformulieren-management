@@ -1,5 +1,5 @@
-import { OpenIdConnectConnectionProfile } from './OIDCConnectionProfile';
 import { Statics } from './statics';
+import { OpenIdConnectConnectionProfile } from './webapp/OIDCConnectionProfile';
 
 /**
  * Adds a configuration field to another interface

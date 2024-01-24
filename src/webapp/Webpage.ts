@@ -7,7 +7,7 @@ import { Construct } from 'constructs';
 
 type T = Lambda.Function;
 
-export interface ApiFunctionProps {
+export interface WebpageProps {
   apiFunction: {new(scope: Construct, id:string, props?: Lambda.FunctionProps): T };
   description: string;
   environment?: {[key: string]: string};
@@ -19,10 +19,10 @@ export interface ApiFunctionProps {
   timeout?: Duration;
 }
 
-export class ApiFunction extends Construct {
+export class Webpage extends Construct {
   lambda: Lambda.Function;
 
-  constructor(scope: Construct, id: string, props: ApiFunctionProps) {
+  constructor(scope: Construct, id: string, props: WebpageProps) {
     super(scope, id);
 
     // See https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versionsx86-64.html

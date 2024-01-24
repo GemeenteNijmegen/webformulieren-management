@@ -8,7 +8,6 @@ import {
   aws_s3_deployment,
   aws_iam as IAM,
 } from 'aws-cdk-lib';
-import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
   Distribution,
   PriceClass,
@@ -27,48 +26,21 @@ import {
   OriginAccessIdentity,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { IHostedZone } from 'aws-cdk-lib/aws-route53';
 import { Construct } from 'constructs';
+import { WebappConfigurable } from './WebappOptions';
 
-export interface CloudFrontConstructProps {
+export interface CloudFrontProps extends WebappConfigurable {
   /**
    * The domain name of the API gateway to forward requests to.
    */
   apiGatewayDomain: string;
-  /**
-   * A list of domain names cloudfront should answer to.
-   */
-  cloudfrontDomainNames: string[];
-  /**
-   * The certificate to use for the distribution.
-   */
-  certificate: ICertificate;
-  /**
-   * The hosted zone to add the A and AAAA records to.
-   */
-  hostedZone: IHostedZone;
-
-  /**
-   * The value for the CSP header
-   */
-  cspHeaderValue?: string;
-
-  /**
-   * Folder with static resources to deploy
-   * Expects two directories on the provided path 'statics' '.well-known'.
-   */
-  staticResourcesDirectory: string;
-  /**
-   * The default path CloudFront will the user to
-   */
-  defaultPath: string;
 }
 
-export class CloudfrontConstruct extends Construct {
+export class Cloudfront extends Construct {
 
   cloudfront: Distribution;
 
-  constructor(scope: Construct, id: string, props: CloudFrontConstructProps) {
+  constructor(scope: Construct, id: string, props: CloudFrontProps) {
     super(scope, id);
     this.cloudfront = this.setupCloudfront(props);
     this.addStaticResources(props, this.cloudfront);
@@ -83,7 +55,7 @@ export class CloudfrontConstruct extends Construct {
    *
    * @param cloudfrontDistribution the distribution for these resources
    */
-  private addStaticResources(props: CloudFrontConstructProps, cloudfrontDistribution: Distribution) {
+  private addStaticResources(props: CloudFrontProps, cloudfrontDistribution: Distribution) {
     const staticResourcesBucket = this.staticResourcesBucket();
     const originAccessIdentity = new OriginAccessIdentity(this, 'publicresourcesbucket-oia');
     this.allowOriginAccessIdentityAccessToBucket(originAccessIdentity, staticResourcesBucket);
@@ -117,12 +89,17 @@ export class CloudfrontConstruct extends Construct {
    * @param {string} apiGatewayDomain the domain the api gateway can be reached at
    * @returns {Distribution} the cloudfront distribution
    */
-  setupCloudfront(props: CloudFrontConstructProps): Distribution {
+  setupCloudfront(props: CloudFrontProps): Distribution {
+
+    let defaultPath = props.webappOptions.defaultPath;
+    if (defaultPath.startsWith('/')) {
+      defaultPath = defaultPath.substring(1); // Strip leading /
+    }
 
     const distribution = new Distribution(this, 'cf-distribution', {
       priceClass: PriceClass.PRICE_CLASS_100,
-      domainNames: props.cloudfrontDomainNames,
-      certificate: props.certificate,
+      domainNames: this.domainNames(props),
+      certificate: props.webappOptions.cloudFrontCertificate,
       defaultBehavior: {
         origin: new HttpOrigin(props.apiGatewayDomain),
         originRequestPolicy: new OriginRequestPolicy(this, 'cf-originrequestpolicy', {
@@ -153,7 +130,7 @@ export class CloudfrontConstruct extends Construct {
       errorResponses: this.errorResponses(),
       logBucket: this.logBucket(),
       minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
-      defaultRootObject: props.defaultPath.startsWith('/') ? props.defaultPath.substring(1) : props.defaultPath, // Strip leading /
+      defaultRootObject: defaultPath,
     });
     return distribution;
   }
@@ -176,15 +153,15 @@ export class CloudfrontConstruct extends Construct {
    *
    * @param distribution the cloudfront distribution
    */
-  addDnsRecords(distribution: Distribution, props: CloudFrontConstructProps) {
+  addDnsRecords(distribution: Distribution, props: CloudFrontProps) {
 
     new Route53.ARecord(this, 'a-record', {
-      zone: props.hostedZone,
+      zone: props.webappOptions.hostedZone,
       target: Route53.RecordTarget.fromAlias(new Route53Targets.CloudFrontTarget(distribution)),
     });
 
     new Route53.AaaaRecord(this, 'aaaa-record', {
-      zone: props.hostedZone,
+      zone: props.webappOptions.hostedZone,
       target: Route53.RecordTarget.fromAlias(new Route53Targets.CloudFrontTarget(distribution)),
     });
   }
@@ -216,9 +193,9 @@ export class CloudfrontConstruct extends Construct {
    * Get a set of (security) response headers to inject into the response
    * @returns {ResponseHeadersPolicy} cloudfront responseHeadersPolicy
    */
-  responseHeadersPolicy(props: CloudFrontConstructProps): ResponseHeadersPolicy {
+  responseHeadersPolicy(props: CloudFrontProps): ResponseHeadersPolicy {
 
-    const csp = props.cspHeaderValue ?? this.cspHeaderValue();
+    const csp = props.webappOptions.cspHeaderValue ?? this.cspHeaderValue();
     const responseHeadersPolicy = new ResponseHeadersPolicy(this, 'headers', {
       securityHeadersBehavior: {
         contentSecurityPolicy: { contentSecurityPolicy: csp, override: true },
@@ -320,25 +297,32 @@ export class CloudfrontConstruct extends Construct {
    * @param bucket s3.Bucket
    * @param distribution Distribution
    */
-  deployBucket(props: CloudFrontConstructProps, bucket: S3.Bucket, distribution: Distribution) {
+  deployBucket(props: CloudFrontProps, bucket: S3.Bucket, distribution: Distribution) {
 
     // Do some synth time validation on the directory provided!
-    const staticDir = path.join(props.staticResourcesDirectory, 'static');
+    const staticDir = path.join(props.webappOptions.staticResourcesDirectory, 'static');
     if (!fs.existsSync(staticDir)) {
       throw Error(`Thers no directory for statics. Expected: ${staticDir}`);
     }
 
-    const wellKnown = path.join(props.staticResourcesDirectory, '.well-known');
+    const wellKnown = path.join(props.webappOptions.staticResourcesDirectory, '.well-known');
     if (!fs.existsSync(wellKnown)) {
       throw Error(`Thers no directory for .well-known. Expected: ${wellKnown}`);
     }
 
     //Deploy static resources to s3
     new aws_s3_deployment.BucketDeployment(this, 'staticResources', {
-      sources: [aws_s3_deployment.Source.asset(props.staticResourcesDirectory)],
+      sources: [aws_s3_deployment.Source.asset(props.webappOptions.staticResourcesDirectory)],
       destinationBucket: bucket,
       distribution: distribution,
       distributionPaths: ['/static/*', '/.well-known/'],
     });
   }
+
+  private domainNames(props: CloudFrontProps) {
+    let cloudfrontDomainNames = props.webappOptions.alternativeDomainNames ?? [];
+    cloudfrontDomainNames.push(props.webappOptions.domainName);
+    return cloudfrontDomainNames;
+  }
+
 }
