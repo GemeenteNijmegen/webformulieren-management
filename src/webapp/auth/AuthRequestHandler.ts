@@ -27,9 +27,13 @@ export class AuthRequestHandler {
       ttlInMinutes: parseInt(process.env.SESSION_TTL_MIN ?? '15'),
     });
     await session.init();
-    if (session.sessionId === false) {
+    if (session.sessionId === false || session.sessionId === undefined) {
       return Response.redirect('/login');
     }
+    if (session.isLoggedIn() === true) {
+      return Response.redirect('/');
+    }
+
 
     // Get the state from the session & find the coresponding profile
     const states = JSON.parse(session.getValue('states'));
