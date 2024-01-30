@@ -85,7 +85,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     deploymentEnvironment: Statics.gnWebformsProd,
     pipelineStackCdkName: 'webformulieren-management-main-pipeline-stack',
     pipelineName: 'webformulieren-management-main',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.auth-prod.csp-nijmegen.nl',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-prod.csp-nijmegen.nl',
     resources: 'src/resources-prod',
     oidcProfiles: [
       {
