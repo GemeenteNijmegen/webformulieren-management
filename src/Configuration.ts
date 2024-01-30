@@ -63,7 +63,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     deploymentEnvironment: Statics.gnWebformsAccp,
     pipelineStackCdkName: 'webformulieren-management-acceptance-pipeline-stack',
     pipelineName: 'webformulieren-management-acceptance',
-    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.accp.csp-nijmegen.nl',
+    webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-accp.csp-nijmegen.nl',
     resources: 'src/resources-accp',
     oidcProfiles: [
       {
