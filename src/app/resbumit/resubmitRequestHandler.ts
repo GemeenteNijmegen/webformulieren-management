@@ -1,11 +1,12 @@
-import { randomUUID } from 'crypto';
-import { DynamoDBClient, PutItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
 import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
 import { ApiClient } from './ApiClient';
 import * as resubmitTemplate from './templates/resubmit.mustache';
 import { render } from '../../webapp/util/render';
 import { nav } from '../nav/nav';
+
+const RESUBMISSION = 'RESUBMISSION';
 
 export interface ResubmitRequestHandlerParams {
   cookies: string;
@@ -32,6 +33,7 @@ export class ResubmitRequestHandler {
   }
 
   private async handleLoggedinRequest(session: Session, params: ResubmitRequestHandlerParams) {
+    const naam = session.getValue('email') ?? 'Onbekende gebruiker';
 
     let resubmitted = undefined;
     let resubmittedSuccess = undefined;
@@ -39,7 +41,7 @@ export class ResubmitRequestHandler {
       console.log('Resubmitting form', params.reference);
       try {
         await this.apiClient.postData(`/management/resubmit?key=${params.reference}`, '');
-        await this.addToRecentResubmissions(params.reference);
+        await this.addToRecentResubmissions(params.reference, naam);
         resubmitted = 'Opnieuw ingezonden!';
         resubmittedSuccess = true;
       } catch (err) {
@@ -50,7 +52,6 @@ export class ResubmitRequestHandler {
     }
 
     const recents = await this.getRecentResubmissions();
-    const naam = session.getValue('email') ?? 'Onbekende gebruiker';
     const data = {
       title: 'Opnieuw inzenden',
       shownav: true,
@@ -68,29 +69,34 @@ export class ResubmitRequestHandler {
 
 
   async getRecentResubmissions() {
-    const recents = await this.dynamoDBClient.send(new ScanCommand({
+    const recents = await this.dynamoDBClient.send(new QueryCommand({
       TableName: process.env.RESUBMISSION_TABLE_NAME,
+      ScanIndexForward: false, // true = ascending, false = descending
       Limit: 30,
+      KeyConditionExpression: 'id = :id',
+      ExpressionAttributeValues: {
+        ':id': { S: RESUBMISSION },
+      }
     }));
     const mapped = recents.Items?.map(item => {
       return {
         ref: item.reference.S,
         timestamp: item.timestamp.S,
+        user: item.user.S,
       };
     });
-    return mapped?.sort((a: any, b: any) => {
-      return b.timestamp?.localeCompare(a.timestamp);
-    });
+    return mapped;
   }
 
-  async addToRecentResubmissions(reference: string) {
+  async addToRecentResubmissions(reference: string, user: string) {
     const timestamp = new Date().toISOString();
     const ttl = Date.now() + (1000 * 3600 * 24 * 30); // 30 days
     await this.dynamoDBClient.send(new PutItemCommand({
       Item: {
-        id: { S: randomUUID() },
+        id: { S: RESUBMISSION },
         reference: { S: reference },
         timestamp: { S: timestamp },
+        user: { S: user },
         ttl: { N: ttl.toString() },
       },
       TableName: process.env.RESUBMISSION_TABLE_NAME,
