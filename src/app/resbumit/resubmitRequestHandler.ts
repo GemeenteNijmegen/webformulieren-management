@@ -82,7 +82,7 @@ export class ResubmitRequestHandler {
       return {
         ref: item.reference.S,
         timestamp: item.timestamp.S,
-        user: item.user.S,
+        user: item.user?.S ?? '-',
       };
     });
     return mapped;
