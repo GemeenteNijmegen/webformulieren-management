@@ -76,7 +76,7 @@ export class ResubmitRequestHandler {
       KeyConditionExpression: 'id = :id',
       ExpressionAttributeValues: {
         ':id': { S: RESUBMISSION },
-      }
+      },
     }));
     const mapped = recents.Items?.map(item => {
       return {
