@@ -9,7 +9,7 @@ let requestHandler: FormOverviewRequestHandler | undefined = undefined;
 
 async function init() {
   //TODO: change secret
-  const apiKey = await AWS.getSecret(process.env.MANAGEMENT_API_KEY_SECRET_ARN!);
+  const apiKey = await AWS.getSecret(process.env.FORMOVERVIEW_API_KEY_SECRET_ARN!);
   console.log('Loaded API key', apiKey.substring(0, 4));
   const apiClient = new FormOverviewApiClient({
     apiKey: apiKey,

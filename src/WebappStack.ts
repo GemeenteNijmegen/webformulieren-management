@@ -5,6 +5,7 @@ import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
+import { FormoverviewFunction } from './app/formoverview/formoverview-function';
 import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
 import { ResubmitFunction } from './app/resbumit/resubmit-function';
@@ -53,6 +54,11 @@ export class WebappStack extends Stack {
       description: 'The API KEY secret for the management api of webformulieren',
       secretName: Statics.ssmApiKeySecretWebformsManagment,
     });
+    // Setup API key secret (submissions form overview)
+    const formOverviewApiKeySecret = new Secret(this, 'form-overview-api-key-secret', {
+      description: 'The API KEY secret for the webforms-submissions formoverview api',
+      secretName: Statics.ssmApiKeySecretSubmissionsFormOverview,
+    });
 
     // Setup a table to keep track of recent resubmissions
     const resubmissionTable = new DynamoDB.Table(this, 'resubmission-table', {
@@ -88,6 +94,7 @@ export class WebappStack extends Stack {
 
     this.addHomePage(webapp);
     this.addResubmitPage(webapp, resubmissionTable, apiKeySecret, props);
+    this.addFormOverviewPage(webapp, formOverviewApiKeySecret, props);
   }
 
   /**
@@ -123,6 +130,20 @@ export class WebappStack extends Stack {
     apiKeySecret.grantRead(resubmitFunction.lambda);
     resubmissionTable.grantReadWriteData(resubmitFunction.lambda);
     webapp.addPage('resubmit', resubmitFunction, '/resubmit');
+  }
+
+  addFormOverviewPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
+    const formOverviewFunction = new Webpage(this, 'formoverview-function', {
+      description: 'FormOverview lambda',
+      apiFunction: FormoverviewFunction,
+      environment: {
+        FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
+        FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
+      },
+      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
+    });
+    formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
+    webapp.addPage('formoverview', formOverviewFunction, '/formoverview');
   }
 
   /**
