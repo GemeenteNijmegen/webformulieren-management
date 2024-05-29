@@ -8,4 +8,11 @@ export const nav = [
     label: 'Formulieren opnieuw inzenden',
     icon: MdiAccount.default,
   },
+  {
+    url: '/formoverview',
+    title: 'Formulieroverzichten',
+    description: 'Formulierenoverzichten maken en downloaden.',
+    label: 'Formulieroverzichten',
+    icon: MdiAccount.default,
+  },
 ];

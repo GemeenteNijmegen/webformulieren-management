@@ -23,12 +23,12 @@ const project = new GemeenteNijmegenCdkApp({
     'openid-client',
     'mustache',
     '@types/mustache',
+    '@types/aws-lambda',
     'axios',
     'cookie',
     'openid-client',
   ],
   devDeps: [
-    '@types/aws-lambda',
     '@aws-sdk/types',
     'aws-sdk-client-mock',
     'axios-mock-adapter',

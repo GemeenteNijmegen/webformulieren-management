@@ -17,7 +17,7 @@ export class LoginFunction extends lambda.Function {
     super(scope, id, {
       description: 'src/webapp/login/login.lambda.ts',
       ...props,
-      runtime: new lambda.Runtime('nodejs18.x', lambda.RuntimeFamily.NODEJS),
+      runtime: new lambda.Runtime('nodejs20.x', lambda.RuntimeFamily.NODEJS),
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../../../assets/webapp/login/login.lambda')),
     });

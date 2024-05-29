@@ -47,6 +47,10 @@ export interface Configuration {
   webformsManagementApiBaseUrl: string;
 
   /**
+   * URL for the webform-submissions api - including formoverview
+   */
+  webformsSubmissionsApiBaseUrl: string;
+  /**
    * Path to directory containing resources that are bundled
    * into all lambdas.
    */
@@ -64,6 +68,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     pipelineStackCdkName: 'webformulieren-management-acceptance-pipeline-stack',
     pipelineName: 'webformulieren-management-acceptance',
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-accp.csp-nijmegen.nl',
+    webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-dev.csp-nijmegen.nl',
     resources: 'src/resources-accp',
     oidcProfiles: [
       {
@@ -86,6 +91,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     pipelineStackCdkName: 'webformulieren-management-main-pipeline-stack',
     pipelineName: 'webformulieren-management-main',
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-prod.csp-nijmegen.nl',
+    webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-prod.csp-nijmegen.nl',
     resources: 'src/resources-prod',
     oidcProfiles: [
       {

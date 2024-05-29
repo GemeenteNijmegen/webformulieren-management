@@ -19,6 +19,7 @@
 /cdk.json linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/src/app/formoverview/formoverview-function.ts linguist-generated
 /src/app/home/home-function.ts linguist-generated
 /src/app/post-login/postlogin-function.ts linguist-generated
 /src/app/resbumit/resubmit-function.ts linguist-generated

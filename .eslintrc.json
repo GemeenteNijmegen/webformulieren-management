@@ -153,6 +153,7 @@
           "**//test/**",
           "**//build-tools/**",
           "**/src/shared/tests/**",
+          "src/app/formoverview/formoverview.lambda.ts",
           "src/app/home/home.lambda.ts",
           "src/app/post-login/postlogin.lambda.ts",
           "src/app/resbumit/resubmit.lambda.ts",
