@@ -91,7 +91,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     pipelineStackCdkName: 'webformulieren-management-main-pipeline-stack',
     pipelineName: 'webformulieren-management-main',
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-prod.csp-nijmegen.nl',
-    webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage.csp-nijmegen.nl',
+    webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-prod.csp-nijmegen.nl',
     resources: 'src/resources-prod',
     oidcProfiles: [
       {
