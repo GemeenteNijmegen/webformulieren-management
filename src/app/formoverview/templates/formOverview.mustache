@@ -1,0 +1,52 @@
+{{>header}}
+
+<main>
+    <!-- START: template component(s) -->
+    <div class="container" id="section-1">
+        <div class="row">
+            <div class="col-12">
+                <h1>Formulierenoverzicht</h1>
+                <p class="lead">Maak en download csv overzichten van ingediende formulieren.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                   <form method="GET" class="md-form" >
+                    <label for="reference">Formuliernaam (start en einddatum hier toevoegen):</label>
+                    <input type="text" id="formName" class="form-control" name="formName" placeholder="aanmeldensportactiviteit">
+                    <input type="submit" value="Genereer csv" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h1>Formulieroverzichten</h1>
+                <p class="lead">Formulieroverzichten om te downloaden.</p>
+
+                <table class="responsive-table">
+                    <caption>Geschiedenis</caption>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Bestandsnaam</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>No items found</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- END: template component(s) -->
+</main>
+
+{{>footer}}

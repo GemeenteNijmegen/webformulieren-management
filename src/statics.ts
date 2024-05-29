@@ -27,6 +27,7 @@ export abstract class Statics {
 
   static readonly ssmOIDCClientSecret = `/cdk/${this.projectName}/secrets/oidc/client-secret`;
   static readonly ssmApiKeySecretWebformsManagment = `/cdk/${this.projectName}/secrets/webforms-management/api-key`;
+  static readonly ssmApiKeySecretSubmissionsFormOverview = `/cdk/${this.projectName}/secrets/webforms-management/form-overview-api-key`;
 
   static readonly ssmAuthorizedUserEmails = `/cdk/${this.projectName}/authentication/authorized-emails`;
 
