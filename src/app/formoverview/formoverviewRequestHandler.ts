@@ -33,7 +33,7 @@ export class FormOverviewRequestHandler {
 
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     if (params.file) {
-      return this.handleDownloadRequest(params);
+      return this.handleDownloadRequest(session, params);
     } else {
       return this.handleListOverviewRequest(session, params);
     }
@@ -50,7 +50,7 @@ export class FormOverviewRequestHandler {
       shownav: true,
       nav: nav,
       volledigenaam: naam,
-      overview: listFormOverviewResults?.body,
+      overview: listFormOverviewResults.body,
     };
 
     // render page
