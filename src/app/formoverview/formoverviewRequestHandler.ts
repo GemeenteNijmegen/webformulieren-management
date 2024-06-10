@@ -32,6 +32,7 @@ export class FormOverviewRequestHandler {
 
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     const naam = session.getValue('email') ?? 'Onbekende gebruiker';
+    const listFormOverviewResults = await this.apiClient.getData('/listformoverviews');
     console.log('Apiclient made? ', !!this.apiClient);
     console.log('Cookies in params? ', !!params.cookies);
 
@@ -40,6 +41,7 @@ export class FormOverviewRequestHandler {
       shownav: true,
       nav: nav,
       volledigenaam: naam,
+      listFormOverviewResults,
     };
 
     // render page
