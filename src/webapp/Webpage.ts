@@ -84,8 +84,8 @@ export class Webpage extends Construct {
    *
    * @param filterPattern Pattern to filter by (default: containing ERROR)
    */
-  monitor(applicationName: string, filterPattern?: IFilterPattern) {
-    const errorMetricFilter = new MetricFilter(this, 'MetricFilter', {
+  monitor(applicationName: string, id: string, filterPattern?: IFilterPattern) {
+    const errorMetricFilter = new MetricFilter(this, `MetricFilter-${id}`, {
       logGroup: this.lambda.logGroup,
       metricNamespace: `${applicationName}/${this.node.id}`,
       metricName: 'Errors',
@@ -94,7 +94,7 @@ export class Webpage extends Construct {
     });
     errorMetricFilter.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
-    const alarm = new Alarm(this, `${applicationName}-${this.node.id}-alarm`, {
+    const alarm = new Alarm(this, `${applicationName}-${this.node.id}-${id}-alarm`, {
       metric: errorMetricFilter.metric({
         statistic: 'sum',
         period: Duration.minutes(5),
