@@ -50,7 +50,7 @@ export class FormOverviewRequestHandler {
       shownav: true,
       nav: nav,
       volledigenaam: naam,
-      overview: listFormOverviewResults?.body,
+      overview: listFormOverviewResults,
     };
 
     // render page
