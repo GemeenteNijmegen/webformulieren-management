@@ -59,7 +59,7 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleDownloadRequest(params: FormOverviewRequestHandlerParams) {
-    const response = await this.apiClient.getData(`/downloadFormOverview?key=${params.file}`);
+    const response = await this.apiClient.getData(`/downloadformoverview?key=${params.file}`);
     if (response) {
       return Response.redirect(response.downloadUrl);
     } else {
