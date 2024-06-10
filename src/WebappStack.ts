@@ -144,6 +144,7 @@ export class WebappStack extends Stack {
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverview', formOverviewFunction, '/formoverview');
+    webapp.addPage('formoverview-download', formOverviewFunction, '/formoverview/download/{file+}');
   }
   addFormOverviewDownloadPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-download-function', {
