@@ -145,6 +145,19 @@ export class WebappStack extends Stack {
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverview', formOverviewFunction, '/formoverview');
   }
+  addFormOverviewDownloadPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
+    const formOverviewFunction = new Webpage(this, 'formoverview-download-function', {
+      description: 'FormOverview Download Lambda',
+      apiFunction: FormoverviewFunction,
+      environment: {
+        FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
+        FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
+      },
+      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
+    });
+    formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
+    webapp.addPage('formoverviewdownload', formOverviewFunction, '/formoverview/download/{file+}');
+  }
 
   /**
    * Constrcut a post-login hook function that is passed directly
