@@ -3,7 +3,7 @@ import { ApiGatewayV2Response, Response } from '@gemeentenijmegen/apigateway-htt
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { FormOverviewApiClient } from './FormOverviewApiClient';
-import { FormOverviewRequestHandler, FormOverviewRequestHandlerParams } from './formoverviewRequestHandler';
+import { FormOverviewRequestHandler } from './formoverviewRequestHandler';
 
 let requestHandler: FormOverviewRequestHandler | undefined = undefined;
 
@@ -22,11 +22,10 @@ async function init() {
 
 const initalization = init();
 
-function parseEvent(event: APIGatewayProxyEventV2): FormOverviewRequestHandlerParams {
+function parseEvent(event: APIGatewayProxyEventV2) {
   return {
     cookies: event?.cookies?.join(';') ?? '',
-    // reference: event?.queryStringParameters?.reference,
-    file: event?.pathParameters?.file,
+    reference: event?.queryStringParameters?.reference,
   };
 }
 

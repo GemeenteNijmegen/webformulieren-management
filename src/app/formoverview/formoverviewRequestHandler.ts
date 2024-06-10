@@ -9,7 +9,6 @@ import { nav } from '../nav/nav';
 
 export interface FormOverviewRequestHandlerParams {
   cookies: string;
-  file?: string;
 }
 
 export class FormOverviewRequestHandler {
@@ -32,14 +31,6 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
-    if (params.file) {
-      return this.handleDownloadRequest(session, params);
-    } else {
-      return this.handleListOverviewRequest(session, params);
-    }
-  }
-
-  private async handleListOverviewRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     const naam = session.getValue('email') ?? 'Onbekende gebruiker';
     const listFormOverviewResults = await this.apiClient.getData('/listformoverviews');
     console.log('Apiclient made? ', !!this.apiClient);
@@ -56,14 +47,5 @@ export class FormOverviewRequestHandler {
     // render page
     const html = await render(data, formOverviewTemplate.default);
     return Response.html(html, 200, session.getCookie());
-  }
-
-  private async handleDownloadRequest(params: FormOverviewRequestHandlerParams) {
-    const response = await this.apiClient.getData(`/downloadFormOverview?key=${params.file}`);
-    if (response) {
-      return Response.redirect(response.downloadUrl);
-    } else {
-      return Response.error(404);
-    }
   }
 }
