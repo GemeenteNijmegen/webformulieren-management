@@ -10,16 +10,16 @@ export interface ResubmitFunctionProps extends lambda.FunctionOptions {
 }
 
 /**
- * An AWS Lambda function which executes src/app/resbumit/resubmit.
+ * An AWS Lambda function which executes src/app/resubmit/resubmit.
  */
 export class ResubmitFunction extends lambda.Function {
   constructor(scope: Construct, id: string, props?: ResubmitFunctionProps) {
     super(scope, id, {
-      description: 'src/app/resbumit/resubmit.lambda.ts',
+      description: 'src/app/resubmit/resubmit.lambda.ts',
       ...props,
       runtime: new lambda.Runtime('nodejs20.x', lambda.RuntimeFamily.NODEJS),
       handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../../assets/app/resbumit/resubmit.lambda')),
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../../assets/app/resubmit/resubmit.lambda')),
     });
     this.addEnvironment('AWS_NODEJS_CONNECTION_REUSE_ENABLED', '1', { removeInEdge: true });
   }

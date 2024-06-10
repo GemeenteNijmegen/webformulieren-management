@@ -55,7 +55,7 @@
           "spawn": "bundle:app/post-login/postlogin.lambda"
         },
         {
-          "spawn": "bundle:app/resbumit/resubmit.lambda"
+          "spawn": "bundle:app/resubmit/resubmit.lambda"
         },
         {
           "spawn": "bundle:webapp/auth/auth.lambda"
@@ -122,21 +122,21 @@
         }
       ]
     },
-    "bundle:app/resbumit/resubmit.lambda": {
-      "name": "bundle:app/resbumit/resubmit.lambda",
-      "description": "Create a JavaScript bundle from src/app/resbumit/resubmit.lambda.ts",
+    "bundle:app/resubmit/resubmit.lambda": {
+      "name": "bundle:app/resubmit/resubmit.lambda",
+      "description": "Create a JavaScript bundle from src/app/resubmit/resubmit.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/resbumit/resubmit.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/resbumit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
+          "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
         }
       ]
     },
-    "bundle:app/resbumit/resubmit.lambda:watch": {
-      "name": "bundle:app/resbumit/resubmit.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/app/resbumit/resubmit.lambda.ts",
+    "bundle:app/resubmit/resubmit.lambda:watch": {
+      "name": "bundle:app/resubmit/resubmit.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/app/resubmit/resubmit.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/resbumit/resubmit.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/resbumit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
+          "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },

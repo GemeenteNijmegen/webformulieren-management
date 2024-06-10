@@ -156,7 +156,7 @@
           "src/app/formoverview/formoverview.lambda.ts",
           "src/app/home/home.lambda.ts",
           "src/app/post-login/postlogin.lambda.ts",
-          "src/app/resbumit/resubmit.lambda.ts",
+          "src/app/resubmit/resubmit.lambda.ts",
           "src/webapp/auth/auth.lambda.ts",
           "src/webapp/login/login.lambda.ts",
           "src/webapp/logout/logout.lambda.ts"

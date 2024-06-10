@@ -8,7 +8,7 @@ import { Construct } from 'constructs';
 import { FormoverviewFunction } from './app/formoverview/formoverview-function';
 import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
-import { ResubmitFunction } from './app/resbumit/resubmit-function';
+import { ResubmitFunction } from './app/resubmit/resubmit-function';
 import { Configurable } from './Configuration';
 import { Statics } from './statics';
 import { Webapp } from './webapp/Webapp';
