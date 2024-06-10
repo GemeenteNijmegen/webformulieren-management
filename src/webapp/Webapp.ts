@@ -1,4 +1,4 @@
-import { HttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
+import { HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
 import { IGrantable, IPrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { Api } from './Api';
