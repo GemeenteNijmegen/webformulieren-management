@@ -127,7 +127,7 @@ export class Api extends Construct {
     if (this.customLambdaLayer) { handler.addLambdaLayer(this.customLambdaLayer); }
     handler.addLambdaLayer(this.configurationLambdaLayer);
     handler.setSessionLifetime(this.props.webappOptions.sessionLifetime ?? 15);
-    handler.monitor(this.props.webappOptions.applicationName, id);
+    handler.monitor(this.props.webappOptions.applicationName);
     handler.addStandardEnvironment(this.props.webappOptions.applicationName);
     this.api.addRoutes({
       path,
