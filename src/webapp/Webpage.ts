@@ -101,7 +101,7 @@ export class Webpage extends Construct {
       }),
       evaluationPeriods: 3,
       threshold: 5,
-      alarmName: `Increased error rate for ${this.node.id}`,
+      alarmName: `Increased error rate for ${this.node.id} ${id} -lvl-high`,
       alarmDescription: `This alarm triggers if the function ${this.node.id} is logging more than 5 errors over n minutes.`,
     });
     alarm.applyRemovalPolicy(RemovalPolicy.DESTROY);
