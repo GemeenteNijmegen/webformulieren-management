@@ -41,7 +41,7 @@ export class FormOverviewRequestHandler {
       shownav: true,
       nav: nav,
       volledigenaam: naam,
-      overview: listFormOverviewResults,
+      overview: listFormOverviewResults.body,
     };
 
     // render page
