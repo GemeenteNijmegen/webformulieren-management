@@ -95,6 +95,7 @@ export class WebappStack extends Stack {
     this.addHomePage(webapp);
     this.addResubmitPage(webapp, resubmissionTable, apiKeySecret, props);
     this.addFormOverviewPage(webapp, formOverviewApiKeySecret, props);
+    this.addFormOverviewDownloadPage(webapp, formOverviewApiKeySecret, props);
   }
 
   /**
