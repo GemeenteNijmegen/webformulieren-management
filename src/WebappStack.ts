@@ -1,4 +1,5 @@
 import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy, Duration } from 'aws-cdk-lib';
+import { HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -144,7 +145,7 @@ export class WebappStack extends Stack {
       timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
-    webapp.addPage('formoverview', formOverviewFunction, '/formoverview');
+    webapp.addPage('formoverview', formOverviewFunction, '/formoverview', [HttpMethod.GET, HttpMethod.POST]);
   }
   addFormOverviewDownloadPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-download-function', {
