@@ -14,8 +14,8 @@ export const FormOverviewResultsSchema = z.array(
     createdBy: z.string(),
     formName: z.string(),
     formTitle: z.string(),
-    queryStartDate: z.string().date(),
-    queryEndDate: z.string().date(),
+    queryStartDate: z.string().date().optional(),
+    queryEndDate: z.string().date().optional(),
   }),
 );
 
@@ -62,8 +62,9 @@ export class FormOverviewRequestHandler {
 
   private async handleListOverviewRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     const naam = session.getValue('email') ?? 'Onbekende gebruiker';
-    console.log(await this.apiClient.getData('/listformoverviews'));
-    const listFormOverviewResults = FormOverviewResultsSchema.parse(await this.apiClient.getData('/listformoverviews'));
+    const overview = await this.apiClient.getData('/listformoverviews');
+    console.log(overview);
+    const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
     console.log('Apiclient made? ', !!this.apiClient);
     console.log('Cookies in params? ', !!params.cookies);
