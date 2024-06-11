@@ -35,9 +35,17 @@ export class FormOverviewRequestHandler {
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     if (params.file) {
       return this.handleDownloadRequest(params);
+    } else if (params.formName) {
+      return this.handleGenerateCsvRequest(session, params);
     } else {
       return this.handleListOverviewRequest(session, params);
     }
+  }
+
+  private async handleGenerateCsvRequest(session: Session, params: FormOverviewRequestHandlerParams) {
+    const result = await this.apiClient.getData(`/formoverview?formuliernaam=${params.formName}`);
+    console.log('download result', result);
+    return this.handleListOverviewRequest(session, params);
   }
 
   private async handleListOverviewRequest(session: Session, params: FormOverviewRequestHandlerParams) {
