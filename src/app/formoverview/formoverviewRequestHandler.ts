@@ -14,8 +14,8 @@ export const FormOverviewResultsSchema = z.array(
     createdBy: z.string(),
     formName: z.string(),
     formTitle: z.string(),
-    queryStartDate: z.string().date().optional(),
-    queryEndDate: z.string().date().optional(),
+    queryStartDate: z.string(),
+    queryEndDate: z.string(),
   }),
 );
 
