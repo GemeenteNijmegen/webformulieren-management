@@ -14,7 +14,36 @@ beforeAll(() => {
 const mockApiClient = {
   setTimeout: jest.fn(),
   postData: jest.fn(),
-  getData: jest.fn(),
+  getData: jest.fn().mockResolvedValue([
+    {
+      fileName: 'FormOverview-1717061499591-aanmeldenSportactiviteit.csv',
+      createdDate: '2024-05-30T09:31:39.743Z',
+      createdBy: 'default_change_to_api_queryparam',
+      formName: 'aanmeldenSportactiviteit',
+      formTitle: 'Aanmelden sportactiviteit',
+      queryStartDate: '2024-05-24',
+      queryEndDate: '2024-05-10',
+    },
+    {
+      fileName: 'FormOverview-1717408626681-aanmeldenSportactiviteit.csv',
+      createdDate: '2024-06-03T09:57:06.849Z',
+      createdBy: 'default_change_to_api_queryparam',
+      formName: 'aanmeldenSportactiviteit',
+      formTitle: 'Aanmelden sportactiviteit',
+      queryStartDate: '2024-05-31',
+      queryEndDate: '2024-05-10',
+    },
+    {
+      fileName: 'FormOverview-1717410959841-aanmeldenSportactiviteit.csv',
+      createdDate: '2024-06-03T10:36:00.032Z',
+      createdBy: 'default_change_to_api_queryparam',
+      formName: 'aanmeldenSportactiviteit',
+      formTitle: 'Aanmelden sportactiviteit',
+      queryStartDate: '2024-05-31',
+      queryEndDate: '2024-05-10',
+    },
+  ],
+  ),
 } as any as FormOverviewApiClient;
 
 const ddbMock = mockClient(DynamoDBClient);

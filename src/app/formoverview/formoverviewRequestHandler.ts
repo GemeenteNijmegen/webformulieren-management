@@ -62,6 +62,7 @@ export class FormOverviewRequestHandler {
 
   private async handleListOverviewRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     const naam = session.getValue('email') ?? 'Onbekende gebruiker';
+    console.log(await this.apiClient.getData('/listformoverviews'));
     const listFormOverviewResults = FormOverviewResultsSchema.parse(await this.apiClient.getData('/listformoverviews'));
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
     console.log('Apiclient made? ', !!this.apiClient);
