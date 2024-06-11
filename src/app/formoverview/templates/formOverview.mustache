@@ -29,6 +29,7 @@
                     <thead>
                         <tr>
                             <th>Timestamp</th>
+                            <th>Formulier</th>
                             <th>Bestandsnaam</th>
                         </tr>
                     </thead>
@@ -36,6 +37,7 @@
                     {{#overview}}
                         <tr>
                             <td>{{createdDate}}</td>
+                            <td>{{formTitle}}</td>
                             <td><a href="/formoverview/download/{{fileName}}" title="download">{{fileName}}</a></td>
                         </tr>
                     {{/overview}}
