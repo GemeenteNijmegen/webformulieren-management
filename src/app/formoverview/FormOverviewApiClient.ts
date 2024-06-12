@@ -31,6 +31,9 @@ export class FormOverviewApiClient {
   private axios: AxiosInstance;
   private timeout: number;
 
+  private accessToken?: string;
+  private accessTokenExpiration?: number;
+
   /**
    * Connects to API's. Use .post() or .get() to get the actual info
    */
@@ -56,12 +59,45 @@ export class FormOverviewApiClient {
     this.timeout = timeout;
   }
 
+  async renewAccessToken() {
+    const client = axios.create({
+      auth: {
+        username: '376a1705-651b-4d8a-809e-b7563142ebde',
+        password: '0f68cf72-75ad-45ed-b7d1-e9cba35694aa',
+      },
+      baseURL: 'https://authentication.sandbox-marnix.csp-nijmegen.nl/oauth',
+    });
+    try {
+      const response = await client.post('/token', {
+        grant_type: 'client_credentials',
+        scope: 'form-overview',
+      });
+      this.accessToken = response.data.access_token;
+      this.accessTokenExpiration = Date.now() + (parseInt(response.data.expires_in) * 1000);
+    } catch (error) {
+      console.error(error);
+      throw Error('Could not obtain access token');
+    }
+  }
+
+  async getAccessToken() {
+    if (this.accessTokenExpiration && this.accessTokenExpiration > Date.now() - 60*1000) {
+      await this.renewAccessToken();
+    }
+    if (!this.accessToken) {
+      throw Error('No access token found');
+    }
+    return this.accessToken;
+  }
+
   async postData(endpoint: string, body: any, headers?: any): Promise<any> {
-    const newHeaders = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
+    const jwt = await this.getAccessToken();
+    headers = this.addApiKeyHeader(jwt, 'Authorization', headers);
+    headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
     console.time('request to ' + endpoint);
     try {
       const response = await this.axios.post(endpoint, body, {
-        headers: newHeaders,
+        headers: headers,
         timeout: this.timeout,
       });
       console.timeEnd('request to ' + endpoint);
@@ -73,6 +109,8 @@ export class FormOverviewApiClient {
   }
 
   async getData(endpoint: string, headers?: any): Promise<any> {
+    const jwt = await this.getAccessToken();
+    headers = this.addApiKeyHeader(jwt, 'Authorization', headers);
     headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
     console.time('GET request to ' + endpoint);
     try {
@@ -117,13 +155,13 @@ export class FormOverviewApiClient {
     throw new Error('Het ophalen van gegevens is misgegaan.');
   }
 
-  private addApiKeyHeader(apiKey: string, apiHeader?: string, headers?: any) {
+  private addApiKeyHeader(value: string, headerName?: string, headers?: any) {
     if (!headers) {
       return {
-        [apiHeader ?? 'x-api-key']: apiKey,
+        [headerName ?? 'x-api-key']: value,
       };
     }
-    headers[apiHeader ?? 'x-api-key'] = apiKey;
+    headers[headerName ?? 'x-api-key'] = value;
     return headers;
   }
 
