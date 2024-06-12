@@ -72,6 +72,7 @@ export class FormOverviewApiClient {
         grant_type: 'client_credentials',
         scope: 'form-overview',
       });
+      console.log(response.data);
       this.accessToken = response.data.access_token;
       this.accessTokenExpiration = Date.now() + (parseInt(response.data.expires_in) * 1000);
     } catch (error) {
@@ -81,7 +82,7 @@ export class FormOverviewApiClient {
   }
 
   async getAccessToken() {
-    if (this.accessTokenExpiration && this.accessTokenExpiration > Date.now() - 60*1000) {
+    if (!this.accessTokenExpiration || this.accessTokenExpiration > Date.now() - 60*1000) {
       await this.renewAccessToken();
     }
     if (!this.accessToken) {
