@@ -97,7 +97,7 @@ export class FormOverviewApiClient {
 
   async postData(endpoint: string, body: any, headers?: any): Promise<any> {
     const jwt = await this.getAccessToken();
-    headers = this.addApiKeyHeader(jwt, 'Authorization', headers);
+    headers = this.addBearerHeader(jwt, headers);
     headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
     console.time('request to ' + endpoint);
     try {
@@ -115,7 +115,7 @@ export class FormOverviewApiClient {
 
   async getData(endpoint: string, headers?: any): Promise<any> {
     const jwt = await this.getAccessToken();
-    headers = this.addApiKeyHeader(jwt, 'Authorization', headers);
+    headers = this.addBearerHeader(jwt, headers);
     headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
     console.time('GET request to ' + endpoint);
     try {
@@ -167,6 +167,16 @@ export class FormOverviewApiClient {
       };
     }
     headers[headerName ?? 'x-api-key'] = value;
+    return headers;
+  }
+
+  private addBearerHeader(value: string, headers?: any) {
+    if (!headers) {
+      return {
+        Authorization: `Bearer ${value}`,
+      };
+    }
+    headers.Authorization = `Bearer ${value}`;
     return headers;
   }
 
