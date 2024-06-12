@@ -68,9 +68,13 @@ export class FormOverviewApiClient {
       baseURL: 'https://authentication.sandbox-marnix.csp-nijmegen.nl/oauth',
     });
     try {
-      const response = await client.post('/token', {
+      const response = await client.post('/token', new URLSearchParams({
         grant_type: 'client_credentials',
         scope: 'form-overview',
+      }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       });
       console.log(response.data);
       this.accessToken = response.data.access_token;
