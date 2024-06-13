@@ -65,7 +65,7 @@ export class FormOverviewApiClient {
         username: '376a1705-651b-4d8a-809e-b7563142ebde',
         password: '0f68cf72-75ad-45ed-b7d1-e9cba35694aa',
       },
-      baseURL: 'https://authentication.sandbox-marnix.csp-nijmegen.nl/oauth',
+      baseURL: 'https://auth-service.sandbox-01.csp-nijmegen.nl/oauth',
     });
     try {
       const response = await client.post('/token', new URLSearchParams({
