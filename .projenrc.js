@@ -14,6 +14,7 @@ const project = new GemeenteNijmegenCdkApp({
     '@gemeentenijmegen/apigateway-http',
     '@gemeentenijmegen/session',
     '@gemeentenijmegen/utils',
+    '@gemeentenijmegen/webapp',
     'dotenv',
     '@aws-sdk/client-secrets-manager',
     '@aws-solutions-constructs/aws-lambda-dynamodb',

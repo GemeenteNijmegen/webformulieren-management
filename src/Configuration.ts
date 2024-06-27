@@ -1,5 +1,5 @@
+import { Criticality, OpenIdConnectConnectionProfile } from '@gemeentenijmegen/webapp';
 import { Statics } from './statics';
-import { OpenIdConnectConnectionProfile } from './webapp/OIDCConnectionProfile';
 
 /**
  * Adds a configuration field to another interface
@@ -57,6 +57,8 @@ export interface Configuration {
   resources: string;
 
   oidcProfiles: OpenIdConnectConnectionProfile[];
+
+  criticality: Criticality;
 }
 
 
@@ -70,6 +72,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-accp.csp-nijmegen.nl',
     webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-dev.csp-nijmegen.nl',
     resources: 'src/resources-accp',
+    criticality: new Criticality('low'),
     oidcProfiles: [
       {
         name: 'microsoft',
@@ -93,6 +96,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-prod.csp-nijmegen.nl',
     webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-prod.csp-nijmegen.nl',
     resources: 'src/resources-prod',
+    criticality: new Criticality('medium'),
     oidcProfiles: [
       {
         name: 'microsoft',

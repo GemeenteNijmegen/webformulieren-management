@@ -1,3 +1,4 @@
+import { Webapp, Webpage } from '@gemeentenijmegen/webapp';
 import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy, Duration } from 'aws-cdk-lib';
 import { HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
@@ -12,8 +13,7 @@ import { PostloginFunction } from './app/post-login/postlogin-function';
 import { ResubmitFunction } from './app/resubmit/resubmit-function';
 import { Configurable } from './Configuration';
 import { Statics } from './statics';
-import { Webapp } from './webapp/Webapp';
-import { Webpage } from './webapp/Webpage';
+
 
 export interface WebappStackProps extends StackProps, Configurable {}
 
@@ -84,6 +84,7 @@ export class WebappStack extends Stack {
       postLoginProcessor: this.postLoginHook(),
       oidcProfiles: props.configuration.oidcProfiles,
       sessionLifetime: 60,
+      criticality: props.configuration.criticality,
     });
 
     /**

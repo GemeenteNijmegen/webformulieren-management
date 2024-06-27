@@ -140,6 +140,10 @@
       "type": "runtime"
     },
     {
+      "name": "@gemeentenijmegen/webapp",
+      "type": "runtime"
+    },
+    {
       "name": "@types/aws-lambda",
       "type": "runtime"
     },
