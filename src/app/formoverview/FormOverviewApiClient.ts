@@ -31,9 +31,6 @@ export class FormOverviewApiClient {
   private axios: AxiosInstance;
   private timeout: number;
 
-  private accessToken?: string;
-  private accessTokenExpiration?: number;
-
   /**
    * Connects to API's. Use .post() or .get() to get the actual info
    */
@@ -59,45 +56,7 @@ export class FormOverviewApiClient {
     this.timeout = timeout;
   }
 
-  async renewAccessToken() {
-    const client = axios.create({
-      auth: {
-        username: '376a1705-651b-4d8a-809e-b7563142ebde',
-        password: '0f68cf72-75ad-45ed-b7d1-e9cba35694aa',
-      },
-      baseURL: 'https://auth-service.sandbox-01.csp-nijmegen.nl/oauth',
-    });
-    try {
-      const response = await client.post('/token', new URLSearchParams({
-        grant_type: 'client_credentials',
-        scope: 'form-overview',
-      }), {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      });
-      console.log(response.data);
-      this.accessToken = response.data.access_token;
-      this.accessTokenExpiration = Date.now() + (parseInt(response.data.expires_in) * 1000);
-    } catch (error) {
-      console.error(error);
-      throw Error('Could not obtain access token');
-    }
-  }
-
-  async getAccessToken() {
-    if (!this.accessTokenExpiration || this.accessTokenExpiration > Date.now() - 60*1000) {
-      await this.renewAccessToken();
-    }
-    if (!this.accessToken) {
-      throw Error('No access token found');
-    }
-    return this.accessToken;
-  }
-
   async postData(endpoint: string, body: any, headers?: any): Promise<any> {
-    const jwt = await this.getAccessToken();
-    headers = this.addBearerHeader(jwt, headers);
     headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
     console.time('request to ' + endpoint);
     try {
@@ -114,8 +73,6 @@ export class FormOverviewApiClient {
   }
 
   async getData(endpoint: string, headers?: any): Promise<any> {
-    const jwt = await this.getAccessToken();
-    headers = this.addBearerHeader(jwt, headers);
     headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
     console.time('GET request to ' + endpoint);
     try {
@@ -169,15 +126,4 @@ export class FormOverviewApiClient {
     headers[headerName ?? 'x-api-key'] = value;
     return headers;
   }
-
-  private addBearerHeader(value: string, headers?: any) {
-    if (!headers) {
-      return {
-        Authorization: `Bearer ${value}`,
-      };
-    }
-    headers.Authorization = `Bearer ${value}`;
-    return headers;
-  }
-
 }
