@@ -1,9 +1,10 @@
+import * as querystring from 'querystring';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { ApiGatewayV2Response, Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { FormOverviewApiClient } from './FormOverviewApiClient';
-import { FormOverviewRequestHandler } from './formoverviewRequestHandler';
+import { FormOverviewRequestHandler, FormOverviewRequestHandlerParams } from './formoverviewRequestHandler';
 
 let requestHandler: FormOverviewRequestHandler | undefined = undefined;
 
@@ -22,11 +23,21 @@ async function init() {
 
 const initalization = init();
 
-function parseEvent(event: APIGatewayProxyEventV2) {
+function parseEvent(event: APIGatewayProxyEventV2): FormOverviewRequestHandlerParams {
   return {
     cookies: event?.cookies?.join(';') ?? '',
-    reference: event?.queryStringParameters?.reference,
+    formName: formNameFromBody(event),
+    file: event?.pathParameters?.file,
   };
+}
+
+function formNameFromBody(event: APIGatewayProxyEventV2): string | undefined {
+  let urlencodedform;
+  if (event.body) {
+    urlencodedform = (event?.isBase64Encoded) ? Buffer.from(event?.body, 'base64').toString('utf-8') : event.body;
+    return querystring.parse(urlencodedform)?.formName as string;
+  }
+  return undefined;
 }
 
 export async function handler (event: any, _context: any):Promise<ApiGatewayV2Response> {

@@ -1,4 +1,6 @@
+import { Webapp, Webpage } from '@gemeentenijmegen/webapp';
 import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy, Duration } from 'aws-cdk-lib';
+import { HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -8,11 +10,10 @@ import { Construct } from 'constructs';
 import { FormoverviewFunction } from './app/formoverview/formoverview-function';
 import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
-import { ResubmitFunction } from './app/resbumit/resubmit-function';
+import { ResubmitFunction } from './app/resubmit/resubmit-function';
 import { Configurable } from './Configuration';
 import { Statics } from './statics';
-import { Webapp } from './webapp/Webapp';
-import { Webpage } from './webapp/Webpage';
+
 
 export interface WebappStackProps extends StackProps, Configurable {}
 
@@ -83,6 +84,7 @@ export class WebappStack extends Stack {
       postLoginProcessor: this.postLoginHook(),
       oidcProfiles: props.configuration.oidcProfiles,
       sessionLifetime: 60,
+      criticality: props.configuration.criticality,
     });
 
     /**
@@ -95,6 +97,7 @@ export class WebappStack extends Stack {
     this.addHomePage(webapp);
     this.addResubmitPage(webapp, resubmissionTable, apiKeySecret, props);
     this.addFormOverviewPage(webapp, formOverviewApiKeySecret, props);
+    this.addFormOverviewDownloadPage(webapp, formOverviewApiKeySecret, props);
   }
 
   /**
@@ -143,7 +146,20 @@ export class WebappStack extends Stack {
       timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
-    webapp.addPage('formoverview', formOverviewFunction, '/formoverview');
+    webapp.addPage('formoverview', formOverviewFunction, '/formoverview', [HttpMethod.GET, HttpMethod.POST]);
+  }
+  addFormOverviewDownloadPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
+    const formOverviewFunction = new Webpage(this, 'formoverview-download-function', {
+      description: 'FormOverview Download Lambda',
+      apiFunction: FormoverviewFunction,
+      environment: {
+        FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
+        FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
+      },
+      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
+    });
+    formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
+    webapp.addPage('formoverviewdownload', formOverviewFunction, '/formoverview/download/{file+}');
   }
 
   /**

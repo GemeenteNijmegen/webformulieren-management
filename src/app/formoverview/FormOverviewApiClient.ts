@@ -57,11 +57,11 @@ export class FormOverviewApiClient {
   }
 
   async postData(endpoint: string, body: any, headers?: any): Promise<any> {
-    const newHeaders = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
+    headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
     console.time('request to ' + endpoint);
     try {
       const response = await this.axios.post(endpoint, body, {
-        headers: newHeaders,
+        headers: headers,
         timeout: this.timeout,
       });
       console.timeEnd('request to ' + endpoint);
@@ -117,14 +117,13 @@ export class FormOverviewApiClient {
     throw new Error('Het ophalen van gegevens is misgegaan.');
   }
 
-  private addApiKeyHeader(apiKey: string, apiHeader?: string, headers?: any) {
+  private addApiKeyHeader(value: string, headerName?: string, headers?: any) {
     if (!headers) {
       return {
-        [apiHeader ?? 'x-api-key']: apiKey,
+        [headerName ?? 'x-api-key']: value,
       };
     }
-    headers[apiHeader ?? 'x-api-key'] = apiKey;
+    headers[headerName ?? 'x-api-key'] = value;
     return headers;
   }
-
 }

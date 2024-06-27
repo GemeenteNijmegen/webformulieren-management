@@ -1,9 +1,9 @@
 import { DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
 import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
+import { render } from '@gemeentenijmegen/webapp';
 import { ApiClient } from './ApiClient';
 import * as resubmitTemplate from './templates/resubmit.mustache';
-import { render } from '../../webapp/util/render';
 import { nav } from '../nav/nav';
 
 const RESUBMISSION = 'RESUBMISSION';

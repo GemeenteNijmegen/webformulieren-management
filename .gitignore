@@ -62,10 +62,7 @@ junit.xml
 !/src/app/formoverview/formoverview-function.ts
 !/src/app/home/home-function.ts
 !/src/app/post-login/postlogin-function.ts
-!/src/app/resbumit/resubmit-function.ts
-!/src/webapp/auth/auth-function.ts
-!/src/webapp/login/login-function.ts
-!/src/webapp/logout/logout-function.ts
+!/src/app/resubmit/resubmit-function.ts
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
 !/.projenrc.js

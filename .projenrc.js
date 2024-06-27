@@ -14,9 +14,8 @@ const project = new GemeenteNijmegenCdkApp({
     '@gemeentenijmegen/apigateway-http',
     '@gemeentenijmegen/session',
     '@gemeentenijmegen/utils',
+    '@gemeentenijmegen/webapp',
     'dotenv',
-    '@aws-cdk/aws-apigatewayv2-alpha',
-    '@aws-cdk/aws-apigatewayv2-integrations-alpha',
     '@aws-sdk/client-secrets-manager',
     '@aws-solutions-constructs/aws-lambda-dynamodb',
     'cdk-remote-stack',
@@ -27,6 +26,7 @@ const project = new GemeenteNijmegenCdkApp({
     'axios',
     'cookie',
     'openid-client',
+    'zod',
   ],
   devDeps: [
     '@aws-sdk/types',
