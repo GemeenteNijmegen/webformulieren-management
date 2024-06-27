@@ -56,15 +56,6 @@
         },
         {
           "spawn": "bundle:app/resubmit/resubmit.lambda"
-        },
-        {
-          "spawn": "bundle:webapp/auth/auth.lambda"
-        },
-        {
-          "spawn": "bundle:webapp/login/login.lambda"
-        },
-        {
-          "spawn": "bundle:webapp/logout/logout.lambda"
         }
       ]
     },
@@ -137,60 +128,6 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
-        }
-      ]
-    },
-    "bundle:webapp/auth/auth.lambda": {
-      "name": "bundle:webapp/auth/auth.lambda",
-      "description": "Create a JavaScript bundle from src/webapp/auth/auth.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/webapp/auth/auth.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/webapp/auth/auth.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
-        }
-      ]
-    },
-    "bundle:webapp/auth/auth.lambda:watch": {
-      "name": "bundle:webapp/auth/auth.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/webapp/auth/auth.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/webapp/auth/auth.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/webapp/auth/auth.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
-        }
-      ]
-    },
-    "bundle:webapp/login/login.lambda": {
-      "name": "bundle:webapp/login/login.lambda",
-      "description": "Create a JavaScript bundle from src/webapp/login/login.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/webapp/login/login.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/webapp/login/login.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
-        }
-      ]
-    },
-    "bundle:webapp/login/login.lambda:watch": {
-      "name": "bundle:webapp/login/login.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/webapp/login/login.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/webapp/login/login.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/webapp/login/login.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
-        }
-      ]
-    },
-    "bundle:webapp/logout/logout.lambda": {
-      "name": "bundle:webapp/logout/logout.lambda",
-      "description": "Create a JavaScript bundle from src/webapp/logout/logout.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/webapp/logout/logout.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/webapp/logout/logout.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
-        }
-      ]
-    },
-    "bundle:webapp/logout/logout.lambda:watch": {
-      "name": "bundle:webapp/logout/logout.lambda:watch",
-      "description": "Continuously update the JavaScript bundle from src/webapp/logout/logout.lambda.ts",
-      "steps": [
-        {
-          "exec": "esbuild --bundle src/webapp/logout/logout.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/webapp/logout/logout.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },

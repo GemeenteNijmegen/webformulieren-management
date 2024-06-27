@@ -23,9 +23,6 @@
 /src/app/home/home-function.ts linguist-generated
 /src/app/post-login/postlogin-function.ts linguist-generated
 /src/app/resubmit/resubmit-function.ts linguist-generated
-/src/webapp/auth/auth-function.ts linguist-generated
-/src/webapp/login/login-function.ts linguist-generated
-/src/webapp/logout/logout-function.ts linguist-generated
 /tsconfig.dev.json linguist-generated
 /tsconfig.json linguist-generated
 /yarn.lock linguist-generated

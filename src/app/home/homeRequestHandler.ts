@@ -1,8 +1,8 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
+import { render } from '@gemeentenijmegen/webapp';
 import * as homeTemplate from './templates/home.mustache';
-import { render } from '../../webapp/util/render';
 import { nav } from '../nav/nav';
 
 export class HomeRequestHandler {
