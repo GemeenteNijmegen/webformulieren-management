@@ -25,10 +25,10 @@
   resolved "https://registry.yarnpkg.com/@aws-cdk/asset-node-proxy-agent-v6/-/asset-node-proxy-agent-v6-2.0.3.tgz#9b5d213b5ce5ad4461f6a4720195ff8de72e6523"
   integrity sha512-twhuEG+JPOYCYPx/xy5uH2+VUsIEhPTzDY0F1KuB+ocjWWB/KEDiOVL19nHvbPCB6fhWnkykXEMJ4HHcKvjtvg==
 
-"@aws-cdk/integ-tests-alpha@2.147.3-alpha.0":
-  version "2.147.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.147.3-alpha.0.tgz#4daea57fc6f387f44daa3f7a20cecfd3b6f9f536"
-  integrity sha512-82FOJbT0Dd42dmfEBht2ZBIl8Kh8yAA751kp0zqp9cfhc/EEQQ7/5rs0zEG8z00iFnLPhLxqm7MO+TYBGKihzA==
+"@aws-cdk/integ-tests-alpha@2.149.0-alpha.0":
+  version "2.149.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.149.0-alpha.0.tgz#600f1cd493c6e8f16df49fcc4acd7df90df144cf"
+  integrity sha512-uNjslP38qx8+v02d0RkvjBpG+cwWH53fUdOCP9ilc06XQEGK+ch2u5nH2EEe9lc511KFLRX7MtB+gfHKqsThuA==
 
 "@aws-crypto/sha256-browser@5.2.0":
   version "5.2.0"
@@ -598,21 +598,21 @@
     "@smithy/types" "^3.3.0"
     tslib "^2.6.2"
 
-"@aws-solutions-constructs/aws-lambda-dynamodb@^2.49.0", "@aws-solutions-constructs/aws-lambda-dynamodb@^2.62.0":
-  version "2.62.0"
-  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/aws-lambda-dynamodb/-/aws-lambda-dynamodb-2.62.0.tgz#7e4bf84ab0ee914a408cf9e1f83aeab8a8393dc0"
-  integrity sha512-MEI3XyaPT2WRRIRkR6PCy1i6Kot8dI7unNv22WsnLdXA2+bPqlxlwIV+zBgjVCqHuVp3AwP9YW4JSaqmn1OAOQ==
+"@aws-solutions-constructs/aws-lambda-dynamodb@^2.49.0", "@aws-solutions-constructs/aws-lambda-dynamodb@^2.63.0":
+  version "2.63.0"
+  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/aws-lambda-dynamodb/-/aws-lambda-dynamodb-2.63.0.tgz#36942527a2815eca976af529ffdecbf3eafa11d4"
+  integrity sha512-PfuLjvDrnp+0e7MtUxgQktwutxQD0m52Hlxeiaa4h7YydTb0nXX1xDZnQ2N0VSj54ItlnDlpgjbVzkVmAFunlw==
   dependencies:
-    "@aws-cdk/integ-tests-alpha" "2.147.3-alpha.0"
-    "@aws-solutions-constructs/core" "2.62.0"
+    "@aws-cdk/integ-tests-alpha" "2.149.0-alpha.0"
+    "@aws-solutions-constructs/core" "2.63.0"
     constructs "^10.0.0"
 
-"@aws-solutions-constructs/core@2.62.0":
-  version "2.62.0"
-  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/core/-/core-2.62.0.tgz#5a0e06427bf74bd1ef52ff6bc66dbfa68c25ffb5"
-  integrity sha512-IazXb+kh1DXq5DhRQOEVBxVPoOFggTV1/1EPo30Jzb5fRc3BYzofSbZ183vECAxAogITjFVk9zju/jB6D5WjRg==
+"@aws-solutions-constructs/core@2.63.0":
+  version "2.63.0"
+  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/core/-/core-2.63.0.tgz#e1be74cf99facfd372cd953c030b4e23cf30bf63"
+  integrity sha512-SCR34cDX3hXu3LZOgZ0B/dEHNKWbA/ev+CxvdhKlIk0mj5Uk6zABrI8hIQ7fz/8+1PbHHl7EYFxTc9/X97pF9w==
   dependencies:
-    "@aws-cdk/integ-tests-alpha" "2.147.3-alpha.0"
+    "@aws-cdk/integ-tests-alpha" "2.149.0-alpha.0"
     constructs "^10.0.0"
     deep-diff "^1.0.2"
     deepmerge "^4.0.0"
@@ -3217,9 +3217,9 @@ ejs@^3.1.10:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.820:
-  version "1.4.829"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.829.tgz#3034a865b5eac9064c9db8b38ba99b60a446bb73"
-  integrity sha512-5qp1N2POAfW0u1qGAxXEtz6P7bO1m6gpZr5hdf5ve6lxpLM7MpiM4jIPz7xcrNlClQMafbyUDDWjlIQZ1Mw0Rw==
+  version "1.4.831"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.831.tgz#4a39a209d113f5d99c1567865e5aea54d80a9bc5"
+  integrity sha512-6cKy9msoQGWhBF30n6y5ck80BdunKdwMRugM1lr74DMMXhjDRxSwMvrD1ncPP+n1PjF+KKmZZydvEF29skNZ1Q==
 
 emittery@^0.13.1:
   version "0.13.1"
@@ -3829,9 +3829,9 @@ get-symbol-description@^1.0.2:
     get-intrinsic "^1.2.4"
 
 get-tsconfig@^4.5.0:
-  version "4.7.5"
-  resolved "https://registry.yarnpkg.com/get-tsconfig/-/get-tsconfig-4.7.5.tgz#5e012498579e9a6947511ed0cd403272c7acbbaf"
-  integrity sha512-ZCuZCnlqNzjb4QprAzXKdpp/gh6KTxSJuw3IBsPnV/7fV4NxC9ckB+vPTt8w7fJA0TaSD7c55BR47JD6MEDyDw==
+  version "4.7.6"
+  resolved "https://registry.yarnpkg.com/get-tsconfig/-/get-tsconfig-4.7.6.tgz#118fd5b7b9bae234cc7705a00cd771d7eb65d62a"
+  integrity sha512-ZAqrLlu18NbDdRaHq+AKXzAmqIUPswPWKUchfytdAjiRFnCe5ojG2bstg6mRiZabkKfCoL/e98pbBELIV/YCeA==
   dependencies:
     resolve-pkg-maps "^1.0.0"
 
