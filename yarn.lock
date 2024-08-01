@@ -25,10 +25,10 @@
   resolved "https://registry.yarnpkg.com/@aws-cdk/asset-node-proxy-agent-v6/-/asset-node-proxy-agent-v6-2.0.3.tgz#9b5d213b5ce5ad4461f6a4720195ff8de72e6523"
   integrity sha512-twhuEG+JPOYCYPx/xy5uH2+VUsIEhPTzDY0F1KuB+ocjWWB/KEDiOVL19nHvbPCB6fhWnkykXEMJ4HHcKvjtvg==
 
-"@aws-cdk/integ-tests-alpha@2.149.0-alpha.0":
-  version "2.149.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.149.0-alpha.0.tgz#600f1cd493c6e8f16df49fcc4acd7df90df144cf"
-  integrity sha512-uNjslP38qx8+v02d0RkvjBpG+cwWH53fUdOCP9ilc06XQEGK+ch2u5nH2EEe9lc511KFLRX7MtB+gfHKqsThuA==
+"@aws-cdk/integ-tests-alpha@2.150.0-alpha.0":
+  version "2.150.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/integ-tests-alpha/-/integ-tests-alpha-2.150.0-alpha.0.tgz#5e09691daa6ff33829a0f943cbe67c00041bf88f"
+  integrity sha512-Drd/FaYwP7XpwxgQUPrvSc/eTaZeuty4oNA8vtHXBTKG3yHyhNgmLtnw4AkCrME5iqiaihHziRFK0vuVKjYFQQ==
 
 "@aws-crypto/crc32@5.2.0":
   version "5.2.0"
@@ -830,21 +830,21 @@
     "@smithy/types" "^3.3.0"
     tslib "^2.6.2"
 
-"@aws-solutions-constructs/aws-lambda-dynamodb@^2.49.0", "@aws-solutions-constructs/aws-lambda-dynamodb@^2.63.0":
-  version "2.63.0"
-  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/aws-lambda-dynamodb/-/aws-lambda-dynamodb-2.63.0.tgz#36942527a2815eca976af529ffdecbf3eafa11d4"
-  integrity sha512-PfuLjvDrnp+0e7MtUxgQktwutxQD0m52Hlxeiaa4h7YydTb0nXX1xDZnQ2N0VSj54ItlnDlpgjbVzkVmAFunlw==
+"@aws-solutions-constructs/aws-lambda-dynamodb@^2.49.0", "@aws-solutions-constructs/aws-lambda-dynamodb@^2.64.0":
+  version "2.64.0"
+  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/aws-lambda-dynamodb/-/aws-lambda-dynamodb-2.64.0.tgz#ee46ba26815e530cad89111395dbf1883ebb2e8f"
+  integrity sha512-ffzRh54Msh1bHegHd45JJdWrfE3igSCJdMgI2prnmhhm/XRjHuCBh+xkDwMTQtGTgaywG8CCV/uiKk3uM3iTeg==
   dependencies:
-    "@aws-cdk/integ-tests-alpha" "2.149.0-alpha.0"
-    "@aws-solutions-constructs/core" "2.63.0"
+    "@aws-cdk/integ-tests-alpha" "2.150.0-alpha.0"
+    "@aws-solutions-constructs/core" "2.64.0"
     constructs "^10.0.0"
 
-"@aws-solutions-constructs/core@2.63.0":
-  version "2.63.0"
-  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/core/-/core-2.63.0.tgz#e1be74cf99facfd372cd953c030b4e23cf30bf63"
-  integrity sha512-SCR34cDX3hXu3LZOgZ0B/dEHNKWbA/ev+CxvdhKlIk0mj5Uk6zABrI8hIQ7fz/8+1PbHHl7EYFxTc9/X97pF9w==
+"@aws-solutions-constructs/core@2.64.0":
+  version "2.64.0"
+  resolved "https://registry.yarnpkg.com/@aws-solutions-constructs/core/-/core-2.64.0.tgz#238e77b3869e5236e40aaf0316126bbe1127e8b9"
+  integrity sha512-aTtACeSRMwMZn4QrjWoHlqTe7Ydm/LAX8wiLK9lKKF1qsN0Wis1mtlF8Zf1e82udNjzM7TthJbOqsUnQ0nqFCg==
   dependencies:
-    "@aws-cdk/integ-tests-alpha" "2.149.0-alpha.0"
+    "@aws-cdk/integ-tests-alpha" "2.150.0-alpha.0"
     constructs "^10.0.0"
     deep-diff "^1.0.2"
     deepmerge "^4.0.0"
@@ -976,10 +976,12 @@
     js-tokens "^4.0.0"
     picocolors "^1.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.25.0":
-  version "7.25.0"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.25.0.tgz#9fdc9237504d797b6e7b8f66e78ea7f570d256ad"
-  integrity sha512-CzdIU9jdP0dg7HdyB+bHvDJGagUv+qtzZt5rYCWwW6tITNqV9odjp6Qu41gkG0ca5UfdDUWrKkiAnHHdGRnOrA==
+"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.25.0", "@babel/parser@^7.25.3":
+  version "7.25.3"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.25.3.tgz#91fb126768d944966263f0657ab222a642b82065"
+  integrity sha512-iLTJKDbJ4hMvFPgQwwsVoxtHyWpKKPBrxkANrSYewDPaPpT5py5yeVkgPIJ7XYXhndxJpaA3PyALSXQ7u8e/Dw==
+  dependencies:
+    "@babel/types" "^7.25.2"
 
 "@babel/plugin-syntax-async-generators@^7.8.4":
   version "7.8.4"
@@ -1089,13 +1091,13 @@
     "@babel/types" "^7.25.0"
 
 "@babel/traverse@^7.24.7", "@babel/traverse@^7.25.2":
-  version "7.25.2"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.25.2.tgz#1a0a4aef53177bead359ccd0c89f4426c805b2ae"
-  integrity sha512-s4/r+a7xTnny2O6FcZzqgT6nE4/GHEdcqj4qAeglbUOh0TeglEfmNJFAd/OLoVtGd6ZhAO8GCVvCNUO5t/VJVQ==
+  version "7.25.3"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.25.3.tgz#f1b901951c83eda2f3e29450ce92743783373490"
+  integrity sha512-HefgyP1x754oGCsKmV5reSmtV7IXj/kpaE1XYY+D9G5PvKKoFfSbiS4M77MdjuwlZKDIKFCffq9rPU+H/s3ZdQ==
   dependencies:
     "@babel/code-frame" "^7.24.7"
     "@babel/generator" "^7.25.0"
-    "@babel/parser" "^7.25.0"
+    "@babel/parser" "^7.25.3"
     "@babel/template" "^7.25.0"
     "@babel/types" "^7.25.2"
     debug "^4.3.1"
@@ -2377,9 +2379,9 @@
   integrity sha512-PLwiVvTBg59tGFL/8VpcGvqOu3L4OuveNvPi0EYbWchRdEVP++yRUXJPFl+CApKEq13017/4Nf7aQ5lTtHUNsA==
 
 "@types/node@*":
-  version "22.0.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.0.0.tgz#04862a2a71e62264426083abe1e27e87cac05a30"
-  integrity sha512-VT7KSYudcPOzP5Q0wfbowyNLaVR8QWUdw+088uFWwfvpY6uCWaXpqV6ieLAu9WBcnTa7H4Z5RLK8I5t2FuOcqw==
+  version "22.0.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.0.2.tgz#9fb1a2b31970871e8bf696f0e8a40d2e6d2bd04e"
+  integrity sha512-yPL6DyFwY5PiMVEwymNeqUTKsDczQBJ/5T7W/46RwLU/VH+AA8aT5TZkvBviLKLbbm0hlfftEkGrNzfRk/fofQ==
   dependencies:
     undici-types "~6.11.1"
 
@@ -2949,9 +2951,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001640:
-  version "1.0.30001644"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001644.tgz#bcd4212a7a03bdedba1ea850b8a72bfe4bec2395"
-  integrity sha512-YGvlOZB4QhZuiis+ETS0VXR+MExbFf4fZYYeMTEE0aTQd/RdIjkTyZjLrbYVKnHzppDvnOhritRVv+i7Go6mHw==
+  version "1.0.30001645"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001645.tgz#4c4b7427683dea1170a152cd1654be8d0da7bd71"
+  integrity sha512-GFtY2+qt91kzyMk6j48dJcwJVq5uTkk71XxE3RtScx7XWRLsO7bU44LOFkOZYR8w9YMS0UhPSYpN/6rAMImmLw==
 
 case@1.6.3, case@^1.6.3:
   version "1.6.3"
