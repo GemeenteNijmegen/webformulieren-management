@@ -62,8 +62,8 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^1.18.1",
-    "@aws-sdk/client-dynamodb": "^3.622.0",
-    "@aws-sdk/client-secrets-manager": "^3.622.0",
+    "@aws-sdk/client-dynamodb": "^3.623.0",
+    "@aws-sdk/client-secrets-manager": "^3.623.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "^2.64.0",
     "@gemeentenijmegen/apiclient": "^0.0.16",
     "@gemeentenijmegen/apigateway-http": "^0.0.14",
