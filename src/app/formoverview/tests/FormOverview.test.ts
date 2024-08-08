@@ -6,6 +6,22 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { FormOverviewApiClient } from '../FormOverviewApiClient';
 import { FormOverviewRequestHandler } from '../formoverviewRequestHandler';
 
+let sessionIsLoggedInMock = jest.fn().mockReturnValue(true);
+let sessiongetValueMock = jest.fn().mockReturnValueOnce('fakemail@example.com').mockReturnValueOnce(['ADMIN']);
+
+jest.mock('@gemeentenijmegen/session', () => {
+  return {
+    // Constructor mock
+    Session: jest.fn( () => {
+      return {
+        init: jest.fn().mockResolvedValue({}),
+        isLoggedIn: sessionIsLoggedInMock,
+        getValue: sessiongetValueMock,
+        getCookie: jest.fn().mockReturnValue('cookie'),
+      };
+    }),
+  };
+});
 beforeAll(() => {
   const outputDir = path.join(__dirname, 'output');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
