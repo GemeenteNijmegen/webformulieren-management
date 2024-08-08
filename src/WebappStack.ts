@@ -2,6 +2,7 @@ import { Webapp, Webpage } from '@gemeentenijmegen/webapp';
 import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy, Duration } from 'aws-cdk-lib';
 import { HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
@@ -12,6 +13,7 @@ import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
 import { ResubmitFunction } from './app/resubmit/resubmit-function';
 import { Configurable } from './Configuration';
+import { PermissionsTable } from './PermissionsTable';
 import { Statics } from './statics';
 
 
@@ -70,6 +72,8 @@ export class WebappStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
+    const permissionTable = new PermissionsTable(this, 'permission-table-construct');
+
     /**
      * Create the webapp!
      */
@@ -81,7 +85,7 @@ export class WebappStack extends Stack {
       hostedZone: hostedZone,
       staticResourcesDirectory: './src/app/static-resources/',
       defaultPath: '/home',
-      postLoginProcessor: this.postLoginHook(),
+      postLoginProcessor: this.postLoginHook(permissionTable.table),
       oidcProfiles: props.configuration.oidcProfiles,
       sessionLifetime: 60,
       criticality: props.configuration.criticality,
@@ -175,9 +179,8 @@ export class WebappStack extends Stack {
    * there after the pre-login (auth lambda).
    * @returns
    */
-  postLoginHook() {
+  postLoginHook(permissionTable: ITable) {
     // Get permissiontable, get name and add read/write permission to PostloginFunction
-    const permissionTable = DynamoDB.Table.fromTableArn(this, 'permission_table', StringParameter.valueForStringParameter(this, Statics.ssmPermissionsTableArn));
     const postLoginFunction = new Webpage(this, 'post-login-function', {
       description: 'Post-login lambda',
       apiFunction: PostloginFunction,

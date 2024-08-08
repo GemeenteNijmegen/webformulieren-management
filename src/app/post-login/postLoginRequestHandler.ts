@@ -1,7 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
-import { Permission, UserPermission } from '../../permission/Permission';
+import { Permission, UserPermission } from '../permission/Permission';
 
 export class PostLoginRequestHandler {
   private dynamoDBClient: DynamoDBClient;

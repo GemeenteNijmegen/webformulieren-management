@@ -1,5 +1,5 @@
 import { MdiAccount } from './Icons';
-import { PermissionOptions } from '../../permission/PermissionOptions';
+import { PermissionOptions } from '../permission/PermissionOptions';
 
 export interface NavItem {
   url: string;

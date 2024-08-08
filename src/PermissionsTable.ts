@@ -1,7 +1,7 @@
 import { aws_dynamodb as DynamoDB } from 'aws-cdk-lib';
 import { TableEncryption } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
-import { Statics } from '../statics';
+import { Statics } from './statics';
 
 
 /**

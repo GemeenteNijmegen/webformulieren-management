@@ -1,4 +1,4 @@
-import { PermissionOptions } from '../../../permission/PermissionOptions';
+import { PermissionOptions } from '../../permission/PermissionOptions';
 import { NavItem, permittedNav } from '../nav';
 
 // Mock data for navigation items
