@@ -59,6 +59,8 @@ export interface Configuration {
   oidcProfiles: OpenIdConnectConnectionProfile[];
 
   criticality: Criticality;
+
+
 }
 
 

@@ -4,6 +4,7 @@ import { Construct } from 'constructs';
 import { AppStage } from './AppStage';
 import { Configurable } from './Configuration';
 import { ParameterStage } from './ParameterStage';
+import { PermissionStage } from './permission/PermissionStage';
 import { Statics } from './statics';
 
 export interface PipelineStackProps extends StackProps, Configurable {}
@@ -23,6 +24,10 @@ export class PipelineStack extends Stack {
     const pipeline = this.pipeline(source, props);
 
     pipeline.addStage(new ParameterStage(this, 'webformulieren-management-parameters', {
+      env: props.configuration.deploymentEnvironment,
+    }));
+
+    pipeline.addStage(new PermissionStage(this, 'webformulieren-management-permission', {
       env: props.configuration.deploymentEnvironment,
     }));
 
