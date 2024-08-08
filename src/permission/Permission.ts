@@ -1,6 +1,6 @@
-import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb';
-import { PermissionOptions } from './PermissionOptions';
 
+import { DynamoDBClient, GetItemCommand, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
+import { PermissionOptions } from './PermissionOptions';
 
 export interface UserPermission {
   useremail: string;
@@ -8,8 +8,19 @@ export interface UserPermission {
   [key:string]: any;
 }
 
+/**
+ * Type expected fromt he dynamodb database
+ */
+export interface DynamoDBUserPermission {
+
+  useremail: {S: string};
+  permissions?: {SS: string[]};
+  [key:string]: any;
+}
+
 export class Permission {
   dynamoDBClient: DynamoDBClient;
+  debug: boolean = false;
 
   /**
    * Permission Table Handler
@@ -17,11 +28,12 @@ export class Permission {
    *
    * @param dynamoDBClient
    */
-  constructor(dynamoDBClient: DynamoDBClient) {
+  constructor(dynamoDBClient: DynamoDBClient, debug: boolean = false) {
     if (!process.env.PERMISSION_TABLE) {
       throw Error('No environment variable PERMISSION_TABLE set');
     }
     this.dynamoDBClient = dynamoDBClient;
+    this.debug = debug;
   }
 
 
@@ -34,16 +46,27 @@ export class Permission {
       },
     });
     try {
-      const userPermission = await this.dynamoDBClient.send(getItemCommand);
+      const userPermission: GetItemCommandOutput = await this.dynamoDBClient.send(getItemCommand);
+
       if (userPermission.Item?.useremail !== undefined) {
+        if (this.debug) this.logAnonymousItem(userPermission.Item as DynamoDBUserPermission);
         return userPermission.Item;
       } else {
         return false;
       }
     } catch (err) {
-      console.error('Error getting session from DynamoDB: ' + err);
+      console.error('Error getting permission from DynamoDB: ' + err);
       throw err;
     }
   }
 
+  logAnonymousItem( userPermissionItem: DynamoDBUserPermission) {
+    // Copy the item to avoid mutating the original
+    const anonymizedItem = { ...userPermissionItem } as DynamoDBUserPermission;
+    // Replace the useremail with its first 5 chars and ****
+    if (anonymizedItem.useremail && anonymizedItem.useremail.S) {
+      anonymizedItem.useremail.S = anonymizedItem.useremail.S.substring(0, 5) + '****';
+    }
+    console.log('Permission getUser: ', anonymizedItem);
+  }
 }

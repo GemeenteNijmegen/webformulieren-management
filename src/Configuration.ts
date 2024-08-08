@@ -60,6 +60,7 @@ export interface Configuration {
 
   criticality: Criticality;
 
+  debug?: boolean;
 
 }
 
@@ -75,6 +76,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-accp.csp-nijmegen.nl',
     resources: 'src/resources-accp',
     criticality: new Criticality('low'),
+    debug: true,
     oidcProfiles: [
       {
         name: 'microsoft',
@@ -99,6 +101,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-prod.csp-nijmegen.nl',
     resources: 'src/resources-prod',
     criticality: new Criticality('medium'),
+    debug: false,
     oidcProfiles: [
       {
         name: 'microsoft',
