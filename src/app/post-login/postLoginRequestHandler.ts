@@ -46,7 +46,10 @@ export class PostLoginRequestHandler {
 
     // Get permissions for session
     const userPermission: UserPermission | false = await permission.getUser(email);
-    const hasPermission: boolean = userPermission && !userPermission.permissions?.length; //not false and has at least one permission
+    console.log(JSON.stringify(userPermission));
+    const hasPermission: boolean = !!userPermission && !!userPermission.permissions?.length; //not false and has at least one permission
+
+
     if (!hasPermission) {
       console.log('The user is not in permissions database or has empty permissions. Next step is not logged in and authorized to false.');
     }
