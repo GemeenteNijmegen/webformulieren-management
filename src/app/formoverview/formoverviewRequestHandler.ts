@@ -23,11 +23,15 @@ export interface FormOverviewRequestHandlerParams {
   cookies: string;
   formName?: string;
   file?: string;
+  formStartDate?: string;
+  formEndDate?: string;
 }
 
 export class FormOverviewRequestHandler {
   private dynamoDBClient: DynamoDBClient;
   private apiClient: FormOverviewApiClient;
+  private errorMessage: string | undefined;
+
   constructor(dynamoDBClient: DynamoDBClient, apiClient: FormOverviewApiClient) {
     this.dynamoDBClient = dynamoDBClient;
     this.apiClient = apiClient;
@@ -46,7 +50,7 @@ export class FormOverviewRequestHandler {
 
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     if (params.file) {
-      return this.handleDownloadRequest(params);
+      return this.handleDownloadRequest(session, params);
     } else if (params.formName) {
       return this.handleGenerateCsvRequest(session, params);
     } else {
@@ -55,19 +59,21 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleGenerateCsvRequest(session: Session, params: FormOverviewRequestHandlerParams) {
-    const result = await this.apiClient.getData(`/formoverview?formuliernaam=${params.formName}`);
-    console.log('download result', result);
+    let endpoint = `/formoverview?formuliernaam=${params.formName}`;
+    if (params.formStartDate) {endpoint += `&startdatum=${params.formStartDate}`;}
+    if (params.formEndDate) {endpoint += `&einddatum=${params.formEndDate}`;}
+    const result = await this.apiClient.getData(endpoint);
+    this.errorMessage = result.apiClientError ?? undefined;
     return this.handleListOverviewRequest(session, params);
   }
 
-  private async handleListOverviewRequest(session: Session, params: FormOverviewRequestHandlerParams) {
+  private async handleListOverviewRequest(session: Session, _params: FormOverviewRequestHandlerParams) {
+    //Haal naam op voor header
     const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
+    //Haal de bestanden op die gedownload kunnen worden
     const overview = await this.apiClient.getData('/listformoverviews');
-    console.log(overview);
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
-    console.log('Apiclient made? ', !!this.apiClient);
-    console.log('Cookies in params? ', !!params.cookies);
 
     const data = {
       title: 'Formulieroverzicht',
@@ -75,14 +81,14 @@ export class FormOverviewRequestHandler {
       nav: permittedNav(session.getValue('permissions', 'SS')),
       volledigenaam: naam,
       overview: listFormOverviewResults,
+      error: this.errorMessage,
     };
-
     // render page
     const html = await render(data, formOverviewTemplate.default);
     return Response.html(html, 200, session.getCookie());
   }
 
-  private async handleDownloadRequest(params: FormOverviewRequestHandlerParams) {
+  private async handleDownloadRequest(_session: Session, params: FormOverviewRequestHandlerParams): Promise<Response> {
     const response = await this.apiClient.getData(`/downloadformoverview?key=${params.file}`);
     if (response) {
       return Response.redirect(response.downloadUrl);

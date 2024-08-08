@@ -37,7 +37,7 @@ export class FormOverviewApiClient {
   constructor(props: FormOverviewApiClientProps) {
     this.props = props;
     this.axios = this.initAxios({ axiosInstance: props.axios });
-    this.timeout = props.timeout ?? 2000;
+    this.timeout = props.timeout ?? 1000 * 30; // 30 seconden
   }
 
   private initAxios(config: {
@@ -58,63 +58,58 @@ export class FormOverviewApiClient {
 
   async postData(endpoint: string, body: any, headers?: any): Promise<any> {
     headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
-    console.time('request to ' + endpoint);
     try {
       const response = await this.axios.post(endpoint, body, {
         headers: headers,
         timeout: this.timeout,
       });
-      console.timeEnd('request to ' + endpoint);
       return response.data;
     } catch (error: any | AxiosError) {
-      console.timeEnd('request to ' + endpoint);
       this.handleErrors(error, endpoint);
     }
   }
 
   async getData(endpoint: string, headers?: any): Promise<any> {
     headers = this.addApiKeyHeader(this.props.apiKey, this.props.apiHeader, headers);
-    console.time('GET request to ' + endpoint);
     try {
       const response = await this.axios.get(endpoint, {
         headers,
         timeout: this.timeout,
       });
-      console.timeEnd('GET request to ' + endpoint);
       return response.data;
     } catch (error: any | AxiosError) {
-      console.timeEnd('GET request to ' + endpoint);
-      this.handleErrors(error, endpoint);
+      return this.handleErrors(error, endpoint);
     }
   }
 
-  private handleErrors(error: any, endpoint: string) {
+  private handleErrors(error: any, endpoint: string): {apiClientError: string} {
+    let errorMessage = { apiClientError: 'Er is iets misgegaan bij een aanroep naar een andere service. Probeer het later opnieuw.' };
     if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED') {
+        // Timeout
+        errorMessage.apiClientError = 'Er is een timeout opgetreden. Dit kan gebeuren wanneer een csv-bestand van grote omvang gemaakt wordt. Het bestand wordt op de achtergrond nog steeds aangemaakt. Vernieuw de pagina om de nieuwe csv-overzichten te zien.';
+      }
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.log('http status for ' + endpoint + ': ' + error.response.status);
-
-        // Check if there is a message field in the response
-        console.log(error.response.data?.message);
-        const message = error.response.data?.message;
-        if (message) {
-          throw Error(`Message: ${message}`);
-        }
+        // The request was made and the server responded with a status code and perhaps a message
+        console.log(`Error Response http status for ${endpoint} ${error.response.status}`);
+        console.log(`Error Response message for endpoint ${endpoint} ${error.response.data?.message}`);
+        errorMessage.apiClientError += ` Details: het betreft ${endpoint} ${error.response.status} ${error.response.data?.message}.`;
       } else if (error.request) {
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
-        console.error(error?.code);
+        console.log(`Error Request endpoint ${endpoint} ${error?.code}`);
+        errorMessage.apiClientError += ` Details: het betreft ${endpoint} ${error?.code}.`;
       } else {
         // Something happened in setting up the request that triggered an Error
         console.error(error.message);
+        errorMessage.apiClientError += ` Details: het betreft ${endpoint} ${error.message}.`;
       }
     } else {
       console.error(error.message);
+      errorMessage.apiClientError += ` Details: het betreft ${endpoint} ${error.message}.`;
     }
-
-    throw new Error('Het ophalen van gegevens is misgegaan.');
+    return errorMessage;
   }
 
   private addApiKeyHeader(value: string, headerName?: string, headers?: any) {
