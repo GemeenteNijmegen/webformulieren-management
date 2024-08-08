@@ -15,7 +15,7 @@ async function init() {
   const apiClient = new FormOverviewApiClient({
     apiKey: apiKey,
     baseUrl: process.env.FORMOVERVIEW_API_BASE_URL!,
-    timeout: 4000,
+    timeout: 30000,
   });
   const dynamoDBClient = new DynamoDBClient({});
   requestHandler = new FormOverviewRequestHandler(dynamoDBClient, apiClient);
