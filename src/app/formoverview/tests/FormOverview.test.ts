@@ -22,49 +22,17 @@ jest.mock('@gemeentenijmegen/session', () => {
     }),
   };
 });
+
 beforeAll(() => {
   const outputDir = path.join(__dirname, 'output');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
 });
 
-const mockApiClient = {
-  setTimeout: jest.fn(),
-  postData: jest.fn(),
-  getData: jest.fn().mockResolvedValue([
-    {
-      fileName: 'FormOverview-1717061499591-aanmeldenSportactiviteit.csv',
-      createdDate: '2024-05-30T09:31:39.743Z',
-      createdBy: 'default_change_to_api_queryparam',
-      formName: 'aanmeldenSportactiviteit',
-      formTitle: 'Aanmelden sportactiviteit',
-      queryStartDate: '2024-05-24',
-      queryEndDate: '2024-05-10',
-    },
-    {
-      fileName: 'FormOverview-1717408626681-aanmeldenSportactiviteit.csv',
-      createdDate: '2024-06-03T09:57:06.849Z',
-      createdBy: 'default_change_to_api_queryparam',
-      formName: 'aanmeldenSportactiviteit',
-      formTitle: 'Aanmelden sportactiviteit',
-      queryStartDate: '2024-05-31',
-      queryEndDate: '2024-05-10',
-    },
-    {
-      fileName: 'FormOverview-1717410959841-aanmeldenSportactiviteit.csv',
-      createdDate: '2024-06-03T10:36:00.032Z',
-      createdBy: 'default_change_to_api_queryparam',
-      formName: 'aanmeldenSportactiviteit',
-      formTitle: 'Aanmelden sportactiviteit',
-      queryStartDate: '2024-05-31',
-      queryEndDate: '2024-05-10',
-    },
-  ],
-  ),
-} as any as FormOverviewApiClient;
 
 const ddbMock = mockClient(DynamoDBClient);
 
 beforeEach(() => {
+  jest.resetModules();
   ddbMock.reset();
   const getItemOutput: Partial<GetItemCommandOutput> = {
     Item: {
@@ -85,9 +53,54 @@ beforeEach(() => {
 
 describe('FormOverviewTests', () => {
   test('should render the page for local development', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
+    const dynamoDBClient = new DynamoDBClient();
+    sessiongetValueMock = jest.fn().mockReturnValueOnce('fakemail@example.com').mockReturnValueOnce(['ADMIN']);
+    const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
     const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
-    const result = await handler.handleRequest({ cookies: 'session=12345' });
+    const result: any = await handler.handleRequest({ cookies: 'session=12345' });
     fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
   });
+
+  test('should render the error page for local development', async () => {
+    const dynamoDBClient = new DynamoDBClient();
+    sessiongetValueMock = jest.fn().mockReturnValueOnce('fakemail@example.com').mockReturnValueOnce(['ADMIN']);
+    const mockApiClientError = {
+      getData: jest.fn()
+        .mockResolvedValueOnce({ apiClientError: 'Er is een timeout opgetreden. Dit kan gebeuren wanneer een csv-bestand van grote omvang gemaakt wordt. Het bestand wordt op de achtergrond nog steeds aangemaakt. Vernieuw de pagina om de nieuwe csv-overzichten te zien. Dit is lange testerror.' })
+        .mockResolvedValueOnce(mockSuccesApiGetData),
+    } as any as FormOverviewApiClient ;
+    const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClientError);
+    const result: any = await handler.handleRequest({ cookies: 'session=12345', formName: 'nepformuliernaamOmCSVHandleAf te trappen' });
+    fs.writeFile(path.join(__dirname, 'output', 'test_error.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
+  });
 });
+
+export const mockSuccesApiGetData = [
+  {
+    fileName: 'FormOverview-1717061499591-aanmeldenSportactiviteit.csv',
+    createdDate: '2024-05-30T09:31:39.743Z',
+    createdBy: 'default_change_to_api_queryparam',
+    formName: 'aanmeldenSportactiviteit',
+    formTitle: 'Aanmelden sportactiviteit',
+    queryStartDate: '2024-05-24',
+    queryEndDate: '2024-05-10',
+  },
+  {
+    fileName: 'FormOverview-1717408626681-aanmeldenSportactiviteit.csv',
+    createdDate: '2024-06-03T09:57:06.849Z',
+    createdBy: 'default_change_to_api_queryparam',
+    formName: 'aanmeldenSportactiviteit',
+    formTitle: 'Aanmelden sportactiviteit',
+    queryStartDate: '2024-05-31',
+    queryEndDate: '2024-05-10',
+  },
+  {
+    fileName: 'FormOverview-1717410959841-aanmeldenSportactiviteit.csv',
+    createdDate: '2024-06-03T10:36:00.032Z',
+    createdBy: 'default_change_to_api_queryparam',
+    formName: 'aanmeldenSportactiviteit',
+    formTitle: 'Aanmelden sportactiviteit',
+    queryStartDate: '2024-05-31',
+    queryEndDate: '2024-05-10',
+  },
+];

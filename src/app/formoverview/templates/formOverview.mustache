@@ -6,18 +6,54 @@
         <div class="row">
             <div class="col-12">
                 <h1>Formulierenoverzicht</h1>
-                <p class="lead">Maak en download csv overzichten van ingediende formulieren.</p>
+                <p>Maak en download csv overzichten van ingediende formulieren. Indien de csv bestanden
+                    groot zijn, worden ze op de achtergond gemaakt en worden zichtbaar na het vernieuwen van de pagina.
+                </p>
             </div>
         </div>
+        {{#error}}
         <div class="row">
             <div class="col-12">
-                   <form method="POST" class="md-form" >
-                    <label for="reference">Formuliernaam (start en einddatum hier toevoegen):</label>
-                    <input type="text" id="formName" class="form-control" name="formName" placeholder="aanmeldensportactiviteit">
-                    <input type="submit" value="Genereer csv" class="btn btn-primary">
-                </form>
+                <div class="alert alert-warning" role="alert">
+                    {{error}}
+                </div>
             </div>
         </div>
+        {{/error}}
+
+        <form method="POST" class="md-form">
+            <div class="row">
+                <div class="col-12">
+
+
+                    <label for="reference">Formuliernaam:</label>
+                    <input type="text" id="formName" class="form-control" name="formName"
+                        placeholder="aanmeldensportactiviteit">
+
+
+                </div>
+
+            </div>
+            <div class="row mt-0 mt-sm-4">
+                <div class="col-sm-6 col-12 mt-5 mt-sm-1">
+                    <label for="reference">Startdatum (optioneel):</label>
+                    <input type="text" id="formStartDate" class="form-control" name="formStartDate"
+                        placeholder="2024-01-01">
+                </div>
+                <div class="col-sm-6 col-12 mt-5 mt-sm-1">
+                    <label for="reference">Einddatum (optioneel):</label>
+                    <input type="text" id="formEndDate" class="form-control" name="formEndDate"
+                        placeholder="2024-01-01">
+                </div>
+                <div class="col-12"> Beide datums kunnen leeggehouden worden, beide kunnen ingevuld worden of slechts
+                    een datum wordt ingevuld.</div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <input type="submit" value="Genereer csv" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
 
         <div class="row">
             <div class="col-12">
@@ -30,17 +66,22 @@
                         <tr>
                             <th>Timestamp</th>
                             <th>Formulier</th>
+                            <th>Startdatum</th>
+                            <th>Einddatum</th>
                             <th>Bestandsnaam</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {{#overview}}
+                        {{#overview}}
                         <tr>
                             <td>{{createdDate}}</td>
                             <td>{{formTitle}}</td>
+                            <td>{{queryStartDate}}</td>
+                            <td>{{queryEndDate}}</td>
                             <td><a href="/formoverview/download/{{fileName}}" title="download">{{fileName}}</a></td>
+                          
                         </tr>
-                    {{/overview}}
+                        {{/overview}}
                     </tbody>
                 </table>
 
