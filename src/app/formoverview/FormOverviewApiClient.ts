@@ -37,7 +37,7 @@ export class FormOverviewApiClient {
   constructor(props: FormOverviewApiClientProps) {
     this.props = props;
     this.axios = this.initAxios({ axiosInstance: props.axios });
-    this.timeout = props.timeout ?? 1000 * 30; // 30 seconden
+    this.timeout = props.timeout ?? 30000; // 30 seconden
   }
 
   private initAxios(config: {

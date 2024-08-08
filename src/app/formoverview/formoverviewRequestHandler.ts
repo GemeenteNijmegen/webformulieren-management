@@ -59,9 +59,11 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleGenerateCsvRequest(session: Session, params: FormOverviewRequestHandlerParams) {
+    console.log('CSV REQUEST PARAMS: ', params);
     let endpoint = `/formoverview?formuliernaam=${params.formName}`;
     if (params.formStartDate) {endpoint += `&startdatum=${params.formStartDate}`;}
     if (params.formEndDate) {endpoint += `&einddatum=${params.formEndDate}`;}
+    console.log('CSV REQUEST ENDPOINT: ', endpoint);
     const result = await this.apiClient.getData(endpoint);
     this.errorMessage = result.apiClientError ?? undefined;
     return this.handleListOverviewRequest(session, params);
