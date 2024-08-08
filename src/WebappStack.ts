@@ -135,6 +135,12 @@ export class WebappStack extends Stack {
     webapp.addPage('resubmit', resubmitFunction, '/resubmit');
   }
 
+  /**
+   * Add a Form overview page to the webapp
+   * @param webapp
+   * @param formOverviewApiKeySecret
+   * @param props
+   */
   addFormOverviewPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-function', {
       description: 'FormOverview lambda',
@@ -143,11 +149,12 @@ export class WebappStack extends Stack {
         FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
         FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
       },
-      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
+      timeout: Duration.seconds(6),
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverview', formOverviewFunction, '/formoverview', [HttpMethod.GET, HttpMethod.POST]);
   }
+
   addFormOverviewDownloadPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-download-function', {
       description: 'FormOverview Download Lambda',
@@ -156,26 +163,31 @@ export class WebappStack extends Stack {
         FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
         FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
       },
-      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
+      timeout: Duration.seconds(6),
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverviewdownload', formOverviewFunction, '/formoverview/download/{file+}');
   }
 
   /**
-   * Constrcut a post-login hook function that is passed directly
+   * Construct a post-login hook function that is passed directly
    * to the webapp. It will register the function and redirect trafic
    * there after the pre-login (auth lambda).
    * @returns
    */
   postLoginHook() {
-    return new Webpage(this, 'post-login-function', {
+    // Get permissiontable, get name and add read/write permission to PostloginFunction
+    const permissionTable = DynamoDB.Table.fromTableArn(this, 'permission_table', StringParameter.valueForStringParameter(this, Statics.ssmPermissionsTableArn));
+    const postLoginFunction = new Webpage(this, 'post-login-function', {
       description: 'Post-login lambda',
       apiFunction: PostloginFunction,
       environment: {
         AUTHORIZED_USER_EMAILS: StringParameter.valueForStringParameter(this, Statics.ssmAuthorizedUserEmails),
+        PERMISSION_TABLE_NAME: permissionTable.tableName,
       },
     });
+    permissionTable.grantReadWriteData(postLoginFunction.lambda);
+    return postLoginFunction;
   }
 
 }

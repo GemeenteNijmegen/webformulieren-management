@@ -29,18 +29,18 @@ export class Permission {
    * @param dynamoDBClient
    */
   constructor(dynamoDBClient: DynamoDBClient, debug: boolean = false) {
-    if (!process.env.PERMISSION_TABLE) {
-      throw Error('No environment variable PERMISSION_TABLE set');
+    if (!process.env.PERMISSION_TABLE_NAME) {
+      throw Error('No environment variable PERMISSION_TABLE_NAME set');
     }
     this.dynamoDBClient = dynamoDBClient;
     this.debug = debug;
   }
 
 
-  async getUser(useremail: string ) {
+  async getUser(useremail: string ): Promise<UserPermission | false> {
     if (!useremail) { return false; }
     const getItemCommand = new GetItemCommand({
-      TableName: process.env.PERMISSION_TABLE,
+      TableName: process.env.PERMISSION_TABLE_NAME,
       Key: {
         useremail: { S: useremail },
       },
@@ -48,9 +48,16 @@ export class Permission {
     try {
       const userPermission: GetItemCommandOutput = await this.dynamoDBClient.send(getItemCommand);
 
-      if (userPermission.Item?.useremail !== undefined) {
+      if (userPermission.Item?.useremail?.S !== undefined) {
         if (this.debug) this.logAnonymousItem(userPermission.Item as DynamoDBUserPermission);
-        return userPermission.Item;
+
+        const user: UserPermission = {
+          useremail: userPermission.Item.useremail.S,
+          permissions: userPermission.Item.permissions.SS as PermissionOptions[] ?? [],
+        };
+
+        return user as UserPermission;
+
       } else {
         return false;
       }

@@ -12,16 +12,16 @@ describe('Permission Class', () => {
   let permission: Permission;
 
   beforeEach(() => {
-    process.env.PERMISSION_TABLE = 'test-table';
+    process.env.PERMISSION_TABLE_NAME = 'test-table';
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should throw an error if PERMISSION_TABLE environment variable is not set', () => {
-    delete process.env.PERMISSION_TABLE;
-    expect(() => new Permission(dynamoDBClientMock as any as DynamoDBClient)).toThrow('No environment variable PERMISSION_TABLE set');
+  it('should throw an error if PERMISSION_TABLE_NAME environment variable is not set', () => {
+    delete process.env.PERMISSION_TABLE_NAME;
+    expect(() => new Permission(dynamoDBClientMock as any as DynamoDBClient)).toThrow('No environment variable PERMISSION_TABLE_NAME set');
   });
 
   it('should call DynamoDBClient.send and return user data', async () => {
@@ -39,7 +39,7 @@ describe('Permission Class', () => {
     const result = await permission.getUser(useremail);
 
     expect(dynamoDBClientMock.send).toHaveBeenCalledWith(expect.any(GetItemCommand));
-    expect(result).toEqual(mockItem.Item);
+    expect(result).toEqual({ useremail: 'john.doe@example.com', permissions: ['ADMIN', 'READ'] });
   });
 
   it('should return false if useremail is not found', async () => {
@@ -78,6 +78,8 @@ describe('Permission Class', () => {
 
   it('should handle errors from DynamoDBClient.send', async () => {
     const error = new Error('DynamoDB error');
+    // Prevent error log in console
+    jest.spyOn(global.console, 'error').mockImplementation(() => {});
 
     mockSendDynamo.mockRejectedValue(error);
     permission = new Permission(dynamoDBClientMock as any as DynamoDBClient);
