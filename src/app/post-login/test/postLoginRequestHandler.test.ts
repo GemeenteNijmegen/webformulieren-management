@@ -9,7 +9,7 @@ let sessionInitMock = jest.fn().mockResolvedValue({});
 let sessionIsLoggedInMock = jest.fn().mockReturnValue(true);
 let sessiongetValueMock = jest.fn().mockReturnValueOnce('pre-login').mockReturnValueOnce(JSON.stringify({ email: 'testmail@example.com' }));
 let sessionIsCreateSessionMock = jest.fn().mockResolvedValue({});
-let sessionCreateCookieMock = jest.fn().mockReturnValue('cookie');
+let sessionGetCookieMock = jest.fn().mockReturnValue('cookie');
 
 let permissionGetUserMock = jest.fn().mockResolvedValue({ useremail: 'testmail@example.com', permissions: ['ADMIN'] } as UserPermission );
 
@@ -23,7 +23,7 @@ jest.mock('@gemeentenijmegen/session', () => {
         isLoggedIn: sessionIsLoggedInMock,
         getValue: sessiongetValueMock,
         createSession: sessionIsCreateSessionMock,
-        getCookie: sessionCreateCookieMock,
+        getCookie: sessionGetCookieMock,
       };
     }),
   };

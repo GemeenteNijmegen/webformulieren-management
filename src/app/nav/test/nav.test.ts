@@ -13,9 +13,9 @@ const mockNav: NavItem[] = [
   },
   {
     url: '/formoverview',
-    title: 'Formulieroverzichten',
+    title: 'Formulier overzichten',
     description: 'Formulierenoverzichten maken en downloaden.',
-    label: 'Formulieroverzichten',
+    label: 'Formulier overzichten',
     icon: 'mockIcon',
     viewPermission: ['ADMIN', 'FORMOVERVIEW'] as PermissionOptions[],
   },
@@ -31,7 +31,7 @@ describe('permittedNav', () => {
     {
       description: 'should return all nav items if all permissions are valid',
       userPermissions: ['ADMIN', 'RESUBMIT', 'FORMOVERVIEW'] as PermissionOptions[],
-      expectedTitles: ['Opnieuw inzenden', 'Formulieroverzichten'],
+      expectedTitles: ['Opnieuw inzenden', 'Formulier overzichten'],
     },
     {
       description: 'should return only the nav items that match the user permissions',
@@ -46,7 +46,7 @@ describe('permittedNav', () => {
     {
       description: 'should return nav items that match at least one of the user permissions',
       userPermissions: ['ADMIN', 'SP1'] as PermissionOptions[],
-      expectedTitles: ['Opnieuw inzenden', 'Formulieroverzichten'],
+      expectedTitles: ['Opnieuw inzenden', 'Formulier overzichten'],
     },
     {
       description: 'should return an empty array if no permissions are provided',

@@ -5,7 +5,7 @@ import { render } from '@gemeentenijmegen/webapp';
 import { z } from 'zod';
 import { FormOverviewApiClient } from './FormOverviewApiClient';
 import * as formOverviewTemplate from './templates/formOverview.mustache';
-import { nav } from '../nav/nav';
+import { permittedNav } from '../nav/nav';
 
 export const FormOverviewResultsSchema = z.array(
   z.object({
@@ -61,7 +61,7 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleListOverviewRequest(session: Session, params: FormOverviewRequestHandlerParams) {
-    const naam = session.getValue('email') ?? 'Onbekende gebruiker';
+    const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
     const overview = await this.apiClient.getData('/listformoverviews');
     console.log(overview);
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
@@ -72,7 +72,7 @@ export class FormOverviewRequestHandler {
     const data = {
       title: 'Formulieroverzicht',
       shownav: true,
-      nav: nav,
+      nav: permittedNav(session.getValue('permissions', 'SS')),
       volledigenaam: naam,
       overview: listFormOverviewResults,
     };
