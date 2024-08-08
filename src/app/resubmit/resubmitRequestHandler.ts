@@ -55,7 +55,7 @@ export class ResubmitRequestHandler {
     const data = {
       title: 'Opnieuw inzenden',
       shownav: true,
-      nav: permittedNav(session.getValue('permissions')),
+      nav: permittedNav(session.getValue('permissions', 'SS')),
       volledigenaam: naam,
       resubmitted,
       resubmittedSuccess,
