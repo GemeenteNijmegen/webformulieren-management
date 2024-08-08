@@ -28,7 +28,7 @@ export class HomeRequestHandler {
     const data = {
       title: 'overzicht',
       shownav: true,
-      nav: permittedNav(session.getValue('permissions')),
+      nav: permittedNav(session.getValue('permissions', 'SS')),
       volledigenaam: naam,
     };
 

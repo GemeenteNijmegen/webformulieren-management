@@ -46,7 +46,6 @@ export class PostLoginRequestHandler {
 
     // Get permissions for session
     const userPermission: UserPermission | false = await permission.getUser(email);
-    console.log(JSON.stringify(userPermission));
     const hasPermission: boolean = !!userPermission && !!userPermission.permissions?.length; //not false and has at least one permission
 
 
@@ -61,15 +60,12 @@ export class PostLoginRequestHandler {
       return Response.redirect('/login?error=not_authorized', 302, session.getCookie());
     }
 
-
-    // Update the session to make it authenticated!
-    {
-      await session.createSession({
-        loggedin: { BOOL: true },
-        email: { S: email },
-        permissions: { SS: (userPermission as UserPermission).permissions },
-      });
-    }
+    // Update the session to make it authenticated and set permissions
+    await session.createSession({
+      loggedin: { BOOL: true },
+      email: { S: email },
+      permissions: { SS: (userPermission as UserPermission).permissions },
+    });
 
     // Redirect to default path
     return Response.redirect('/', 302, session.getCookie());
