@@ -2,6 +2,7 @@ import { Webapp, Webpage } from '@gemeentenijmegen/webapp';
 import { Stack, StackProps, Tags, aws_dynamodb as DynamoDB, RemovalPolicy, Duration } from 'aws-cdk-lib';
 import { HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
@@ -12,6 +13,7 @@ import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
 import { ResubmitFunction } from './app/resubmit/resubmit-function';
 import { Configurable } from './Configuration';
+import { PermissionsTable } from './PermissionsTable';
 import { Statics } from './statics';
 
 
@@ -70,6 +72,8 @@ export class WebappStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
+    const permissionTable = new PermissionsTable(this, 'permission-table-construct');
+
     /**
      * Create the webapp!
      */
@@ -81,7 +85,7 @@ export class WebappStack extends Stack {
       hostedZone: hostedZone,
       staticResourcesDirectory: './src/app/static-resources/',
       defaultPath: '/home',
-      postLoginProcessor: this.postLoginHook(),
+      postLoginProcessor: this.postLoginHook(permissionTable.table),
       oidcProfiles: props.configuration.oidcProfiles,
       sessionLifetime: 60,
       criticality: props.configuration.criticality,
@@ -135,6 +139,12 @@ export class WebappStack extends Stack {
     webapp.addPage('resubmit', resubmitFunction, '/resubmit');
   }
 
+  /**
+   * Add a Form overview page to the webapp
+   * @param webapp
+   * @param formOverviewApiKeySecret
+   * @param props
+   */
   addFormOverviewPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-function', {
       description: 'FormOverview lambda',
@@ -143,11 +153,12 @@ export class WebappStack extends Stack {
         FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
         FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
       },
-      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
+      timeout: Duration.seconds(6),
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverview', formOverviewFunction, '/formoverview', [HttpMethod.GET, HttpMethod.POST]);
   }
+
   addFormOverviewDownloadPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-download-function', {
       description: 'FormOverview Download Lambda',
@@ -156,26 +167,30 @@ export class WebappStack extends Stack {
         FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
         FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
       },
-      timeout: Duration.seconds(6), // Long but the resubmission takes some time when cold started
+      timeout: Duration.seconds(6),
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverviewdownload', formOverviewFunction, '/formoverview/download/{file+}');
   }
 
   /**
-   * Constrcut a post-login hook function that is passed directly
+   * Construct a post-login hook function that is passed directly
    * to the webapp. It will register the function and redirect trafic
    * there after the pre-login (auth lambda).
    * @returns
    */
-  postLoginHook() {
-    return new Webpage(this, 'post-login-function', {
+  postLoginHook(permissionTable: ITable) {
+    // Get permissiontable, get name and add read/write permission to PostloginFunction
+    const postLoginFunction = new Webpage(this, 'post-login-function', {
       description: 'Post-login lambda',
       apiFunction: PostloginFunction,
       environment: {
         AUTHORIZED_USER_EMAILS: StringParameter.valueForStringParameter(this, Statics.ssmAuthorizedUserEmails),
+        PERMISSION_TABLE_NAME: permissionTable.tableName,
       },
     });
+    permissionTable.grantReadWriteData(postLoginFunction.lambda);
+    return postLoginFunction;
   }
 
 }

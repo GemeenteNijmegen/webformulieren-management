@@ -19,6 +19,5 @@ export class ParameterStack extends Stack {
       stringValue: '-', // Filled manually to keep emails from the code base
       description: 'Comma separated list of emails that are authorized to use the webapp',
     });
-
   }
 }
