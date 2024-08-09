@@ -60,6 +60,7 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleGenerateCsvRequest(session: Session, params: FormOverviewRequestHandlerParams) {
+    console.log('Start HandlegenerateCSV');
     const paramErrorMessage = this.validateParams(params);
     if (paramErrorMessage) {
       console.log('Set error message in session param before');
@@ -126,16 +127,19 @@ export class FormOverviewRequestHandler {
    */
   private validateParams(params: FormOverviewRequestHandlerParams): string | undefined {
     let validationerrors = '';
+    let invalidDate = false;
     if (!params.formName) {
       validationerrors += 'Er is geen formuliernaam ingevoerd. Een formuliernaam is vereist.';
     }
     if (params.formStartDate && !/^\d{4}-\d{2}-\d{2}$/.test(params.formStartDate)) {
+      invalidDate = true;
       validationerrors += `De startdatum ${params.formStartDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
     }
     if (params.formEndDate && !/^\d{4}-\d{2}-\d{2}$/.test(params.formEndDate)) {
+      invalidDate = true;
       validationerrors += `De einddatum ${params.formEndDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
     }
-    if (params.formStartDate && params.formEndDate) {
+    if (params.formStartDate && params.formEndDate && !invalidDate) {
       if (new Date(params.formStartDate) < new Date(params.formEndDate)) {
         validationerrors += `Einddatum ${params.formEndDate} mag niet na de startdatum ${params.formStartDate} liggen. Voorbeeld correcte datumrange: startdatum 2024-07-01 en einddatum 2024-06-01`;
       }
