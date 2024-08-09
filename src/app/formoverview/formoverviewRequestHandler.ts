@@ -17,6 +17,7 @@ export const FormOverviewResultsSchema = z.array(
     formTitle: z.string(),
     queryStartDate: z.string(),
     queryEndDate: z.string(),
+    appId: z.optional(z.string()),
   }),
 );
 
@@ -65,6 +66,7 @@ export class FormOverviewRequestHandler {
       const result = await this.apiClient.getData(endpoint);
       const errorMessageForSession = result.apiClientError ?? undefined;
       await session.setValue('errorMessageFormOverview', errorMessageForSession);
+      if (errorMessageForSession) {console.error(`Error Message was set: ${errorMessageForSession}`);}
     }
     // Reload the  lambda as formoverview to render the page. This prevents a browser refresh to send the form again.
     return Response.redirect('/formoverview', 302, session.getCookie());
@@ -78,9 +80,12 @@ export class FormOverviewRequestHandler {
     console.log('Error message was set: ', errorMessageFromSession);
     //Haal naam op voor header
     const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
+
     //Haal de bestanden op die gedownload kunnen worden
     const overview = await this.apiClient.getData('/listformoverviews');
+    console.log('overview has been retrieved. Now it has to be parsed.');
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
+    console.log('formoverview result schema has been parsed');
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
 
     const data = {
