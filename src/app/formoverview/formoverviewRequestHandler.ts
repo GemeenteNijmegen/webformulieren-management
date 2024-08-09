@@ -69,7 +69,7 @@ export class FormOverviewRequestHandler {
       if (errorMessageForSession) {console.error(`Error Message was set: ${errorMessageForSession}`);}
     }
     // Reload the  lambda as formoverview to render the page. This prevents a browser refresh to send the form again.
-    return Response.redirect('/formoverview', 302, session.getCookie());
+    return Response.redirect('/', 302, session.getCookie());
   }
 
 
