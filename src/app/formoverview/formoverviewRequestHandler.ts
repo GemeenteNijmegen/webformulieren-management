@@ -89,7 +89,7 @@ export class FormOverviewRequestHandler {
     console.log('SESSION INIT 2');
     const err = session.getValue('errorMessageFormOverview', 'S') ?? '';
     const errorMessageFromSession = err;
-    await session.setValue('errorMessageFormOverview', '');
+    //await session.setValue('errorMessageFormOverview', '');
     console.log('Error message was set: ', errorMessageFromSession, err);
     //Haal naam op voor header
     const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
