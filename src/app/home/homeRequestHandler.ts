@@ -28,7 +28,7 @@ export class HomeRequestHandler {
     const data = {
       title: 'overzicht',
       shownav: true,
-      nav: AccessController.permittedNav(session.getValue('permissions', 'SS')),
+      nav: AccessController.permittedNav(session),
       volledigenaam: naam,
     };
 
