@@ -26,7 +26,6 @@ export interface FormOverviewRequestHandlerParams {
   file?: string;
   formStartDate?: string;
   formEndDate?: string;
-  errorMessage?: string;
 }
 
 export class FormOverviewRequestHandler {
