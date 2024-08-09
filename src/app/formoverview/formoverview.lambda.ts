@@ -9,9 +9,7 @@ import { FormOverviewRequestHandler, FormOverviewRequestHandlerParams } from './
 let requestHandler: FormOverviewRequestHandler | undefined = undefined;
 
 async function init() {
-  //TODO: change secret
   const apiKey = await AWS.getSecret(process.env.FORMOVERVIEW_API_KEY_SECRET_ARN!);
-  console.log('Loaded API key', apiKey.substring(0, 4));
   const apiClient = new FormOverviewApiClient({
     apiKey: apiKey,
     baseUrl: process.env.FORMOVERVIEW_API_BASE_URL!,
@@ -52,6 +50,7 @@ function getFormParamsFromBody(event: APIGatewayProxyEventV2): FormOverviewQuery
 export async function handler (event: any, _context: any):Promise<ApiGatewayV2Response> {
   await initalization;
   try {
+    console.log('EVENT: ', event, event.queryStringParameters);
     const params = parseEvent(event);
     if (!requestHandler) {
       throw Error('Request handler not initalized!');
