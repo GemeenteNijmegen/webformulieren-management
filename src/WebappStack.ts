@@ -153,7 +153,7 @@ export class WebappStack extends Stack {
         FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
         FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
       },
-      timeout: Duration.seconds(6),
+      timeout: Duration.seconds(32),
     });
     formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverview', formOverviewFunction, '/formoverview', [HttpMethod.GET, HttpMethod.POST]);
