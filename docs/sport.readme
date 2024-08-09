@@ -1,0 +1,28 @@
+# Sport
+
+Pagina met overzicht van aanmeldensportacitviteiten formulieren. Permissies zijn hier van toepassing.
+Er zijn 7 verschillende groepen gebaseerd op stadsdeel. Medewerkers mogen alleen gegevens en overzichten zien van hun eigen stadsdeel.
+
+
+## Permissions Sport
+Limited to sports permissions. There are more permissions for other pages. Check the page permissions for more.
+The AppID's (SP1, SP2, etc..) are based on the AppId's of the forms. 
+
+|   Name	|   Permission	|
+|---	|---	|
+|   SPORTADMIN	|   Can view all sports forms and the sport admin page	|
+|   SP1	|   Lindenholt	|
+|   SP2	|   Dukenburg	|
+|   SP3	|   Midden en Zuid	|
+|   SP4	|   Noord	|
+|   SP5	|   Centrum	|
+|   SP6	|   Oost	|
+|   SP7	|   West	|
+
+
+
+![Permissions with sports](./sport.png "Permission with sport")
+
+## Submissions
+
+![Submissions sport](./sportpage.png "Getting data from submission storage")

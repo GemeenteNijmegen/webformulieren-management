@@ -31,6 +31,8 @@ export abstract class Statics {
 
   static readonly ssmAuthorizedUserEmails = `/cdk/${this.projectName}/authentication/authorized-emails`;
 
+  static readonly ssmPermissionsTableName = 'permissions-webformulieren-management';
+
   // ENVIRONMENTS
 
   static readonly gnBuild = {

@@ -4,7 +4,7 @@ import { Session } from '@gemeentenijmegen/session';
 import { render } from '@gemeentenijmegen/webapp';
 import { ApiClient } from './ApiClient';
 import * as resubmitTemplate from './templates/resubmit.mustache';
-import { nav } from '../nav/nav';
+import { permittedNav } from '../nav/nav';
 
 const RESUBMISSION = 'RESUBMISSION';
 
@@ -55,7 +55,7 @@ export class ResubmitRequestHandler {
     const data = {
       title: 'Opnieuw inzenden',
       shownav: true,
-      nav: nav,
+      nav: permittedNav(session.getValue('permissions', 'SS')),
       volledigenaam: naam,
       resubmitted,
       resubmittedSuccess,
