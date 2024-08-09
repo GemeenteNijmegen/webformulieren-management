@@ -5,7 +5,8 @@ import { render } from '@gemeentenijmegen/webapp';
 import { z } from 'zod';
 import { FormOverviewApiClient } from './FormOverviewApiClient';
 import * as formOverviewTemplate from './templates/formOverview.mustache';
-import { permittedNav } from '../nav/nav';
+import { AccessController } from '../permission/AccessController';
+
 
 export const FormOverviewResultsSchema = z.array(
   z.object({
@@ -42,10 +43,8 @@ export class FormOverviewRequestHandler {
       ttlInMinutes: parseInt(process.env.SESSION_TTL_MIN ?? '15'),
     });
     await session.init();
-    if (session.isLoggedIn() == true) {
-      return this.handleLoggedinRequest(session, params);
-    }
-    return Response.redirect('/login');
+    const accessCheck = await AccessController.checkPageAccess(session, '/formoverview');
+    return accessCheck ?? this.handleLoggedinRequest(session, params);
   }
 
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
@@ -80,7 +79,7 @@ export class FormOverviewRequestHandler {
     const data = {
       title: 'Formulieroverzicht',
       shownav: true,
-      nav: permittedNav(session.getValue('permissions', 'SS')),
+      nav: AccessController.permittedNav(session),
       volledigenaam: naam,
       overview: listFormOverviewResults,
       error: this.errorMessage,

@@ -4,7 +4,7 @@ import { Session } from '@gemeentenijmegen/session';
 import { render } from '@gemeentenijmegen/webapp';
 import { ApiClient } from './ApiClient';
 import * as resubmitTemplate from './templates/resubmit.mustache';
-import { permittedNav } from '../nav/nav';
+import { AccessController } from '../permission/AccessController';
 
 const RESUBMISSION = 'RESUBMISSION';
 
@@ -26,10 +26,8 @@ export class ResubmitRequestHandler {
       ttlInMinutes: parseInt(process.env.SESSION_TTL_MIN ?? '15'),
     });
     await session.init();
-    if (session.isLoggedIn() == true) {
-      return this.handleLoggedinRequest(session, params);
-    }
-    return Response.redirect('/login');
+    const accessCheck = await AccessController.checkPageAccess(session, '/resubmit');
+    return accessCheck ?? this.handleLoggedinRequest(session, params);
   }
 
   private async handleLoggedinRequest(session: Session, params: ResubmitRequestHandlerParams) {
@@ -55,7 +53,7 @@ export class ResubmitRequestHandler {
     const data = {
       title: 'Opnieuw inzenden',
       shownav: true,
-      nav: permittedNav(session.getValue('permissions', 'SS')),
+      nav: AccessController.permittedNav(session),
       volledigenaam: naam,
       resubmitted,
       resubmittedSuccess,

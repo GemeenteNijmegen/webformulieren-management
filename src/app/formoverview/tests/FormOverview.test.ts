@@ -7,8 +7,14 @@ import { FormOverviewApiClient } from '../FormOverviewApiClient';
 import { FormOverviewRequestHandler } from '../formoverviewRequestHandler';
 
 let sessionIsLoggedInMock = jest.fn().mockReturnValue(true);
-let sessiongetValueMock = jest.fn().mockReturnValueOnce('fakemail@example.com').mockReturnValueOnce(['ADMIN']);
-
+let sessionGetValueMock = jest.fn((key: string, type: string) => {
+  if (key === 'permissions' && type === 'SS') {
+    return ['ADMIN'];
+  } else if (key === 'email' && type === 'S') {
+    return 'fakemail@example.com';
+  }
+  return null;
+});
 jest.mock('@gemeentenijmegen/session', () => {
   return {
     // Constructor mock
@@ -16,7 +22,7 @@ jest.mock('@gemeentenijmegen/session', () => {
       return {
         init: jest.fn().mockResolvedValue({}),
         isLoggedIn: sessionIsLoggedInMock,
-        getValue: sessiongetValueMock,
+        getValue: sessionGetValueMock,
         getCookie: jest.fn().mockReturnValue('cookie'),
       };
     }),
@@ -54,7 +60,6 @@ beforeEach(() => {
 describe('FormOverviewTests', () => {
   test('should render the page for local development', async () => {
     const dynamoDBClient = new DynamoDBClient();
-    sessiongetValueMock = jest.fn().mockReturnValueOnce('fakemail@example.com').mockReturnValueOnce(['ADMIN']);
     const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
     const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
     const result: any = await handler.handleRequest({ cookies: 'session=12345' });
@@ -63,7 +68,6 @@ describe('FormOverviewTests', () => {
 
   test('should render the error page for local development', async () => {
     const dynamoDBClient = new DynamoDBClient();
-    sessiongetValueMock = jest.fn().mockReturnValueOnce('fakemail@example.com').mockReturnValueOnce(['ADMIN']);
     const mockApiClientError = {
       getData: jest.fn()
         .mockResolvedValueOnce({ apiClientError: 'Er is een timeout opgetreden. Dit kan gebeuren wanneer een csv-bestand van grote omvang gemaakt wordt. Het bestand wordt op de achtergrond nog steeds aangemaakt. Vernieuw de pagina om de nieuwe csv-overzichten te zien. Dit is lange testerror.' })

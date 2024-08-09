@@ -21,8 +21,8 @@ The AppID's (SP1, SP2, etc..) are based on the AppId's of the forms.
 
 
 
-![Permissions with sports](./sport.png "Permission with sport")
+![Permissions with sports](./sport.drawio.png "Permission with sport")
 
 ## Submissions
 
-![Submissions sport](./sportpage.png "Getting data from submission storage")
+![Submissions sport](./sportpage.drawio.png "Getting data from submission storage")
