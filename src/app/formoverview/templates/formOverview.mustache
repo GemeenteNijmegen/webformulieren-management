@@ -46,15 +46,11 @@
                         placeholder="2024-01-01">
                 </div>
                 <div class="col-12"> Beide datums kunnen leeggehouden worden, beide kunnen ingevuld worden of slechts
-                    een datum wordt ingevuld. Einddatum mag niet na startdatum liggen. Voorbeeld 1: Alleen startdatum 2024-08-01 geeft alle inzendingen tussen 1 augustus en vandaag. Voorbeeld 2: 2024-01-01 als einddatum geeft alle inzendingen die voor 2024 ingediend zijn. </div>
+                    een datum wordt ingevuld. Einddatum mag niet na startdatum liggen. Voorbeeld 1: Alleen startdatum 2024-08-01 geeft alle inzendingen tussen 1 augustus en vandaag. Voorbeeld 2: 2024-01-01 als einddatum geeft alle inzendingen die voor 2024 ingediend. </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div style="position: relative; display: inline-block;">
-                        <input type="submit" value="Genereer csv" class="btn btn-primary" id="generateCsvButton">
-                        <!-- Spinner, initially hidden -->
-                        <div class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="spinner" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;"></div>
-                    </div>
+                    <input type="submit" value="Genereer csv" class="btn btn-primary" onclick="this.disabled=true;this.value='Bezig met verwerken...';">
                 </div>
             </div>
         </form>
@@ -97,13 +93,5 @@
 
     <!-- END: template component(s) -->
 </main>
-<script type="text/javascript">
-    document.querySelector('form').addEventListener('submit', function(event) {
-        // Disable the submit button
-        const submitButton = document.getElementById('generateCsvButton');
-        submitButton.disabled = true;
-        // Show the spinner
-        document.getElementById('spinner').style.display = 'inline-block';
-    });
-</script>
+
 {{>footer}}
