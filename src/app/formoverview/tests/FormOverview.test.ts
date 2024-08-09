@@ -7,11 +7,16 @@ import { FormOverviewApiClient } from '../FormOverviewApiClient';
 import { FormOverviewRequestHandler } from '../formoverviewRequestHandler';
 
 let sessionIsLoggedInMock = jest.fn().mockReturnValue(true);
+let errorMessageForMock = `Er is een timeout opgetreden. Dit kan gebeuren wanneer een csv-bestand van grote omvang gemaakt wordt. 
+Het bestand wordt op de achtergrond nog steeds aangemaakt. 
+Vernieuw de pagina om de nieuwe csv-overzichten te zien. Dit is lange testerror.`;
 let sessionGetValueMock = jest.fn((key: string, type: string) => {
   if (key === 'permissions' && type === 'SS') {
     return ['ADMIN'];
   } else if (key === 'email' && type === 'S') {
     return 'fakemail@example.com';
+  } else if (key === 'errorMessageFormOverview' && type === 'S') {
+    return errorMessageForMock;
   }
   return null;
 });
@@ -23,6 +28,7 @@ jest.mock('@gemeentenijmegen/session', () => {
         init: jest.fn().mockResolvedValue({}),
         isLoggedIn: sessionIsLoggedInMock,
         getValue: sessionGetValueMock,
+        setValue: jest.fn().mockResolvedValue({}),
         getCookie: jest.fn().mockReturnValue('cookie'),
       };
     }),
@@ -58,24 +64,21 @@ beforeEach(() => {
 });
 
 describe('FormOverviewTests', () => {
-  test('should render the page for local development', async () => {
+  test('should render the page for local development with an error', async () => {
     const dynamoDBClient = new DynamoDBClient();
     const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
     const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
     const result: any = await handler.handleRequest({ cookies: 'session=12345' });
-    fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
+    fs.writeFile(path.join(__dirname, 'output', 'test_error.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
   });
 
-  test('should render the error page for local development', async () => {
+  test('should render the page for local development', async () => {
     const dynamoDBClient = new DynamoDBClient();
-    const mockApiClientError = {
-      getData: jest.fn()
-        .mockResolvedValueOnce({ apiClientError: 'Er is een timeout opgetreden. Dit kan gebeuren wanneer een csv-bestand van grote omvang gemaakt wordt. Het bestand wordt op de achtergrond nog steeds aangemaakt. Vernieuw de pagina om de nieuwe csv-overzichten te zien. Dit is lange testerror.' })
-        .mockResolvedValueOnce(mockSuccesApiGetData),
-    } as any as FormOverviewApiClient ;
-    const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClientError);
-    const result: any = await handler.handleRequest({ cookies: 'session=12345', formName: 'nepformuliernaamOmCSVHandleAf te trappen' });
-    fs.writeFile(path.join(__dirname, 'output', 'test_error.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
+    errorMessageForMock = '';
+    const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
+    const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
+    const result: any = await handler.handleRequest({ cookies: 'session=12345' });
+    fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
   });
 });
 
