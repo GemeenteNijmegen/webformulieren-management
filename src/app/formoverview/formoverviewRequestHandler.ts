@@ -43,6 +43,8 @@ export class FormOverviewRequestHandler {
       ttlInMinutes: parseInt(process.env.SESSION_TTL_MIN ?? '15'),
     });
     await session.init();
+    await session.setValue('errorMessageFormOverview', '');
+    console.log('SESSION INIT 1');
     const accessCheck = await AccessController.checkPageAccess(session, '/formoverview');
     return accessCheck ?? this.handleLoggedinRequest(session, params);
   }
@@ -75,8 +77,11 @@ export class FormOverviewRequestHandler {
 
   private async handleListOverviewRequest(session: Session, _params: FormOverviewRequestHandlerParams) {
     //Controleer of er een errorMessage is in de sessie. Haal op en maak leeg.
-    const errorMessageFromSession = session.getValue('errorMessageFormOverview', 'S') ?? 'noerror';
-    await session.setValue('errorMessageFormOverview', 'noerror');
+    await session.init();
+    console.log('SESSION INIT 2');
+    const err = session.getValue('errorMessageFormOverview', 'S') ?? '';
+    const errorMessageFromSession = { ...err };
+    await session.setValue('errorMessageFormOverview', '');
     console.log('Error message was set: ', errorMessageFromSession);
     //Haal naam op voor header
     const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
