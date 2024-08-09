@@ -66,12 +66,16 @@ export class FormOverviewRequestHandler {
     } else {
       const endpoint = this.createCsvEndpoint(params);
       const result = await this.apiClient.getData(endpoint);
-      const errorMessageForSession = result.apiClientError ?? 'noerror';
-      await session.setValue('errorMessageFormOverview', errorMessageForSession);
-      if (errorMessageForSession) {console.error(`Error Message was set: ${errorMessageForSession}`);}
+      const errorMessageForSession = result.apiClientError ?? '';
+
+      if (errorMessageForSession) {
+        console.error(`Error Message was set: ${errorMessageForSession}`);
+        await session.setValue('errorMessageFormOverview', errorMessageForSession);
+      }
     }
     // Reload the  lambda as formoverview to render the page. This prevents a browser refresh to send the form again.
-    return Response.redirect('/', 302, session.getCookie());
+    console.log('[formOverviewRequestHandler handlegenerateCsvRequest] Response redirect');
+    return Response.redirect('/formoverview', 302, session.getCookie());
   }
 
 
@@ -79,8 +83,7 @@ export class FormOverviewRequestHandler {
     //Controleer of er een errorMessage is in de sessie. Haal op en maak leeg.
     await session.init();
     console.log('SESSION INIT 2');
-    const err = session.getValue('errorMessageFormOverview', 'S') ?? '';
-    const errorMessageFromSession = { ...err };
+    const errorMessageFromSession = session.getValue('errorMessageFormOverview', 'S') ?? '';
     await session.setValue('errorMessageFormOverview', '');
     console.log('Error message was set: ', errorMessageFromSession);
     //Haal naam op voor header
@@ -88,9 +91,7 @@ export class FormOverviewRequestHandler {
 
     //Haal de bestanden op die gedownload kunnen worden
     const overview = await this.apiClient.getData('/listformoverviews');
-    console.log('overview has been retrieved. Now it has to be parsed.');
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
-    console.log('formoverview result schema has been parsed');
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
 
     const data = {
@@ -119,22 +120,24 @@ export class FormOverviewRequestHandler {
    * Parameter helper functies
    * Validatie nodig voor endpoint maken. Dan is er zeker een formuliernaam.
    */
-  private validateParams(params: FormOverviewRequestHandlerParams): string {
+  private validateParams(params: FormOverviewRequestHandlerParams): string | undefined {
+    let validationerrors = '';
     if (!params.formName) {
-      return 'Er is geen formuliernaam ingevoerd. Een formuliernaam is vereist.';
+      validationerrors += 'Er is geen formuliernaam ingevoerd. Een formuliernaam is vereist.';
     }
     if (params.formStartDate && !/^\d{4}-\d{2}-\d{2}$/.test(params.formStartDate)) {
-      return `De startdatum ${params.formStartDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
+      validationerrors += `De startdatum ${params.formStartDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
     }
     if (params.formEndDate && !/^\d{4}-\d{2}-\d{2}$/.test(params.formEndDate)) {
-      return `De einddatum ${params.formEndDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
+      validationerrors += `De einddatum ${params.formEndDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
     }
     if (params.formStartDate && params.formEndDate) {
       if (new Date(params.formStartDate) < new Date(params.formEndDate)) {
-        return `Einddatum ${params.formEndDate} mag niet na de startdatum ${params.formStartDate} liggen. Voorbeeld correcte datumrange: startdatum 2024-07-01 en einddatum 2024-06-01`;
+        validationerrors += `Einddatum ${params.formEndDate} mag niet na de startdatum ${params.formStartDate} liggen. Voorbeeld correcte datumrange: startdatum 2024-07-01 en einddatum 2024-06-01`;
       }
     }
-    return 'noerror';
+    if (validationerrors) {console.error(`Validation errors in forminput. ${validationerrors}`);}
+    return validationerrors ?? undefined;
   }
 
   private createCsvEndpoint(params: FormOverviewRequestHandlerParams): string {
