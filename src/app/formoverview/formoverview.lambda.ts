@@ -24,20 +24,28 @@ async function init() {
 const initalization = init();
 
 function parseEvent(event: APIGatewayProxyEventV2): FormOverviewRequestHandlerParams {
+  const formParams = getFormParamsFromBody(event);
   return {
     cookies: event?.cookies?.join(';') ?? '',
-    formName: formNameFromBody(event),
+    formName: formParams.formName,
+    formStartDate: formParams.formStartDate,
+    formEndDate: formParams.formEndDate,
     file: event?.pathParameters?.file,
   };
 }
 
-function formNameFromBody(event: APIGatewayProxyEventV2): string | undefined {
+function getFormParamsFromBody(event: APIGatewayProxyEventV2): FormOverviewQueryParams {
   let urlencodedform;
   if (event.body) {
     urlencodedform = (event?.isBase64Encoded) ? Buffer.from(event?.body, 'base64').toString('utf-8') : event.body;
-    return querystring.parse(urlencodedform)?.formName as string;
+    const parsedQuerystring = querystring.parse(urlencodedform);
+    return {
+      formName: parsedQuerystring.formName ? parsedQuerystring.formName as string : undefined,
+      formStartDate: parsedQuerystring.formStartDate ? parsedQuerystring.formStartDate as string : undefined,
+      formEndDate: parsedQuerystring.formEndDate ? parsedQuerystring.formEndDate as string : undefined,
+    };
   }
-  return undefined;
+  return { formName: undefined, formStartDate: undefined, formEndDate: undefined };
 }
 
 export async function handler (event: any, _context: any):Promise<ApiGatewayV2Response> {
@@ -53,3 +61,8 @@ export async function handler (event: any, _context: any):Promise<ApiGatewayV2Re
     return Response.error(500);
   }
 };
+export interface FormOverviewQueryParams {
+  formName: string | undefined;
+  formStartDate: string | undefined;
+  formEndDate: string | undefined;
+}
