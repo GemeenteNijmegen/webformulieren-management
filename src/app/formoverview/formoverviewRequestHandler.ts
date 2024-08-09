@@ -154,6 +154,4 @@ export class FormOverviewRequestHandler {
     if (params.formEndDate) {endpoint += `&einddatum=${params.formEndDate}`;}
     return endpoint;
   }
-
-
 }

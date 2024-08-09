@@ -39,7 +39,7 @@ function getFormParamsFromBody(event: APIGatewayProxyEventV2): FormOverviewQuery
   if (event.body) {
     urlencodedform = (event?.isBase64Encoded) ? Buffer.from(event?.body, 'base64').toString('utf-8') : event.body;
     const parsedQuerystring = querystring.parse(urlencodedform);
-    console.log(`Parser Querystring: ${parsedQuerystring}`);
+    console.log('Parser Querystring:', JSON.stringify(parsedQuerystring));
     return {
       formName: parsedQuerystring.formName ? parsedQuerystring.formName as string : undefined,
       formStartDate: parsedQuerystring.formStartDate ? parsedQuerystring.formStartDate as string : undefined,
