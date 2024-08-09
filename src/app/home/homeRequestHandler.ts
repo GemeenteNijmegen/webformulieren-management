@@ -3,7 +3,7 @@ import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
 import { render } from '@gemeentenijmegen/webapp';
 import * as homeTemplate from './templates/home.mustache';
-import { permittedNav } from '../nav/nav';
+import { AccessController } from '../permission/AccessController';
 
 export class HomeRequestHandler {
   private dynamoDBClient: DynamoDBClient;
@@ -28,7 +28,7 @@ export class HomeRequestHandler {
     const data = {
       title: 'overzicht',
       shownav: true,
-      nav: permittedNav(session.getValue('permissions', 'SS')),
+      nav: AccessController.permittedNav(session),
       volledigenaam: naam,
     };
 

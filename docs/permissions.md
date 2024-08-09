@@ -13,4 +13,4 @@ Sports has more specific permissions. Please check the [sport page](./sport.read
 |   	|   	|
 |   	|   	|
 
-![Permissions with sports](./sport.png "Permission with sport")
+![Permissions with sports](./sport.drawio.png "Permission with sport")

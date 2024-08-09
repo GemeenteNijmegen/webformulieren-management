@@ -18,7 +18,6 @@ export class PermissionsTable extends Construct {
       partitionKey: { name: 'useremail', type: DynamoDB.AttributeType.STRING },
       billingMode: DynamoDB.BillingMode.PAY_PER_REQUEST,
       tableName: Statics.ssmPermissionsTableName,
-      timeToLiveAttribute: 'ttl',
       encryption: TableEncryption.AWS_MANAGED,
     });
   }
