@@ -1,13 +1,14 @@
 import { PermissionOptions } from './PermissionOptions';
 
-// Mapping of pages to required permissions
+/**
+ * Mapping of pages to permissions
+ * Improvement possibility is to give ADMIN access to all pages without mentioning it in the mapping
+ */
 interface PagePermissionMapping {
   [page: string]: PermissionOptions[];
 }
 
-// Example mapping of pages to permissions
 export const pagePermissions: PagePermissionMapping = {
-  '/admin': ['ADMIN'],
   '/resubmit': ['ADMIN', 'RESUBMIT'],
   '/formoverview': ['ADMIN', 'FORMOVERVIEW'],
   // Add more pages as needed
