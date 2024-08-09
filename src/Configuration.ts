@@ -73,7 +73,7 @@ const EnvironmentConfigurations: {[key:string]: Configuration} = {
     pipelineStackCdkName: 'webformulieren-management-acceptance-pipeline-stack',
     pipelineName: 'webformulieren-management-acceptance',
     webformsManagementApiBaseUrl: 'https://eform-api.webformulieren.webforms-accp.csp-nijmegen.nl',
-    webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-accp.csp-nijmegen.nl',
+    webformsSubmissionsApiBaseUrl: 'https://api.submissionstorage-dev.csp-nijmegen.nl',
     resources: 'src/resources-accp',
     criticality: new Criticality('low'),
     debug: true,
