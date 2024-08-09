@@ -67,7 +67,7 @@ export class FormOverviewRequestHandler {
       await session.setValue('errorMessageFormOverview', errorMessageForSession);
     }
     // Reload the  lambda as formoverview to render the page. This prevents a browser refresh to send the form again.
-    return Response.redirect('/formoverview');
+    return Response.redirect('/formoverview', 302, session.getCookie());
   }
 
 
