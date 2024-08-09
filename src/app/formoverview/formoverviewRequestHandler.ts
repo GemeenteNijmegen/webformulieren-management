@@ -52,7 +52,7 @@ export class FormOverviewRequestHandler {
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     if (params.file) {
       return this.handleDownloadRequest(session, params);
-    } else if (params.formName) {
+    } else if (params.formName || params.formStartDate || params.formEndDate) {
       return this.handleGenerateCsvRequest(session, params);
     } else {
       return this.handleListOverviewRequest(session, params);
@@ -62,8 +62,11 @@ export class FormOverviewRequestHandler {
   private async handleGenerateCsvRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     const paramErrorMessage = this.validateParams(params);
     if (paramErrorMessage) {
+      console.log('Set error message in session param before');
       await session.setValue('errorMessageFormOverview', paramErrorMessage);
+      console.log('Set error message in session');
     } else {
+      console.log('Make endpoint and make the request');
       const endpoint = this.createCsvEndpoint(params);
       const result = await this.apiClient.getData(endpoint);
       const errorMessageForSession = result.apiClientError ?? '';
@@ -83,9 +86,10 @@ export class FormOverviewRequestHandler {
     //Controleer of er een errorMessage is in de sessie. Haal op en maak leeg.
     await session.init();
     console.log('SESSION INIT 2');
-    const errorMessageFromSession = session.getValue('errorMessageFormOverview', 'S') ?? '';
+    const err = session.getValue('errorMessageFormOverview', 'S') ?? '';
+    const errorMessageFromSession = err;
     await session.setValue('errorMessageFormOverview', '');
-    console.log('Error message was set: ', errorMessageFromSession);
+    console.log('Error message was set: ', errorMessageFromSession, err);
     //Haal naam op voor header
     const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
 
