@@ -5,6 +5,7 @@ import { render } from '@gemeentenijmegen/webapp';
 import { FormOverviewApiClient } from './FormOverviewApiClient';
 import * as formOverviewTemplate from './templates/formOverview.mustache';
 import { AccessController } from '../permission/AccessController';
+import { formatDateTime } from '../shared/FormatCreatedDate';
 import { FormOverviewResultsSchema } from '../shared/FormOverviewResultsSchema';
 
 
@@ -77,7 +78,7 @@ export class FormOverviewRequestHandler {
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
     const formattedResults = listFormOverviewResults.map(item => {
-      const { formattedDate, formattedTime } = this.formatDateTime(item.createdDate);
+      const { formattedDate, formattedTime } = formatDateTime(item.createdDate);
       const formattedFilename = item.fileName.replace(/-/g, ' ');
       return {
         ...item,
@@ -142,18 +143,5 @@ export class FormOverviewRequestHandler {
     if (params.formStartDate) {endpoint += `&startdatum=${params.formStartDate}`;}
     if (params.formEndDate) {endpoint += `&einddatum=${params.formEndDate}`;}
     return endpoint;
-  }
-  private formatDateTime(dateString: string, timezoneOffsetHours: number = 2): { formattedDate: string; formattedTime: string } {
-    const date = new Date(dateString);
-    // Adjust for the timezone offset (e.g., +2 hours)
-    date.setHours(date.getHours() + timezoneOffsetHours);
-    // Format date as DD-MM-YYYY
-    const formattedDate = date.toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    // Format time as HH:MM
-    const formattedTime = date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-    return {
-      formattedDate,
-      formattedTime,
-    };
   }
 }
