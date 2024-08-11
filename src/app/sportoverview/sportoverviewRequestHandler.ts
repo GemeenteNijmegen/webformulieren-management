@@ -48,6 +48,7 @@ export class SportOverviewRequestHandler {
       const decryptedFilename = await EncryptFilename.decrypt(key, decodeURIComponent(params.downloadfile!));
       const endpoint = params.downloadfile ? 'downloadformoverview' : 'download';
       const file = params.downloadpdf ? `${decryptedFilename}/${decryptedFilename}.pdf` : decryptedFilename;
+      console.log('Download ', file, endpoint);
       const response = await this.api.get<{downloadUrl: string}>(endpoint, { key: file });
       if (response.downloadUrl) {
         return Response.redirect(response.downloadUrl, 302, session.getCookie());
@@ -67,7 +68,6 @@ export class SportOverviewRequestHandler {
       this.getListOverviews(appids),
       this.getSubmissions(appids),
     ]);
-    console.log('Retrieved submissions', submissions);
     const submissionsResults = SubmissionsSchema.parse(submissions);
     submissionsResults.sort((a, b) => (a.DatumTijdOntvangen < b.DatumTijdOntvangen) ? 1 : -1);
 
@@ -117,6 +117,14 @@ export class SportOverviewRequestHandler {
       const voornaam = submission['Voornaam voornaam'];
       const achternaam = submission['Achternaam achternaam'];
 
+      const kind = {
+        voornaam: submission['Voornaam kind'] ?? '',
+        achternaam: submission['Voornaam kind'] ?? '',
+        leeftijd: submission['Voornaam kind'] ?? '',
+        bo: submission['School basisonderwijs'] ?? '',
+        vo: submission['School voortgezetOnderwijs'] ?? '',
+      };
+      const kindstring = kind.voornaam ? `${kind.voornaam} ${kind.achternaam} (${kind.leeftijd} ${kind.bo} ${kind.vo})` : '';
 
       const activities: string[] = [];
       // Loop through keys and find checkboxes with 'true'
@@ -141,6 +149,7 @@ export class SportOverviewRequestHandler {
         filenameForPDFDownload: encodeURIComponent(await this.getEncryptedFileName(session, submission.FormulierKenmerk)),
         dateSubmitted: `${formattedDate} ${formattedTime}`,
         name: `${voornaam} ${achternaam}`,
+        child: kindstring,
         telAndMail: `${tel} ${email}`.trim(),
         activities: activities.join(', '),
         comments: (submission.Opmerkingen || '').toString().trim(),
@@ -222,6 +231,7 @@ export interface SportSubmissionsForTemplate {
   filenameForPDFDownload: string; // generated from formulierkenmerk with getEncryptedFileName
   dateSubmitted: string; // formatted date and time with a space in between
   name: string; // combination first and last name
+  child: string;
   telAndMail: string; // from telefoonnummer and email with a space in between
   activities: string; // comma separated activities where checkbox is true
   comments: string; // opmerkingen from form
