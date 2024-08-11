@@ -43,7 +43,8 @@ export class SportOverviewRequestHandler {
     const key: string = session.getValue('sportkey', 'S');
     console.log('is there even a key?', key);
     if (key) {
-      const decryptedFilename = EncryptFilename.decrypt(key, params.downloadfile as string);
+      console.log('Decrypt the filname');
+      const decryptedFilename = await EncryptFilename.decrypt(key, params.downloadfile as string);
       console.log('Decrypted filename: ', decryptedFilename);
       const response = await this.api.get<{downloadUrl: string}>('downloadformoverview', { key: decryptedFilename });
       console.log('response', response);
@@ -66,9 +67,9 @@ export class SportOverviewRequestHandler {
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
     await this.setEncryptionKey(session);
-    const formattedResults = listFormOverviewResults.map(item => {
+    const formattedResults = await Promise.all(listFormOverviewResults.map(async item => {
       const { formattedDate, formattedTime } = formatDateTime(item.createdDate);
-      const filenameForDownload = this.getEncryptedFileName(session, item.fileName);
+      const filenameForDownload = await this.getEncryptedFileName(session, item.fileName);
       const formattedFilename = item.fileName.replace(/-/g, ' ');
       return {
         ...item,
@@ -77,7 +78,7 @@ export class SportOverviewRequestHandler {
         formattedFilename: formattedFilename,
         filenameForDownload: filenameForDownload,
       };
-    });
+    }));
     const data = {
       title: 'Sportformulieren',
       shownav: true,
@@ -134,7 +135,7 @@ export class SportOverviewRequestHandler {
       await session.init();
     }
   }
-  private getEncryptedFileName(session: Session, filename: string): string {
+  private async getEncryptedFileName(session: Session, filename: string): Promise<string> {
     let key: string = session.getValue('sportkey', 'S');
     return EncryptFilename.encrypt(key, filename);
   }

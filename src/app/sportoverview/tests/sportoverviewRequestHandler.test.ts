@@ -15,7 +15,7 @@ let sessionGetValueMock = jest.fn((key: string, type: string) => {
   } else if (key === 'email' && type === 'S') {
     return 'fakemail@example.com';
   } else if (key === 'sportkey') {
-    return '/wed7SX81xvHOAbwWUkMhw==';
+    return 'ab3a40df52563b7a25b03fbbe6b7764c';
   } else if (key === 'errorMessageFormOverview' && type === 'S') {
     return errorMessageForMock;
   }
