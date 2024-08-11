@@ -6,7 +6,7 @@ import { render } from '@gemeentenijmegen/webapp';
 import { SportOverviewApiClient } from './sportoverviewApiClient';
 import * as sportoverviewTemplate from './templates/sportoverview.mustache';
 import { AccessController } from '../permission/AccessController';
-import { isSportPermissionOption } from '../permission/PermissionOptions';
+import { getSportPermissionDescriptions, isSportPermissionOption } from '../permission/PermissionOptions';
 import { EncryptFilename } from '../shared/encryptFilename';
 import { formatDateTime } from '../shared/FormatCreatedDate';
 import { FormOverviewResultsSchema } from '../shared/FormOverviewResultsSchema';
@@ -75,6 +75,7 @@ export class SportOverviewRequestHandler {
         filenameForDownload: filenameForDownload,
       };
     }));
+    const allowedSportFormsInText = getSportPermissionDescriptions(session.getValue('permissions', 'SS')).join(', ');
     const data = {
       title: 'Sportformulieren',
       shownav: true,
@@ -82,6 +83,7 @@ export class SportOverviewRequestHandler {
       volledigenaam: naam,
       overview: formattedResults,
       error: errormessage,
+      allowedSportFormsInText: allowedSportFormsInText,
     };
     // render page
     const html = await render(data, sportoverviewTemplate.default);
