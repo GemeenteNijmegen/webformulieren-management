@@ -109,7 +109,7 @@ describe('SportOverviewApiClient', () => {
         expect.arrayContaining([
           expect.objectContaining({
             headers: expect.objectContaining({
-              'api-x-key': apiKey,
+              'x-api-key': apiKey,
             }),
           }),
         ]),
@@ -127,7 +127,7 @@ describe('SportOverviewApiClient', () => {
         `${baseUrl}/test-endpoint`,
         expect.objectContaining({
           method: 'GET',
-          headers: expect.objectContaining({ 'api-x-key': apiKey }),
+          headers: expect.objectContaining({ 'x-api-key': apiKey }),
         }),
       ]);
     });
@@ -141,7 +141,7 @@ describe('SportOverviewApiClient', () => {
         `${baseUrl}/test-endpoint?param1=value1&param2=value2`,
         expect.objectContaining({
           method: 'GET',
-          headers: expect.objectContaining({ 'api-x-key': apiKey }),
+          headers: expect.objectContaining({ 'x-api-key': apiKey }),
         }),
       ]);
     });
