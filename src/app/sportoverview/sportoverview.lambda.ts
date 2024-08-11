@@ -34,6 +34,6 @@ async function initialize () {
 function parseEvent(event: APIGatewayProxyEventV2) {
   return {
     cookies: event?.cookies?.join(';') ?? '',
-    downloadfile: event?.queryStringParameters?.file,
+    downloadfile: event?.queryStringParameters?.downloadfile,
   };
 }
