@@ -41,11 +41,14 @@ export class SportOverviewRequestHandler {
   }
   async handleDownloadFileRequest(session: Session, params: SportOverviewRequestHandlerParams) {
     const key: string = session.getValue('sportkey', 'S');
+    console.log('is there even a key?', key);
     if (key) {
       const decryptedFilename = EncryptFilename.decrypt(key, params.downloadfile as string);
+      console.log('Decrypted filename: ', decryptedFilename);
       const response = await this.api.get<{downloadUrl: string}>('downloadformoverview', { key: decryptedFilename });
+      console.log('response', response);
       if (response.downloadUrl) {
-        return Response.redirect(response.downloadUrl);
+        return Response.redirect(response.downloadUrl, 302, session.getCookie());
       } else {
         console.error('[handleDownloadFileRequest] Redirecting to download failed because there was no downloadUrl. Check the apicall response.');
         return Response.error(404);
