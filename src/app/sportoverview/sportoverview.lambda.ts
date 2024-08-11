@@ -35,5 +35,6 @@ function parseEvent(event: APIGatewayProxyEventV2) {
   return {
     cookies: event?.cookies?.join(';') ?? '',
     downloadfile: event?.queryStringParameters?.downloadfile,
+    downloadpdf: event?.queryStringParameters?.downloadpdf,
   };
 }

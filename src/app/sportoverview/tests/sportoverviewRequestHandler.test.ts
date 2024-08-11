@@ -3,6 +3,7 @@ import path from 'path';
 import { DynamoDBClient, GetItemCommand, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { mockClient } from 'aws-sdk-client-mock';
+import { SubmissionsSchemaType } from '../../shared/SubmissionsSchema';
 import { SportOverviewApiClient } from '../sportoverviewApiClient';
 import { SportOverviewRequestHandler } from '../sportoverviewRequestHandler';
 let sessionIsLoggedInMock = jest.fn().mockReturnValue(true);
@@ -69,7 +70,16 @@ describe('Sportoverview Request Handler', () => {
 
   test('should render the page for local development with an error', async () => {
     const dynamoDBClient = new DynamoDBClient();
-    const mockApiClient = { get: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as SportOverviewApiClient;
+    const mockApiClient = {
+      get: jest.fn((endpoint: string) => {
+        if (endpoint.includes('/listformoverviews')) {
+          return Promise.resolve(mockSuccesApiGetData);
+        } else if (endpoint.includes('/formoverview')) {
+          return Promise.resolve(mockSubmissionsData);
+        }
+        return Promise.reject(new Error('Unknown endpoint'));
+      }),
+    } as any as SportOverviewApiClient;
     const handler = new SportOverviewRequestHandler(dynamoDBClient, mockApiClient );
     const result: any = await handler.handleRequest({ cookies: 'session=12345' });
     fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('(href|src)="/static', 'g'), '$1="../../../static-resources/static') : '', () => { });
@@ -104,5 +114,20 @@ export const mockSuccesApiGetData = [
     formTitle: 'Aanmelden sportactiviteit',
     queryStartDate: '2024-05-31',
     queryEndDate: '2024-05-10',
+  },
+];
+export const mockSubmissionsData: SubmissionsSchemaType = [
+  {
+    'DatumTijdOntvangen': '2024-06-01T10:00:00.000Z',
+    'Telefoonnummer telefoonnummer': '123-456-7890',
+    'E-mailadres eMailadres': 'test1@example.com',
+    'Voornaam voornaam': 'Jan',
+    'Achternaam achetnaam': 'Jansen',
+    'Opmerkingen': 'Some comments here',
+    'FormulierKenmerk': 'form-001',
+    'Formuliernaam': 'aanmeldensportactiviteit',
+    'Aanmelden voor sportactiviteit A': '',
+    'Aanmelden voor sportactiviteit B': 'Checkbox ActivityB is true. Checkbox ActivityT is true',
+    'Aanmelden voor sportactiviteit C': 'Checkbox ActivityC is true.',
   },
 ];

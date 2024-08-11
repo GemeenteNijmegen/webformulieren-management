@@ -3,34 +3,36 @@
 <main>
     <!-- START: template component(s) -->
     <div class="container" id="section-1">
+        <style>
+            table tbody tr:nth-child(even) {
+                background-color: #ffffff;
+            }
+
+            table tbody tr:nth-child(odd) {
+                background-color: #f2f2f2;
+            }
+
+            table tbody td {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+        </style>
         <div class="row">
             <div class="col-12">
                 <h1>Sport overzicht</h1>
                 <p>
-                    Deze pagina laat alleen de formulierinzendingen zien die door jou bekeken mogen worden. De stadsdelen waarvan jij data ziet: {{allowedSportFormsInText}}
-                    De overzichten kunnen gedownload worden in csv formaat. De inzendingen in het bestand zijn van de periode startdatum tot en met de datum gemaakt.
+                    Deze pagina laat alleen de formulierinzendingen zien die door jou bekeken mogen worden. De
+                    stadsdelen waarvan jij data ziet: {{allowedSportFormsInText}}
+                    De overzichten kunnen gedownload worden in csv formaat. De inzendingen in het bestand zijn van de
+                    periode startdatum tot en met de datum gemaakt.
                 </p>
             </div>
         </div>
-       
-
         <div class="row">
             <div class="col-12">
-                <h1>Sportoverzichten</h1>
-                <p class="lead">Sportoverzichten om te downloaden.</p>
-                <style>
-                    table tbody tr:nth-child(even) {
-                        background-color: #ffffff;
-                    }
+                <h1>Sportoverzichten CSV</h1>
+                <p class="lead">Sportoverzichten om te downloaden in csv formaat.</p>
 
-                    table tbody tr:nth-child(odd) {
-                        background-color: #f2f2f2;
-                    }
-                    table tbody td {
-                        padding-left: 0.5rem;
-                        padding-right: 0.5rem;
-                    }
-                </style>
                 <table class="responsive-table">
                     <thead>
                         <tr>
@@ -45,12 +47,51 @@
                         {{#overview}}
                         <tr>
                             <td>{{formattedCreatedDate}} <br> {{formattedCreatedTime}}</td>
-                            <td>{{formTitle}}  {{appId}}</td>
+                            <td>{{formTitle}} {{appId}}</td>
                             <td>{{queryStartDate}}</td>
                             <td>{{queryEndDate}}</td>
-                            <td><a href="/sport?downloadfile={{filenameForDownload}}" title="download">{{formattedFilename}}</a></td>
+                            <td><a href="/sport?downloadfile={{filenameForDownload}}"
+                                    title="download">{{formattedFilename}}</a></td>
                         </tr>
                         {{/overview}}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h1>Inzendingen afgelopen maand</h1>
+
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Formulierkenmerk</th>
+                            <th>Ingediend</th>
+                            <th>Naam</th>
+                            <th>Tel & mail</th>
+                            <th>Activiteiten</th>
+                            <th>Opmerkingen</th>
+                            <th>PDF</th>
+                        </tr>
+                    </thead>
+            
+                    <tbody>
+                        {{#submissions}}
+                        <tr>
+                            <td>{{reference}}</td>
+                            <td>{{dateSubmitted}}</td>
+                            <td>{{naam}}</td>
+                            <td>{{telAndMail}}</td>
+                            <td>{{activities}}</a></td>
+                            <td>{{comments}}</td>
+                            <td> <a href="/sport?downloadpdf={{filenameForPDFDownload}}" title="download pdf">
+                                    <span class="mdi mdi-file-document"></span>
+                            </td>
+                        </tr>
+                        {{/submissions}}
                     </tbody>
                 </table>
 
