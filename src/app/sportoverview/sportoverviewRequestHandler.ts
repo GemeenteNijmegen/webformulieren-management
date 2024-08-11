@@ -13,7 +13,6 @@ import { FormOverviewResultsSchema } from '../shared/FormOverviewResultsSchema';
 
 export interface SportOverviewRequestHandlerParams {
   cookies: string;
-  reference?: string;
   downloadfile?: string;
 }
 export class SportOverviewRequestHandler {
@@ -35,9 +34,9 @@ export class SportOverviewRequestHandler {
   private async handleLoggedinRequest(session: Session, params: SportOverviewRequestHandlerParams) {
     if (params.downloadfile) {
       await this.handleDownloadFileRequest(session, params);
+    } else {
+      await this.handleListOverview(session);
     }
-    await this.handleListOverview(session);
-
     Response.error(400, 'Er is geen functie uitgevoerd in handleLoggedInRequest');
   }
   async handleDownloadFileRequest(session: Session, params: SportOverviewRequestHandlerParams) {
