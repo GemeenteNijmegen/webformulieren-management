@@ -108,7 +108,7 @@ export class SportOverviewApiClient {
     options: RequestInit = {},
   ): Promise<Response> {
     const defaultHeaders = {
-      'api-x-key': this.apiKey,
+      'x-api-key': this.apiKey,
     };
 
     const headers = {
