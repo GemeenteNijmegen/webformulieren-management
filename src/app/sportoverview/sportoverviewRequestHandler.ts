@@ -44,7 +44,7 @@ export class SportOverviewRequestHandler {
     console.log('is there even a key?', key);
     if (key) {
       console.log('Decrypt the filname');
-      const decryptedFilename = await EncryptFilename.decrypt(key, params.downloadfile as string);
+      const decryptedFilename = await EncryptFilename.decrypt(key, decodeURIComponent(params.downloadfile!));
       console.log('Decrypted filename: ', decryptedFilename);
       const response = await this.api.get<{downloadUrl: string}>('downloadformoverview', { key: decryptedFilename });
       console.log('response', response);
@@ -69,7 +69,7 @@ export class SportOverviewRequestHandler {
     await this.setEncryptionKey(session);
     const formattedResults = await Promise.all(listFormOverviewResults.map(async item => {
       const { formattedDate, formattedTime } = formatDateTime(item.createdDate);
-      const filenameForDownload = await this.getEncryptedFileName(session, item.fileName);
+      const filenameForDownload = encodeURIComponent(await this.getEncryptedFileName(session, item.fileName));
       const formattedFilename = item.fileName.replace(/-/g, ' ');
       return {
         ...item,
