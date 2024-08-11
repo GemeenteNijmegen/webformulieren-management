@@ -13,7 +13,6 @@ export class EncryptFilename {
    * @returns The key as a base64-encoded string.
    */
   public static generateKey(): string {
-    console.log('IV', this.IV);
     return crypto.randomBytes(16).toString('base64'); // 16 bytes for AES-128
   }
 

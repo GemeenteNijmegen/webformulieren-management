@@ -3,9 +3,8 @@ import path from 'path';
 import { DynamoDBClient, GetItemCommand, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { mockClient } from 'aws-sdk-client-mock';
-import { FormOverviewApiClient } from '../FormOverviewApiClient';
-import { FormOverviewRequestHandler } from '../formoverviewRequestHandler';
-
+import { SportOverviewApiClient } from '../sportoverviewApiClient';
+import { SportOverviewRequestHandler } from '../sportoverviewRequestHandler';
 let sessionIsLoggedInMock = jest.fn().mockReturnValue(true);
 let errorMessageForMock = `Er is een timeout opgetreden. Dit kan gebeuren wanneer een csv-bestand van grote omvang gemaakt wordt. 
 Het bestand wordt op de achtergrond nog steeds aangemaakt. 
@@ -15,6 +14,8 @@ let sessionGetValueMock = jest.fn((key: string, type: string) => {
     return ['ADMIN'];
   } else if (key === 'email' && type === 'S') {
     return 'fakemail@example.com';
+  } else if (key === 'sportkey') {
+    return '/wed7SX81xvHOAbwWUkMhw==';
   } else if (key === 'errorMessageFormOverview' && type === 'S') {
     return errorMessageForMock;
   }
@@ -22,7 +23,7 @@ let sessionGetValueMock = jest.fn((key: string, type: string) => {
 });
 jest.mock('@gemeentenijmegen/session', () => {
   return {
-    // Constructor mock
+  // Constructor mock
     Session: jest.fn( () => {
       return {
         init: jest.fn().mockResolvedValue({}),
@@ -34,51 +35,45 @@ jest.mock('@gemeentenijmegen/session', () => {
     }),
   };
 });
-
-beforeAll(() => {
-  const outputDir = path.join(__dirname, 'output');
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
-});
+describe('Sportoverview Request Handler', () => {
 
 
-const ddbMock = mockClient(DynamoDBClient);
-
-beforeEach(() => {
-  jest.resetModules();
-  ddbMock.reset();
-  const getItemOutput: Partial<GetItemCommandOutput> = {
-    Item: {
-      data: {
-        M: {
-          loggedin: { BOOL: true },
-          identifier: { S: '12345678' },
-          bsn: { S: '12345678' },
-          user_type: { S: 'person' },
-          state: { S: '12345' },
-          username: { S: 'Jan de Tester' },
-        },
-      },
-    },
-  };
-  ddbMock.on(GetItemCommand).resolves(getItemOutput);
-});
-
-describe('FormOverviewTests', () => {
-  test('should render the page for local development with an error', async () => {
-    const dynamoDBClient = new DynamoDBClient();
-    const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
-    const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
-    const result: any = await handler.handleRequest({ cookies: 'session=12345' });
-    fs.writeFile(path.join(__dirname, 'output', 'test-error.html'), result.body ? result.body.replace( new RegExp('(href|src)="/static', 'g'), '$1="../../../static-resources/static') : '', () => { });
+  beforeAll(() => {
+    const outputDir = path.join(__dirname, 'output');
+    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
   });
 
-  test('should render the page for local development', async () => {
+
+  const ddbMock = mockClient(DynamoDBClient);
+
+  beforeEach(() => {
+    jest.resetModules();
+    ddbMock.reset();
+    const getItemOutput: Partial<GetItemCommandOutput> = {
+      Item: {
+        data: {
+          M: {
+            loggedin: { BOOL: true },
+            identifier: { S: '12345678' },
+            bsn: { S: '12345678' },
+            user_type: { S: 'person' },
+            state: { S: '12345' },
+            username: { S: 'Jan de Tester' },
+            permissions: { SS: ['ADMIN'] },
+          },
+        },
+      },
+    };
+    ddbMock.on(GetItemCommand).resolves(getItemOutput);
+  });
+
+  test('should render the page for local development with an error', async () => {
     const dynamoDBClient = new DynamoDBClient();
-    errorMessageForMock = '';
-    const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
-    const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
+    const mockApiClient = { get: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as SportOverviewApiClient;
+    const handler = new SportOverviewRequestHandler(dynamoDBClient, mockApiClient );
     const result: any = await handler.handleRequest({ cookies: 'session=12345' });
     fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('(href|src)="/static', 'g'), '$1="../../../static-resources/static') : '', () => { });
+
   });
 });
 

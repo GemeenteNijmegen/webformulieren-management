@@ -33,9 +33,9 @@ export class SportOverviewRequestHandler {
   }
   private async handleLoggedinRequest(session: Session, params: SportOverviewRequestHandlerParams) {
     if (params.downloadfile) {
-      await this.handleDownloadFileRequest(session, params);
+      return this.handleDownloadFileRequest(session, params);
     } else {
-      await this.handleListOverview(session);
+      return this.handleListOverview(session);
     }
     Response.error(400, 'Er is geen functie uitgevoerd in handleLoggedInRequest');
   }
@@ -62,7 +62,6 @@ export class SportOverviewRequestHandler {
 
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
-
     await this.setEncryptionKey(session);
     const formattedResults = listFormOverviewResults.map(item => {
       const { formattedDate, formattedTime } = formatDateTime(item.createdDate);
@@ -76,7 +75,6 @@ export class SportOverviewRequestHandler {
         filenameForDownload: filenameForDownload,
       };
     });
-
     const data = {
       title: 'Sportformulieren',
       shownav: true,
