@@ -45,7 +45,8 @@ export class SportOverviewRequestHandler {
   async handleDownloadFileRequest(session: Session, params: SportOverviewRequestHandlerParams) {
     const key: string = session.getValue('sportkey', 'S');
     if (key) {
-      const decryptedFilename = await EncryptFilename.decrypt(key, decodeURIComponent(params.downloadfile!));
+      const toDecode = params.downloadfile ?? params.downloadpdf;
+      const decryptedFilename = await EncryptFilename.decrypt(key, decodeURIComponent(toDecode!));
       const endpoint = params.downloadfile ? 'downloadformoverview' : 'download';
       const file = params.downloadpdf ? `${decryptedFilename}/${decryptedFilename}.pdf` : decryptedFilename;
       console.log('Download ', file, endpoint);
@@ -119,8 +120,8 @@ export class SportOverviewRequestHandler {
 
       const kind = {
         voornaam: submission['Voornaam kind'] ?? '',
-        achternaam: submission['Voornaam kind'] ?? '',
-        leeftijd: submission['Voornaam kind'] ?? '',
+        achternaam: submission['Achternaam kind'] ?? '',
+        leeftijd: submission['Leeftijd kind'] ?? '',
         bo: submission['School basisonderwijs'] ?? '',
         vo: submission['School voortgezetOnderwijs'] ?? '',
       };
