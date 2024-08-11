@@ -9,10 +9,10 @@ import { FormOverviewRequestHandler, FormOverviewRequestHandlerParams } from './
 let requestHandler: FormOverviewRequestHandler | undefined = undefined;
 
 async function init() {
-  const apiKey = await AWS.getSecret(process.env.FORMOVERVIEW_API_KEY_SECRET_ARN!);
+  const apiKey = await AWS.getSecret(process.env.SUBMISSION_STORAGE_API_KEY_SECRET_ARN!);
   const apiClient = new FormOverviewApiClient({
     apiKey: apiKey,
-    baseUrl: process.env.FORMOVERVIEW_API_BASE_URL!,
+    baseUrl: process.env.SUBMISSION_STORAGE_API_BASE_URL!,
     timeout: 30000,
   });
   const dynamoDBClient = new DynamoDBClient({});
@@ -50,7 +50,6 @@ function getFormParamsFromBody(event: APIGatewayProxyEventV2): FormOverviewQuery
 export async function handler (event: any, _context: any):Promise<ApiGatewayV2Response> {
   await initalization;
   try {
-    console.log('EVENT: ', event, event.queryStringParameters);
     const params = parseEvent(event);
     if (!requestHandler) {
       throw Error('Request handler not initalized!');

@@ -12,6 +12,7 @@ import { FormoverviewFunction } from './app/formoverview/formoverview-function';
 import { HomeFunction } from './app/home/home-function';
 import { PostloginFunction } from './app/post-login/postlogin-function';
 import { ResubmitFunction } from './app/resubmit/resubmit-function';
+import { SportoverviewFunction } from './app/sportoverview/sportoverview-function';
 import { Configurable } from './Configuration';
 import { PermissionsTable } from './PermissionsTable';
 import { Statics } from './statics';
@@ -58,7 +59,7 @@ export class WebappStack extends Stack {
       secretName: Statics.ssmApiKeySecretWebformsManagment,
     });
     // Setup API key secret (submissions form overview)
-    const formOverviewApiKeySecret = new Secret(this, 'form-overview-api-key-secret', {
+    const submissionStorageApiKeySecret = new Secret(this, 'form-overview-api-key-secret', {
       description: 'The API KEY secret for the webforms-submissions formoverview api',
       secretName: Statics.ssmApiKeySecretSubmissionsFormOverview,
     });
@@ -100,8 +101,9 @@ export class WebappStack extends Stack {
 
     this.addHomePage(webapp);
     this.addResubmitPage(webapp, resubmissionTable, apiKeySecret, props);
-    this.addFormOverviewPage(webapp, formOverviewApiKeySecret, props);
-    this.addFormOverviewDownloadPage(webapp, formOverviewApiKeySecret, props);
+    this.addFormOverviewPage(webapp, submissionStorageApiKeySecret, props);
+    this.addFormOverviewDownloadPage(webapp, submissionStorageApiKeySecret, props);
+    this.addSportOverviewPage(webapp, submissionStorageApiKeySecret, permissionTable.table, props);
   }
 
   /**
@@ -142,37 +144,59 @@ export class WebappStack extends Stack {
   /**
    * Add a Form overview page to the webapp
    * @param webapp
-   * @param formOverviewApiKeySecret
+   * @param submissionStorageApiKeySecret
    * @param props
    */
-  addFormOverviewPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
+  addFormOverviewPage(webapp: Webapp, submissionStorageApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-function', {
       description: 'FormOverview lambda',
       apiFunction: FormoverviewFunction,
       environment: {
-        FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
-        FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
+        SUBMISSION_STORAGE_API_KEY_SECRET_ARN: submissionStorageApiKeySecret.secretArn,
+        SUBMISSION_STORAGE_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
       },
       timeout: Duration.seconds(32),
     });
-    formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
+    submissionStorageApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverview', formOverviewFunction, '/formoverview', [HttpMethod.GET, HttpMethod.POST]);
   }
 
-  addFormOverviewDownloadPage(webapp: Webapp, formOverviewApiKeySecret: ISecret, props: WebappStackProps) {
+  addFormOverviewDownloadPage(webapp: Webapp, submissionStorageApiKeySecret: ISecret, props: WebappStackProps) {
     const formOverviewFunction = new Webpage(this, 'formoverview-download-function', {
       description: 'FormOverview Download Lambda',
       apiFunction: FormoverviewFunction,
       environment: {
-        FORMOVERVIEW_API_KEY_SECRET_ARN: formOverviewApiKeySecret.secretArn,
-        FORMOVERVIEW_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
+        SUBMISSION_STORAGE_API_KEY_SECRET_ARN: submissionStorageApiKeySecret.secretArn,
+        SUBMISSION_STORAGE_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
       },
       timeout: Duration.seconds(6),
     });
-    formOverviewApiKeySecret.grantRead(formOverviewFunction.lambda);
+    submissionStorageApiKeySecret.grantRead(formOverviewFunction.lambda);
     webapp.addPage('formoverviewdownload', formOverviewFunction, '/formoverview/download/{file+}');
   }
 
+  /**
+   * Add a Sport page to the webapp
+   * The page contains data concerning aanmeldensportactiviteit forms
+   * @param webapp
+   * @param submissionStorageApiKeySecret
+   * @param props
+   */
+  addSportOverviewPage(webapp: Webapp, submissionStorageApiKeySecret: ISecret, permissionTable: ITable, props: WebappStackProps) {
+    const sportOverviewFunction = new Webpage(this, 'sportoverview-function', {
+      description: 'SportOverview lambda',
+      apiFunction: SportoverviewFunction,
+      environment: {
+        SUBMISSION_STORAGE_API_KEY_SECRET_ARN: submissionStorageApiKeySecret.secretArn,
+        SUBMISSION_STORAGE_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
+        PERMISSION_TABLE_NAME: permissionTable.tableName,
+      },
+      timeout: Duration.seconds(32),
+    });
+    submissionStorageApiKeySecret.grantRead(sportOverviewFunction.lambda);
+    permissionTable.grantReadWriteData(sportOverviewFunction.lambda);
+    webapp.addPage('sportoverview', sportOverviewFunction, '/sport', [HttpMethod.GET, HttpMethod.POST]);
+  }
   /**
    * Construct a post-login hook function that is passed directly
    * to the webapp. It will register the function and redirect trafic

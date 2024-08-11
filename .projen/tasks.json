@@ -56,6 +56,9 @@
         },
         {
           "spawn": "bundle:app/resubmit/resubmit.lambda"
+        },
+        {
+          "spawn": "bundle:app/sportoverview/sportoverview.lambda"
         }
       ]
     },
@@ -128,6 +131,24 @@
       "steps": [
         {
           "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
+        }
+      ]
+    },
+    "bundle:app/sportoverview/sportoverview.lambda": {
+      "name": "bundle:app/sportoverview/sportoverview.lambda",
+      "description": "Create a JavaScript bundle from src/app/sportoverview/sportoverview.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/app/sportoverview/sportoverview.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/sportoverview/sportoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
+        }
+      ]
+    },
+    "bundle:app/sportoverview/sportoverview.lambda:watch": {
+      "name": "bundle:app/sportoverview/sportoverview.lambda:watch",
+      "description": "Continuously update the JavaScript bundle from src/app/sportoverview/sportoverview.lambda.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/app/sportoverview/sportoverview.lambda.ts --target=\"node20\" --platform=\"node\" --outfile=\"assets/app/sportoverview/sportoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },

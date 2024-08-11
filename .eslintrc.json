@@ -156,7 +156,8 @@
           "src/app/formoverview/formoverview.lambda.ts",
           "src/app/home/home.lambda.ts",
           "src/app/post-login/postlogin.lambda.ts",
-          "src/app/resubmit/resubmit.lambda.ts"
+          "src/app/resubmit/resubmit.lambda.ts",
+          "src/app/sportoverview/sportoverview.lambda.ts"
         ],
         "optionalDependencies": false,
         "peerDependencies": true

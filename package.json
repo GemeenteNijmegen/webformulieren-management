@@ -12,6 +12,8 @@
     "bundle:app/post-login/postlogin.lambda:watch": "npx projen bundle:app/post-login/postlogin.lambda:watch",
     "bundle:app/resubmit/resubmit.lambda": "npx projen bundle:app/resubmit/resubmit.lambda",
     "bundle:app/resubmit/resubmit.lambda:watch": "npx projen bundle:app/resubmit/resubmit.lambda:watch",
+    "bundle:app/sportoverview/sportoverview.lambda": "npx projen bundle:app/sportoverview/sportoverview.lambda",
+    "bundle:app/sportoverview/sportoverview.lambda:watch": "npx projen bundle:app/sportoverview/sportoverview.lambda:watch",
     "clobber": "npx projen clobber",
     "compile": "npx projen compile",
     "default": "npx projen default",

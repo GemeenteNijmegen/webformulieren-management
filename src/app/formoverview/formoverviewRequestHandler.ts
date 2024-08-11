@@ -2,24 +2,11 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
 import { render } from '@gemeentenijmegen/webapp';
-import { z } from 'zod';
 import { FormOverviewApiClient } from './FormOverviewApiClient';
 import * as formOverviewTemplate from './templates/formOverview.mustache';
 import { AccessController } from '../permission/AccessController';
+import { FormOverviewResultsSchema } from '../shared/FormOverviewResultsSchema';
 
-
-export const FormOverviewResultsSchema = z.array(
-  z.object({
-    fileName: z.string(),
-    createdDate: z.string().datetime(),
-    createdBy: z.string(),
-    formName: z.string(),
-    formTitle: z.string(),
-    queryStartDate: z.string(),
-    queryEndDate: z.string(),
-    appId: z.optional(z.string()),
-  }),
-);
 
 export interface FormOverviewRequestHandlerParams {
   cookies: string;
@@ -43,8 +30,6 @@ export class FormOverviewRequestHandler {
       ttlInMinutes: parseInt(process.env.SESSION_TTL_MIN ?? '15'),
     });
     await session.init();
-    // await session.setValue('errorMessageFormOverview', '');
-    console.log('SESSION INIT 1');
     const accessCheck = await AccessController.checkPageAccess(session, '/formoverview');
     return accessCheck ?? this.handleLoggedinRequest(session, params);
   }
@@ -60,25 +45,19 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleGenerateCsvRequest(session: Session, params: FormOverviewRequestHandlerParams) {
-    console.log('Start HandlegenerateCSV');
     const paramErrorMessage = this.validateParams(params);
     if (paramErrorMessage) {
-      console.log('Set error message in session param before');
       await session.setValue('errorMessageFormOverview', paramErrorMessage);
-      console.log('Set error message in session');
     } else {
-      console.log('Make endpoint and make the request');
       const endpoint = this.createCsvEndpoint(params);
       const result = await this.apiClient.getData(endpoint);
       const errorMessageForSession = result.apiClientError ?? '';
 
       if (errorMessageForSession) {
-        console.error(`Error Message was set: ${errorMessageForSession}`);
         await session.setValue('errorMessageFormOverview', errorMessageForSession);
       }
     }
     // Reload the  lambda as formoverview to render the page. This prevents a browser refresh to send the form again.
-    console.log('[formOverviewRequestHandler handlegenerateCsvRequest] Response redirect');
     return Response.redirect('/formoverview', 302, session.getCookie());
   }
 
@@ -86,11 +65,10 @@ export class FormOverviewRequestHandler {
   private async handleListOverviewRequest(session: Session, _params: FormOverviewRequestHandlerParams) {
     //Controleer of er een errorMessage is in de sessie. Haal op en maak leeg.
     await session.init();
-    console.log('SESSION INIT 2');
     const err = session.getValue('errorMessageFormOverview', 'S') ?? '';
     const errorMessageFromSession = err;
+    // Verwijder error uit sessie om te voorkomen dat deze steeds in beeld blijft
     await session.setValue('errorMessageFormOverview', '');
-    console.log('Error message was set: ', errorMessageFromSession, err);
     //Haal naam op voor header
     const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
 
@@ -98,13 +76,23 @@ export class FormOverviewRequestHandler {
     const overview = await this.apiClient.getData('/listformoverviews');
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
+    const formattedResults = listFormOverviewResults.map(item => {
+      const { formattedDate, formattedTime } = this.formatDateTime(item.createdDate);
+      const formattedFilename = item.fileName.replace(/-/g, ' ');
+      return {
+        ...item,
+        formattedCreatedDate: formattedDate,
+        formattedCreatedTime: formattedTime,
+        formattedFilename: formattedFilename,
+      };
+    });
 
     const data = {
       title: 'Formulieroverzicht',
       shownav: true,
       nav: AccessController.permittedNav(session),
       volledigenaam: naam,
-      overview: listFormOverviewResults,
+      overview: formattedResults,
       error: errorMessageFromSession,
     };
     // render page
@@ -148,10 +136,24 @@ export class FormOverviewRequestHandler {
     return validationerrors ?? undefined;
   }
 
+  // Move to more robust apiclient where it just receives params
   private createCsvEndpoint(params: FormOverviewRequestHandlerParams): string {
     let endpoint = `/formoverview?formuliernaam=${params.formName}`;
     if (params.formStartDate) {endpoint += `&startdatum=${params.formStartDate}`;}
     if (params.formEndDate) {endpoint += `&einddatum=${params.formEndDate}`;}
     return endpoint;
+  }
+  private formatDateTime(dateString: string, timezoneOffsetHours: number = 2): { formattedDate: string; formattedTime: string } {
+    const date = new Date(dateString);
+    // Adjust for the timezone offset (e.g., +2 hours)
+    date.setHours(date.getHours() + timezoneOffsetHours);
+    // Format date as DD-MM-YYYY
+    const formattedDate = date.toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    // Format time as HH:MM
+    const formattedTime = date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+    return {
+      formattedDate,
+      formattedTime,
+    };
   }
 }

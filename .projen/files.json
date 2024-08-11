@@ -20,6 +20,7 @@
     "src/app/home/home-function.ts",
     "src/app/post-login/postlogin-function.ts",
     "src/app/resubmit/resubmit-function.ts",
+    "src/app/sportoverview/sportoverview-function.ts",
     "tsconfig.dev.json",
     "tsconfig.json"
   ],

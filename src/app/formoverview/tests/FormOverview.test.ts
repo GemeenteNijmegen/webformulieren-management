@@ -69,7 +69,7 @@ describe('FormOverviewTests', () => {
     const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
     const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
     const result: any = await handler.handleRequest({ cookies: 'session=12345' });
-    fs.writeFile(path.join(__dirname, 'output', 'test_error.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
+    fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('(href|src)="/static', 'g'), '$1="../../../static-resources/static') : '', () => { });
   });
 
   test('should render the page for local development', async () => {
@@ -78,7 +78,7 @@ describe('FormOverviewTests', () => {
     const mockApiClient = { getData: jest.fn().mockResolvedValue(mockSuccesApiGetData) } as any as FormOverviewApiClient;
     const handler = new FormOverviewRequestHandler(dynamoDBClient, mockApiClient );
     const result: any = await handler.handleRequest({ cookies: 'session=12345' });
-    fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('href="/static', 'g'), 'href="../../../static-resources/static') : '', () => { });
+    fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body ? result.body.replace( new RegExp('(href|src)="/static', 'g'), '$1="../../../static-resources/static') : '', () => { });
   });
 });
 

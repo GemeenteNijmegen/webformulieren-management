@@ -24,4 +24,11 @@ export const nav = [
     label: 'Formulier overzichten',
     icon: MdiAccount.default,
   },
+  {
+    url: '/sport',
+    title: 'Sport overzichten',
+    description: 'Sportenoverzichten bekijken en downloaden.',
+    label: 'Sport overzichten',
+    icon: MdiAccount.default,
+  },
 ];

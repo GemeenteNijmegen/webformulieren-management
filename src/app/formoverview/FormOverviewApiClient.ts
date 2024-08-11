@@ -91,8 +91,6 @@ export class FormOverviewApiClient {
       }
       if (error.response) {
         // The request was made and the server responded with a status code and perhaps a message
-        console.log(`Error Response http status for ${endpoint} ${error.response.status}`);
-        console.log(`Error Response message for endpoint ${endpoint} ${error.response.data?.message}`);
         errorMessage.apiClientError += ` Details: het betreft ${endpoint} ${error.response.status} ${error.response.data?.message}.`;
       } else if (error.request) {
         // The request was made but no response was received
@@ -109,6 +107,7 @@ export class FormOverviewApiClient {
       console.error(error.message);
       errorMessage.apiClientError += ` Details: het betreft ${endpoint} ${error.message}.`;
     }
+    console.error(`FormOverview Apiclient Error: ${errorMessage}`);
     return errorMessage;
   }
 

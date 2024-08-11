@@ -1,8 +1,8 @@
-import { getSportPermissionDescription } from '../PermissionOptions';
+import { getSportPermissionDescriptions } from '../PermissionOptions';
 
 describe('getSportPermissionDescriptionFromOptions', () => {
   it('should return the correct description for SP7', () => {
-    expect(getSportPermissionDescription('SP7')).toBe('West');
+    expect(getSportPermissionDescriptions(['SP7'])).toEqual(['West']);
   });
 
 });
