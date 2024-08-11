@@ -125,9 +125,11 @@ export class SportOverviewRequestHandler {
     return permissions.filter(isSportPermissionOption);
   }
   private async setEncryptionKey(session: Session): Promise<void> {
-    const key = EncryptFilename.generateKey();
-    await session.setValue('sportkey', key);
-    await session.init();
+    if (!session.getValue('sportkey', 'S')) {
+      const key = EncryptFilename.generateKey();
+      await session.setValue('sportkey', key);
+      await session.init();
+    }
   }
   private getEncryptedFileName(session: Session, filename: string): string {
     let key: string = session.getValue('sportkey', 'S');
