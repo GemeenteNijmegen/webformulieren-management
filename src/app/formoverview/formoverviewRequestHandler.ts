@@ -52,8 +52,8 @@ export class FormOverviewRequestHandler {
     } else {
       const endpoint = this.createCsvEndpoint(params);
       const result = await this.apiClient.getData(endpoint);
-      const errorMessageForSession = result.apiClientError ?? '';
-
+      let errorMessageForSession = result.apiClientError ?? '';
+      errorMessageForSession = errorMessageForSession && (!result || Object.keys(result).length === 0) ? `Er zijn geen inzendingen gevonden. De csv is niet gemaakt. Controleer de formuliernaam: ${params.formName}` : '';
       if (errorMessageForSession) {
         await session.setValue('errorMessageFormOverview', errorMessageForSession);
       }

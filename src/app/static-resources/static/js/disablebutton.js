@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+  const processingText = document.getElementById("bezigMetVerwerken");
+  if (processingText) {
+      processingText.style.display = 'none';
+  }
     const button = document.getElementById('generateCsvButton');
     if (button) {
       button.addEventListener('click', function(event) {
         event.preventDefault();
-        document.getElementById("bezigMetVerwerken").style.display = 'inline';
+        processingText.style.display = 'inline';
         button.disabled = true;
         const form = document.querySelector('form');
         setTimeout(() => {
@@ -13,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("myForm");
     const generateCsvButton = document.getElementById("generateCsvButton");
     const formName = document.getElementById("formName");
     const formStartDate = document.getElementById("formStartDate");
