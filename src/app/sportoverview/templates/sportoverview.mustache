@@ -33,20 +33,20 @@
                 <h1>Sportoverzichten CSV</h1>
                 <p class="lead">Sportoverzichten om te downloaden in csv formaat.</p>
 
-                <table class="responsive-table">
+                <table class="responsive-table complex-table">
                     <thead>
                         <tr>
-                            <th>Datum gemaakt</th>
-                            <th>Formulier</th>
-                            <th>Startdatum</th>
-                            <th>Einddatum</th>
-                            <th>Bestandsnaam</th>
+                            <th scope="col" style="width: 10%;">Datum gemaakt</th>
+                            <th scope="col">Formulier</th>
+                            <th scope="col" style="width: 10%;">Startdatum</th>
+                            <th scope="col" style="width: 10%;">Einddatum</th>
+                            <th scope="col">Bestandsnaam</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#overview}}
                         <tr>
-                            <td>{{formattedCreatedDate}} <br> {{formattedCreatedTime}}</td>
+                            <td scope="row">{{formattedCreatedDate}} <br> {{formattedCreatedTime}}</td>
                             <td>{{formTitle}} {{appId}}</td>
                             <td>{{queryStartDate}}</td>
                             <td>{{queryEndDate}}</td>
@@ -65,30 +65,30 @@
             <div class="col-12">
                 <h1>Inzendingen afgelopen maand</h1>
 
-                <table class="responsive-table">
+                <table class="responsive-table complex-table">
                     <thead>
                         <tr>
-                            <th>Formulier <br> kenmerk</th>
-                            <th>Ingediend</th>
-                            <th>Naam</th>
-                            <th>Kind info</th>
-                            <th>Tel & mail</th>
-                            <th>Activiteiten</th>
-                            <th>Opmerkingen</th>
-                            <th>PDF</th>
+                            <th scope="col" style="width: 5%;">Formulier <br> kenmerk</th>
+                            <th scope="col" style="width: 10%;">Ingediend</th>
+                            <th scope="col" style="width: 10%;">Naam</th>
+                            <th scope="col" style="width: 20%;">Kind info</th>
+                            <th scope="col" style="width: 10%;">Tel & mail</th>
+                            <th scope="col" style="width: 20%;">Activiteiten</th>
+                            <th scope="col" style="width: 20%;">Opmerkingen</th>
+                            <th scope="col" style="width: 5%;">PDF</th>
                         </tr>
                     </thead>
             
                     <tbody>
                         {{#submissions}}
                         <tr>
-                            <td>{{reference}}</td>
-                            <td>{{dateSubmitted}} <br> {{timeSubmitted}}</td>
-                            <td>{{name}}</td>
-                            <td>{{child}}</td>
-                            <td>{{telAndMail}}</td>
-                            <td>{{activities}}</a></td>
-                            <td>{{comments}}</td>
+                            <td scope="row" class="pe-1">{{reference}}</td>
+                            <td class="pe-1">{{dateSubmitted}} <br> {{timeSubmitted}}</td>
+                            <td class="pe-1">{{name}}</td>
+                            <td class="pe-1">{{child}}</td>
+                            <td class="pe-1">{{telAndMail}}</td>
+                            <td class="pe-1">{{activities}}</a></td>
+                            <td class="pe-1">{{comments}}</td>
                             <td> <a href="/sport?downloadpdf={{filenameForPDFDownload}}" title="download pdf">
                                     <span class="mdi mdi-file-document"></span>
                             </td>
