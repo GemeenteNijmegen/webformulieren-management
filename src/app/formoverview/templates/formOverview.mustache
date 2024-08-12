@@ -46,11 +46,16 @@
                         placeholder="2024-01-01">
                 </div>
                 <div class="col-12"> Beide datums kunnen leeggehouden worden, beide kunnen ingevuld worden of slechts
-                    een datum wordt ingevuld.</div>
+                    een datum wordt ingevuld. Einddatum mag niet na startdatum liggen.
+                    Voorbeeld 1: Alleen startdatum 2024-08-01 geeft alle inzendingen tussen 1 augustus en vandaag.
+                    Voorbeeld 2: 2024-01-01 als einddatum geeft alle inzendingen die voor 2024 ingediend.
+                    Voorbeeld 3: Een range startdatum 2024-07-01 einddatum 2024-06-01.
+                </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <input type="submit" value="Genereer csv" class="btn btn-primary">
+                    <input type="submit" value="Genereer csv" class="btn btn-primary" id="generateCsvButton">
+                    <span id="bezigMetVerwerken" style="display: none;">Bezig met verwerken...</span>
                 </div>
             </div>
         </form>
@@ -59,7 +64,6 @@
             <div class="col-12">
                 <h1>Formulieroverzichten</h1>
                 <p class="lead">Formulieroverzichten om te downloaden.</p>
-
                 <table class="responsive-table">
                     <caption>Geschiedenis</caption>
                     <thead>
@@ -74,12 +78,13 @@
                     <tbody>
                         {{#overview}}
                         <tr>
-                            <td>{{createdDate}}</td>
+                            <td>{{formattedCreatedDate}} <br> {{formattedCreatedTime}}</td>
                             <td>{{formTitle}}</td>
                             <td>{{queryStartDate}}</td>
                             <td>{{queryEndDate}}</td>
-                            <td><a href="/formoverview/download/{{fileName}}" title="download">{{fileName}}</a></td>
-                          
+                            <td><a href="/formoverview/download/{{fileName}}" title="download">{{formattedFilename}}</a>
+                            </td>
+
                         </tr>
                         {{/overview}}
                     </tbody>
@@ -93,5 +98,6 @@
 
     <!-- END: template component(s) -->
 </main>
+<script src="/static/js/disablebutton.js"></script>
 
 {{>footer}}

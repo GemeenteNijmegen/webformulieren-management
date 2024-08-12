@@ -63,6 +63,7 @@ junit.xml
 !/src/app/home/home-function.ts
 !/src/app/post-login/postlogin-function.ts
 !/src/app/resubmit/resubmit-function.ts
+!/src/app/sportoverview/sportoverview-function.ts
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
 !/.projenrc.js

@@ -1,0 +1,94 @@
+{{>header}}
+
+<main>
+    <!-- START: template component(s) -->
+    <div class="container" id="section-1">
+        <div class="row">
+            <div class="col-12">
+                <h1>Sport overzicht</h1>
+                <p>
+                    Deze pagina laat alleen de formulierinzendingen zien die door jou bekeken mogen worden. De
+                    stadsdelen waarvan jij data ziet: {{allowedSportFormsInText}}
+                    De overzichten kunnen gedownload worden in csv formaat. De inzendingen in het bestand zijn van de
+                    periode startdatum tot en met de datum gemaakt.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h1>Sportoverzichten CSV</h1>
+                <p class="lead">Sportoverzichten om te downloaden in csv formaat.</p>
+
+                <table class="responsive-table complex-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Datum gemaakt</th>
+                            <th scope="col">Formulier</th>
+                            <th scope="col">Startdatum</th>
+                            <th scope="col">Einddatum</th>
+                            <th scope="col">Bestandsnaam</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#overview}}
+                        <tr>
+                            <td scope="row">{{formattedCreatedDate}} <br> {{formattedCreatedTime}}</td>
+                            <td>{{formTitle}} {{appId}}</td>
+                            <td>{{queryStartDate}}</td>
+                            <td>{{queryEndDate}}</td>
+                            <td><a href="/sport?downloadfile={{filenameForDownload}}"
+                                    title="download">{{formattedFilename}}</a></td>
+                        </tr>
+                        {{/overview}}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h1>Inzendingen afgelopen maand</h1>
+
+                <table class="responsive-table complex-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-formulier-kenmerk">Formulier <br> kenmerk</th>
+                            <th scope="col" class="col-ingediend">Ingediend</th>
+                            <th scope="col" class="col-naam">Naam</th>
+                            <th scope="col" class="col-kind-info">Kind info</th>
+                            <th scope="col" class="col-tel-mail">Tel & mail</th>
+                            <th scope="col" class="col-activiteiten">Activiteiten</th>
+                            <th scope="col" class="col-opmerkingen">Opmerkingen</th>
+                            <th scope="col" class="col-pdf">PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#submissions}}
+                        <tr>
+                            <td scope="row" class="pe-1">{{reference}}</td>
+                            <td class="pe-1">{{dateSubmitted}} <br> {{timeSubmitted}}</td>
+                            <td class="pe-1">{{name}}</td>
+                            <td class="pe-1">{{child}}</td>
+                            <td class="pe-1">{{telAndMail}}</td>
+                            <td class="pe-1">{{activities}}</a></td>
+                            <td class="pe-1">{{comments}}</td>
+                            <td> <a href="/sport?downloadpdf={{filenameForPDFDownload}}" title="download pdf">
+                                    <span class="mdi mdi-file-document"></span>
+                            </td>
+                        </tr>
+                        {{/submissions}}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- END: template component(s) -->
+</main>
+
+{{>footer}}

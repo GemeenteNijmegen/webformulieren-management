@@ -1,4 +1,4 @@
-import { PermissionOptions } from './PermissionOptions';
+import { PermissionOptions, SPORT_PERMISSION_OPTIONS, SportPermissionOptions } from './PermissionOptions';
 
 /**
  * Mapping of pages to permissions
@@ -11,5 +11,6 @@ interface PagePermissionMapping {
 export const pagePermissions: PagePermissionMapping = {
   '/resubmit': ['ADMIN', 'RESUBMIT'],
   '/formoverview': ['ADMIN', 'FORMOVERVIEW'],
+  '/sport': ['ADMIN', 'SPORTADMIN', 'SPORT', ...SPORT_PERMISSION_OPTIONS as SportPermissionOptions[]],
   // Add more pages as needed
 };

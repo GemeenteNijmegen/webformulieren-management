@@ -9,12 +9,10 @@ import { FormOverviewRequestHandler, FormOverviewRequestHandlerParams } from './
 let requestHandler: FormOverviewRequestHandler | undefined = undefined;
 
 async function init() {
-  //TODO: change secret
-  const apiKey = await AWS.getSecret(process.env.FORMOVERVIEW_API_KEY_SECRET_ARN!);
-  console.log('Loaded API key', apiKey.substring(0, 4));
+  const apiKey = await AWS.getSecret(process.env.SUBMISSION_STORAGE_API_KEY_SECRET_ARN!);
   const apiClient = new FormOverviewApiClient({
     apiKey: apiKey,
-    baseUrl: process.env.FORMOVERVIEW_API_BASE_URL!,
+    baseUrl: process.env.SUBMISSION_STORAGE_API_BASE_URL!,
     timeout: 30000,
   });
   const dynamoDBClient = new DynamoDBClient({});
@@ -24,20 +22,29 @@ async function init() {
 const initalization = init();
 
 function parseEvent(event: APIGatewayProxyEventV2): FormOverviewRequestHandlerParams {
+  const formParams = getFormParamsFromBody(event);
   return {
     cookies: event?.cookies?.join(';') ?? '',
-    formName: formNameFromBody(event),
+    formName: formParams.formName,
+    formStartDate: formParams.formStartDate,
+    formEndDate: formParams.formEndDate,
     file: event?.pathParameters?.file,
   };
 }
 
-function formNameFromBody(event: APIGatewayProxyEventV2): string | undefined {
+function getFormParamsFromBody(event: APIGatewayProxyEventV2): FormOverviewQueryParams {
   let urlencodedform;
   if (event.body) {
     urlencodedform = (event?.isBase64Encoded) ? Buffer.from(event?.body, 'base64').toString('utf-8') : event.body;
-    return querystring.parse(urlencodedform)?.formName as string;
+    const parsedQuerystring = querystring.parse(urlencodedform);
+    console.log('Parser Querystring:', JSON.stringify(parsedQuerystring));
+    return {
+      formName: parsedQuerystring.formName ? parsedQuerystring.formName as string : undefined,
+      formStartDate: parsedQuerystring.formStartDate ? parsedQuerystring.formStartDate as string : undefined,
+      formEndDate: parsedQuerystring.formEndDate ? parsedQuerystring.formEndDate as string : undefined,
+    };
   }
-  return undefined;
+  return { formName: undefined, formStartDate: undefined, formEndDate: undefined };
 }
 
 export async function handler (event: any, _context: any):Promise<ApiGatewayV2Response> {
@@ -53,3 +60,8 @@ export async function handler (event: any, _context: any):Promise<ApiGatewayV2Re
     return Response.error(500);
   }
 };
+export interface FormOverviewQueryParams {
+  formName: string | undefined;
+  formStartDate: string | undefined;
+  formEndDate: string | undefined;
+}

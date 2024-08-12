@@ -2,23 +2,12 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
 import { render } from '@gemeentenijmegen/webapp';
-import { z } from 'zod';
 import { FormOverviewApiClient } from './FormOverviewApiClient';
 import * as formOverviewTemplate from './templates/formOverview.mustache';
 import { AccessController } from '../permission/AccessController';
+import { formatDateTime } from '../shared/FormatCreatedDate';
+import { FormOverviewResultsSchema } from '../shared/FormOverviewResultsSchema';
 
-
-export const FormOverviewResultsSchema = z.array(
-  z.object({
-    fileName: z.string(),
-    createdDate: z.string().datetime(),
-    createdBy: z.string(),
-    formName: z.string(),
-    formTitle: z.string(),
-    queryStartDate: z.string(),
-    queryEndDate: z.string(),
-  }),
-);
 
 export interface FormOverviewRequestHandlerParams {
   cookies: string;
@@ -31,7 +20,6 @@ export interface FormOverviewRequestHandlerParams {
 export class FormOverviewRequestHandler {
   private dynamoDBClient: DynamoDBClient;
   private apiClient: FormOverviewApiClient;
-  private errorMessage: string | undefined;
 
   constructor(dynamoDBClient: DynamoDBClient, apiClient: FormOverviewApiClient) {
     this.dynamoDBClient = dynamoDBClient;
@@ -50,7 +38,7 @@ export class FormOverviewRequestHandler {
   private async handleLoggedinRequest(session: Session, params: FormOverviewRequestHandlerParams) {
     if (params.file) {
       return this.handleDownloadRequest(session, params);
-    } else if (params.formName) {
+    } else if (params.formName || params.formStartDate || params.formEndDate) {
       return this.handleGenerateCsvRequest(session, params);
     } else {
       return this.handleListOverviewRequest(session, params);
@@ -58,31 +46,55 @@ export class FormOverviewRequestHandler {
   }
 
   private async handleGenerateCsvRequest(session: Session, params: FormOverviewRequestHandlerParams) {
-    console.log('CSV REQUEST PARAMS: ', params);
-    let endpoint = `/formoverview?formuliernaam=${params.formName}`;
-    if (params.formStartDate) {endpoint += `&startdatum=${params.formStartDate}`;}
-    if (params.formEndDate) {endpoint += `&einddatum=${params.formEndDate}`;}
-    console.log('CSV REQUEST ENDPOINT: ', endpoint);
-    const result = await this.apiClient.getData(endpoint);
-    this.errorMessage = result.apiClientError ?? undefined;
-    return this.handleListOverviewRequest(session, params);
+    const paramErrorMessage = this.validateParams(params);
+    if (paramErrorMessage) {
+      await session.setValue('errorMessageFormOverview', paramErrorMessage);
+    } else {
+      const endpoint = this.createCsvEndpoint(params);
+      const result = await this.apiClient.getData(endpoint);
+      let errorMessageForSession = result.apiClientError ?? '';
+      errorMessageForSession = !errorMessageForSession && (!result || Object.keys(result).length === 0) ? `Er zijn geen inzendingen gevonden. De csv is niet gemaakt. Controleer de formuliernaam: ${params.formName}` : '';
+      if (errorMessageForSession) {
+        await session.setValue('errorMessageFormOverview', errorMessageForSession);
+      }
+    }
+    // Reload the  lambda as formoverview to render the page. This prevents a browser refresh to send the form again.
+    return Response.redirect('/formoverview', 302, session.getCookie());
   }
 
+
   private async handleListOverviewRequest(session: Session, _params: FormOverviewRequestHandlerParams) {
+    //Controleer of er een errorMessage is in de sessie. Haal op en maak leeg.
+    await session.init();
+    const err = session.getValue('errorMessageFormOverview', 'S') ?? '';
+    const errorMessageFromSession = err;
+    // Verwijder error uit sessie om te voorkomen dat deze steeds in beeld blijft
+    await session.setValue('errorMessageFormOverview', '');
     //Haal naam op voor header
     const naam = session.getValue('email', 'S') ?? 'Onbekende gebruiker';
+
     //Haal de bestanden op die gedownload kunnen worden
     const overview = await this.apiClient.getData('/listformoverviews');
     const listFormOverviewResults = FormOverviewResultsSchema.parse(overview);
     listFormOverviewResults.sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
+    const formattedResults = listFormOverviewResults.map(item => {
+      const { formattedDate, formattedTime } = formatDateTime(item.createdDate);
+      const formattedFilename = item.fileName.replace(/-/g, ' ');
+      return {
+        ...item,
+        formattedCreatedDate: formattedDate,
+        formattedCreatedTime: formattedTime,
+        formattedFilename: formattedFilename,
+      };
+    });
 
     const data = {
       title: 'Formulieroverzicht',
       shownav: true,
       nav: AccessController.permittedNav(session),
       volledigenaam: naam,
-      overview: listFormOverviewResults,
-      error: this.errorMessage,
+      overview: formattedResults,
+      error: errorMessageFromSession,
     };
     // render page
     const html = await render(data, formOverviewTemplate.default);
@@ -96,5 +108,40 @@ export class FormOverviewRequestHandler {
     } else {
       return Response.error(404);
     }
+  }
+
+  /**
+   * Parameter helper functies
+   * Validatie nodig voor endpoint maken. Dan is er zeker een formuliernaam.
+   */
+  private validateParams(params: FormOverviewRequestHandlerParams): string | undefined {
+    let validationerrors = '';
+    let invalidDate = false;
+    if (!params.formName) {
+      validationerrors += 'Er is geen formuliernaam ingevoerd. Een formuliernaam is vereist.';
+    }
+    if (params.formStartDate && !/^\d{4}-\d{2}-\d{2}$/.test(params.formStartDate)) {
+      invalidDate = true;
+      validationerrors += `De startdatum ${params.formStartDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
+    }
+    if (params.formEndDate && !/^\d{4}-\d{2}-\d{2}$/.test(params.formEndDate)) {
+      invalidDate = true;
+      validationerrors += `De einddatum ${params.formEndDate} voldoet niet aan het datumformaat JJJJ-MM-DD`;
+    }
+    if (params.formStartDate && params.formEndDate && !invalidDate) {
+      if (new Date(params.formStartDate) < new Date(params.formEndDate)) {
+        validationerrors += `Einddatum ${params.formEndDate} mag niet na de startdatum ${params.formStartDate} liggen. Voorbeeld correcte datumrange: startdatum 2024-07-01 en einddatum 2024-06-01`;
+      }
+    }
+    if (validationerrors) {console.error(`Validation errors in forminput. ${validationerrors}`);}
+    return validationerrors ?? undefined;
+  }
+
+  // Move to more robust apiclient where it just receives params
+  private createCsvEndpoint(params: FormOverviewRequestHandlerParams): string {
+    let endpoint = `/formoverview?formuliernaam=${params.formName}`;
+    if (params.formStartDate) {endpoint += `&startdatum=${params.formStartDate}`;}
+    if (params.formEndDate) {endpoint += `&einddatum=${params.formEndDate}`;}
+    return endpoint;
   }
 }

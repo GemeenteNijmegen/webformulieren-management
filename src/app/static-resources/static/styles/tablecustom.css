@@ -1,0 +1,41 @@
+/* table-styles.css */
+
+/* Set the widths for each table column */
+th.col-formulier-kenmerk {
+    width: 5%;
+}
+
+th.col-ingediend {
+    width: 10%;
+}
+
+th.col-naam {
+    width: 10%;
+}
+
+th.col-kind-info {
+    width: 20%;
+}
+
+th.col-tel-mail {
+    width: 10%;
+}
+
+th.col-activiteiten {
+    width: 20%;
+}
+
+th.col-opmerkingen {
+    width: 20%;
+}
+
+th.col-pdf {
+    width: 5%;
+}
+table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
