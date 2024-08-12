@@ -135,7 +135,7 @@ export class SportOverviewRequestHandler {
           const value: string = typeof submission[key] === 'string' ? submission[key] as string : '';
           if (typeof value === 'string' && (value as string).includes('true')) {
           // Extract activity names from the value string
-            const regex = /Checkbox\s(.*?)\s*is\strue\./g;
+            const regex = /Checkbox\s(.*?)\s*is\strue/g;
             let match;
             while ((match = regex.exec(value)) !== null) {
               activities.push(match[1].trim());
