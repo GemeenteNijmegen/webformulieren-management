@@ -152,7 +152,8 @@ export class SportOverviewRequestHandler {
       return {
         reference: submission.FormulierKenmerk,
         filenameForPDFDownload: encodeURIComponent(await this.getEncryptedFileName(session, submission.FormulierKenmerk)),
-        dateSubmitted: `${formattedDate} ${formattedTime}`,
+        dateSubmitted: `${formattedDate}`,
+        timeSubmitted: `${formattedTime}`,
         name: `${voornaam} ${achternaam}`,
         child: kindstring,
         telAndMail: `${tel} ${email}`,
@@ -264,6 +265,7 @@ export interface SportSubmissionsForTemplate {
   reference: string; // formulierkenmerk
   filenameForPDFDownload: string; // generated from formulierkenmerk with getEncryptedFileName
   dateSubmitted: string; // formatted date and time with a space in between
+  timeSubmitted: string;
   name: string; // combination first and last name
   child: string;
   telAndMail: string; // from telefoonnummer and email with a space in between
