@@ -166,31 +166,60 @@ export class SportOverviewRequestHandler {
 
 
   private async getListOverviews(appids: string[] | undefined) {
-    // Default API call if appids is undefined
-    if (!appids) {
-      return this.api.get('/listformoverviews', { formuliernaam: 'aanmeldensportactiviteit' });
+    try {
+      // Default API call if appids is undefined
+      if (!appids) {
+        const result = await this.api.get('/listformoverviews', { formuliernaam: 'aanmeldensportactiviteit' });
+        return result && Object.keys(result).length ? result : [];
+      }
+
+      // Map appids to an array of API call promises with await
+      const promises = appids.map(async (appid) => {
+        try {
+          const result = await this.api.get('/listformoverviews', { formuliernaam: 'aanmeldensportactiviteit', appid });
+          return result && Object.keys(result).length ? result : []; // Handle empty results
+        } catch {
+          return []; // Handle errors gracefully
+        }
+      });
+
+      // Await all promises and return the results
+      const results = await Promise.all(promises);
+      return results.flat();
+    } catch (error) {
+      console.error('Error fetching list overviews:', appids, error);
+      return []; // Return an empty array in case of an error
     }
-    // Map appids to an array of API call promises
-    const promises = appids.map(appid =>
-      this.api.get('/listformoverviews', { formuliernaam: 'aanmeldensportactiviteit', appid }),
-    );
-    // Await all promises and return the results
-    const results = await Promise.all(promises);
-    return results.flat();
   }
+
   private async getSubmissions(appids: string[] | undefined) {
-    // Default API call if appids is undefined
     const startdatum = getDateBasedOnScope('month');
-    if (!appids) {
-      return this.api.get('/formoverview', { formuliernaam: 'aanmeldensportactiviteit', responseformat: 'json', startdatum: startdatum });
+
+    try {
+      // Default API call if appids is undefined
+      if (!appids) {
+        const result = await this.api.get('/formoverview', { formuliernaam: 'aanmeldensportactiviteit', responseformat: 'json', startdatum: startdatum });
+        return result && Object.keys(result).length ? result : []; // Handle empty results
+      }
+
+      // Map appids to an array of API call promises with await
+      const promises = appids.map(async (appid) => {
+        try {
+          const result = await this.api.get('/formoverview', { formuliernaam: 'aanmeldensportactiviteit', responseformat: 'json', startdatum: startdatum, appid });
+          return result && Object.keys(result).length ? result : []; // Handle empty results
+        } catch (error) {
+          console.error(`Error fetching submissions for appid ${appid}:`, error);
+          return []; // Handle errors gracefully and return an empty array
+        }
+      });
+
+      // Await all promises and return the results
+      const results = await Promise.all(promises);
+      return results.flat();
+    } catch (error) {
+      console.error('Error fetching submissions:', appids, error);
+      return []; // Return an empty array in case of an error
     }
-    // Map appids to an array of API call promises
-    const promises = appids.map(appid =>
-      this.api.get('/formoverview', { formuliernaam: 'aanmeldensportactiviteit', responseformat: 'json', startdatum: startdatum, appid }),
-    );
-    // Await all promises and return the results
-    const results = await Promise.all(promises);
-    return results.flat();
   }
   async getTemplateValuesFromSession(session: Session): Promise<{ naam: string; errormessage: string | undefined }> {
     //Controleer of er een errorMessage is in de sessie. Haal op en maak leeg.
