@@ -142,6 +142,9 @@ export class SportOverviewRequestHandler {
             }
           }
         }
+        if (key.includes('omWelkeSportactiviteitGaatHetDan') && typeof submission[key] === 'string' && !!submission[key]) {
+          activities.push(`Andere: ${submission[key]}`);
+        }
       });
 
       // Process each submission

@@ -133,5 +133,6 @@ export const mockSubmissionsData: SubmissionsSchemaType = [
     'Aanmelden voor sportactiviteit A': '',
     'Aanmelden voor sportactiviteit B': 'Checkbox ActivityB is true. Checkbox ActivityT is true',
     'Aanmelden voor sportactiviteit C': 'Checkbox ActivityC is true.',
+    'Om welke sportactiviteit gaat het dan? omWelkeSportactiviteitGaatHetDanC': 'weqwewe',
   },
 ];
