@@ -112,11 +112,11 @@ export class SportOverviewRequestHandler {
 
       const { formattedDate, formattedTime } = formatDateTime(submission.DatumTijdOntvangen);
 
-      const tel = submission['Telefoonnummer telefoonnummer'] || '';
-      const email = submission['E-mailadres eMailadres'] || '';
+      const tel = submission['Telefoonnummer telefoonnummer'] ?? '';
+      const email = submission['E-mailadres eMailadres'] ?? '';
 
-      const voornaam = submission['Voornaam voornaam'];
-      const achternaam = submission['Achternaam achternaam'];
+      const voornaam = submission['Voornaam voornaam'] ?? '';
+      const achternaam = submission['Achternaam achternaam'] ?? '';
 
       const kind = {
         voornaam: submission['Voornaam kind'] ?? '',
@@ -124,8 +124,9 @@ export class SportOverviewRequestHandler {
         leeftijd: submission['Leeftijd kind'] ?? '',
         bo: submission['School basisonderwijs'] ?? '',
         vo: submission['School voortgezetOnderwijs'] ?? '',
+        groep: submission.Groep ? `Groep: ${submission.Groep}` : '',
       };
-      const kindstring = kind.voornaam ? `${kind.voornaam} ${kind.achternaam} (${kind.leeftijd} ${kind.bo} ${kind.vo})` : '';
+      const kindstring = kind.voornaam ? `${kind.voornaam} ${kind.achternaam} (${kind.leeftijd} ${kind.bo} ${kind.vo}) ${kind.groep}` : '';
 
       const activities: string[] = [];
       // Loop through keys and find checkboxes with 'true'
@@ -154,9 +155,9 @@ export class SportOverviewRequestHandler {
         dateSubmitted: `${formattedDate} ${formattedTime}`,
         name: `${voornaam} ${achternaam}`,
         child: kindstring,
-        telAndMail: `${tel} ${email}`.trim(),
+        telAndMail: `${tel} ${email}`,
         activities: activities.join(', '),
-        comments: (submission.Opmerkingen || '').toString().trim(),
+        comments: (submission.Opmerkingen || '').toString(),
       };
     });
 

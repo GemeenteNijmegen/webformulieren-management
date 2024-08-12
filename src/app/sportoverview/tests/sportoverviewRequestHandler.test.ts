@@ -127,6 +127,7 @@ export const mockSubmissionsData: SubmissionsSchemaType = [
     'Achternaam kind': 'twee',
     'Leeftijd kind': '12',
     'School basisonderwijs': 'De school',
+    'Groep': '8',
     'Opmerkingen': 'Some comments here',
     'FormulierKenmerk': 'form-001',
     'Formuliernaam': 'aanmeldensportactiviteit',
