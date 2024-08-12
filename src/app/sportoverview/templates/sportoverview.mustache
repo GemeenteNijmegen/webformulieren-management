@@ -3,20 +3,6 @@
 <main>
     <!-- START: template component(s) -->
     <div class="container" id="section-1">
-        <style>
-            table tbody tr:nth-child(even) {
-                background-color: #ffffff;
-            }
-
-            table tbody tr:nth-child(odd) {
-                background-color: #f2f2f2;
-            }
-
-            table tbody td {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-        </style>
         <div class="row">
             <div class="col-12">
                 <h1>Sport overzicht</h1>
@@ -36,10 +22,10 @@
                 <table class="responsive-table complex-table">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 10%;">Datum gemaakt</th>
+                            <th scope="col">Datum gemaakt</th>
                             <th scope="col">Formulier</th>
-                            <th scope="col" style="width: 10%;">Startdatum</th>
-                            <th scope="col" style="width: 10%;">Einddatum</th>
+                            <th scope="col">Startdatum</th>
+                            <th scope="col">Einddatum</th>
                             <th scope="col">Bestandsnaam</th>
                         </tr>
                     </thead>
@@ -68,17 +54,16 @@
                 <table class="responsive-table complex-table">
                     <thead>
                         <tr>
-                            <th scope="col" id="col-formulier-kenmerk">Formulier <br> kenmerk</th>
-                            <th scope="col" id="col-ingediend">Ingediend</th>
-                            <th scope="col" id="col-naam">Naam</th>
-                            <th scope="col" id="col-kind-info">Kind info</th>
-                            <th scope="col" id="col-tel-mail">Tel & mail</th>
-                            <th scope="col" id="col-activiteiten">Activiteiten</th>
-                            <th scope="col" id="col-opmerkingen">Opmerkingen</th>
-                            <th scope="col" id="col-pdf">PDF</th>
+                            <th scope="col" class="col-formulier-kenmerk">Formulier <br> kenmerk</th>
+                            <th scope="col" class="col-ingediend">Ingediend</th>
+                            <th scope="col" class="col-naam">Naam</th>
+                            <th scope="col" class="col-kind-info">Kind info</th>
+                            <th scope="col" class="col-tel-mail">Tel & mail</th>
+                            <th scope="col" class="col-activiteiten">Activiteiten</th>
+                            <th scope="col" class="col-opmerkingen">Opmerkingen</th>
+                            <th scope="col" class="col-pdf">PDF</th>
                         </tr>
                     </thead>
-            
                     <tbody>
                         {{#submissions}}
                         <tr>
