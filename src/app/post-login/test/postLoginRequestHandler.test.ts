@@ -51,7 +51,6 @@ describe('postLoginRequestHandler', () => {
     process.env = {
       ...originalEnv,
       SESSION_TTL_MIN: '16',
-      AUTHORIZED_USER_EMAILS: 'testmail@example.com, tweemailtoegelaten@example.com',
     };
   });
   afterEach(() => {

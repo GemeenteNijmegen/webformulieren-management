@@ -3,7 +3,6 @@ import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-c
 import { Construct } from 'constructs';
 import { AppStage } from './AppStage';
 import { Configurable } from './Configuration';
-import { ParameterStage } from './ParameterStage';
 import { Statics } from './statics';
 
 export interface PipelineStackProps extends StackProps, Configurable {}
@@ -20,11 +19,7 @@ export class PipelineStack extends Stack {
     const connectionArn = new CfnParameter(this, 'connectionArn');
     const source = this.connectionSource(connectionArn);
 
-    const pipeline = this.pipeline(source, props);
-
-    pipeline.addStage(new ParameterStage(this, 'webformulieren-management-parameters', {
-      env: props.configuration.deploymentEnvironment,
-    }));
+    const pipeline = this.pipeline(source, props);;
 
     pipeline.addStage(new AppStage(this, 'webformulieren-managment', {
       env: props.configuration.deploymentEnvironment,

@@ -29,8 +29,6 @@ export abstract class Statics {
   static readonly ssmApiKeySecretWebformsManagment = `/cdk/${this.projectName}/secrets/webforms-management/api-key`;
   static readonly ssmApiKeySecretSubmissionsFormOverview = `/cdk/${this.projectName}/secrets/webforms-management/form-overview-api-key`;
 
-  static readonly ssmAuthorizedUserEmails = `/cdk/${this.projectName}/authentication/authorized-emails`;
-
   static readonly ssmPermissionsTableName = 'permissions-webformulieren-management';
 
   // ENVIRONMENTS

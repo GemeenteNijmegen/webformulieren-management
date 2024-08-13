@@ -41,8 +41,6 @@ export class PostLoginRequestHandler {
 
     // Match against a whitelist of allowed email adreses.
     const email = claims.email;
-    const allowedUsers = process.env.AUTHORIZED_USER_EMAILS?.split(',') ?? [];
-    const authorized = allowedUsers.includes(email);
 
     // Get permissions for session
     const userPermission: UserPermission | false = await permission.getUser(email);
@@ -53,10 +51,11 @@ export class PostLoginRequestHandler {
       console.log('The user is not in permissions database or has empty permissions. Next step is not logged in and authorized to false.');
     }
 
-    if (!authorized || !hasPermission) {
+    if (!hasPermission) {
       await session.createSession({
         loggedin: { BOOL: false },
       });
+      console.error(`User  ${email.substring(0, 3)}**** does not have permissions.`);
       return Response.redirect('/login?error=not_authorized', 302, session.getCookie());
     }
 
