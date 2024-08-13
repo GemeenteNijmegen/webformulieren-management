@@ -5,7 +5,6 @@ import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { RemoteParameters } from 'cdk-remote-stack';
 import { Construct } from 'constructs';
 import { FormoverviewFunction } from './app/formoverview/formoverview-function';
@@ -189,7 +188,6 @@ export class WebappStack extends Stack {
       environment: {
         SUBMISSION_STORAGE_API_KEY_SECRET_ARN: submissionStorageApiKeySecret.secretArn,
         SUBMISSION_STORAGE_API_BASE_URL: props.configuration.webformsSubmissionsApiBaseUrl,
-        PERMISSION_TABLE_NAME: permissionTable.tableName,
       },
       timeout: Duration.seconds(32),
     });
@@ -209,7 +207,6 @@ export class WebappStack extends Stack {
       description: 'Post-login lambda',
       apiFunction: PostloginFunction,
       environment: {
-        AUTHORIZED_USER_EMAILS: StringParameter.valueForStringParameter(this, Statics.ssmAuthorizedUserEmails),
         PERMISSION_TABLE_NAME: permissionTable.tableName,
       },
     });
