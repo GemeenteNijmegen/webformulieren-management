@@ -36,7 +36,7 @@
                       <ul tabindex="-1" role="listbox" aria-labelledby="genereer-csv-keuze-element" class="aria-select-list hidden" id="genereer-csv-select-list">
                         {{#allowedGenerateCsvOptions}}
                         <li id="genereer-csv-keuze-element-{{val}}1" data-value="{{val}}" role="option" aria-selected="false">
-                            {{description}}
+                            {{description}} - {{val}}
                         </li>
                         {{/allowedGenerateCsvOptions}}
                     </ul>
@@ -47,7 +47,7 @@
             <!-- Button -->
             <div class="col-12 col-md-4">
                 <label>&nbsp;</label> <!-- Empty label for alignment -->
-                <button class="btn btn-primary w-100" type="button">Genereer CSV</button>
+                <button class="btn btn-primary w-100" type="submit">Genereer CSV</button>
             </div>
  
         </div>
