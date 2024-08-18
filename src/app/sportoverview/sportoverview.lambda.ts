@@ -1,9 +1,10 @@
+import * as querystring from 'querystring';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { ApiGatewayV2Response, Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { AWS } from '@gemeentenijmegen/utils';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { SportOverviewApiClient } from './sportoverviewApiClient';
-import { SportOverviewRequestHandler } from './sportoverviewRequestHandler';
+import { SportOverviewRequestHandler, SportOverviewRequestHandlerParams } from './sportoverviewRequestHandler';
 
 let requestHandler: SportOverviewRequestHandler | undefined = undefined;
 
@@ -31,10 +32,25 @@ async function initialize () {
   return requestHandler = new SportOverviewRequestHandler(dynamoDBClient, apiClient);
 }
 
-function parseEvent(event: APIGatewayProxyEventV2) {
+function parseEvent(event: APIGatewayProxyEventV2): SportOverviewRequestHandlerParams {
+  const formPostParams = getFormParamsFromBody(event);
   return {
     cookies: event?.cookies?.join(';') ?? '',
     downloadfile: event?.queryStringParameters?.downloadfile,
     downloadpdf: event?.queryStringParameters?.downloadpdf,
+    genereerCsvOptie: formPostParams.genereerCsvOptie,
   };
+}
+
+function getFormParamsFromBody(event: APIGatewayProxyEventV2) {
+  let urlencodedform;
+  if (event.body) {
+    urlencodedform = (event?.isBase64Encoded) ? Buffer.from(event?.body, 'base64').toString('utf-8') : event.body;
+    const parsedQuerystring = querystring.parse(urlencodedform);
+    const genereerCsvOptie = parsedQuerystring['genereer-csv-keuze-element'];
+    return {
+      genereerCsvOptie: genereerCsvOptie ? genereerCsvOptie as string : undefined,
+    };
+  }
+  return { genereerCsvOptie: undefined };
 }

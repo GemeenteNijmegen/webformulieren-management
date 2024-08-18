@@ -21,10 +21,11 @@ export const SPORT_PERMISSION_OPTIONS = [
 export function isSportPermissionOption(value: any): value is SportPermissionOptions {
   return SPORT_PERMISSION_OPTIONS.includes(value);
 }
+export function hasSportAdminPermission(permissions: PermissionOptions[]): boolean {
+  return permissions.includes('ADMIN') || permissions.includes('SPORTADMIN');
+}
 export function getSportPermissionDescriptions(permissions: PermissionOptions[]): string[] {
-  const hasAdminPermission = permissions.includes('ADMIN') || permissions.includes('SPORTADMIN');
-
-  if (hasAdminPermission) {
+  if (hasSportAdminPermission(permissions)) {
     // Return all descriptions if 'ADMIN' or 'SPORTADMIN' is present
     return Object.values(SPORT_PERMISSION_DESCRIPTIONS);
   }
