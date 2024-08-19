@@ -6,7 +6,7 @@ import { render } from '@gemeentenijmegen/webapp';
 import { SportOverviewApiClient } from './sportoverviewApiClient';
 import * as sportoverviewTemplate from './templates/sportoverview.mustache';
 import { AccessController } from '../permission/AccessController';
-import { getSportPermissionDescriptions, isSportPermissionOption } from '../permission/PermissionOptions';
+import { getSportPermissionDescriptions, hasSportAdminPermission, isSportPermissionOption, PermissionOptions, SPORT_PERMISSION_DESCRIPTIONS, SPORT_PERMISSION_OPTIONS } from '../permission/PermissionOptions';
 import { EncryptFilename } from '../shared/encryptFilename';
 import { formatDateTime } from '../shared/FormatCreatedDate';
 import { FormOverviewResultsSchema } from '../shared/FormOverviewResultsSchema';
@@ -17,6 +17,7 @@ export interface SportOverviewRequestHandlerParams {
   cookies: string;
   downloadfile?: string;
   downloadpdf?: string;
+  genereerCsvOptie?: string;
 }
 export class SportOverviewRequestHandler {
   private dynamoDBClient: DynamoDBClient;
@@ -37,10 +38,39 @@ export class SportOverviewRequestHandler {
   private async handleLoggedinRequest(session: Session, params: SportOverviewRequestHandlerParams) {
     if (params.downloadfile || params.downloadpdf) {
       return this.handleDownloadFileRequest(session, params);
+    } else if (params.genereerCsvOptie) {
+      return this.handleGenerateCsvSeasonStart(session, params);
     } else {
       return this.handleListOverview(session);
     }
     Response.error(400, 'Er is geen functie uitgevoerd in handleLoggedInRequest');
+  }
+  async handleGenerateCsvSeasonStart(session: Session, params: SportOverviewRequestHandlerParams) {
+    console.log('[handleGenerateCsvSeasonStart]', session, params);
+    const currentYear: string = new Date().getFullYear().toString();
+    const startdatum: string = `${currentYear}-08-01`;
+    // Get appid from param indien all, dan wordt undefined
+    const appId = params.genereerCsvOptie == 'all' ? undefined : params.genereerCsvOptie;
+    let errorMessageForSession = '';
+    let result;
+    try {
+      result = await this.api.get('formoverview', { formuliernaam: 'aanmeldensportactiviteit', startdatum: startdatum, appid: appId });
+    } catch (error) {
+      if (error instanceof Error) {
+        errorMessageForSession = error.message;
+      } else {
+        // Handle non-Error cases or unexpected errors
+        errorMessageForSession = 'Er is iets fout gegaan bij de API aanroep csv genereren. De fout is onbekend.';
+      }
+    }
+    errorMessageForSession = !errorMessageForSession && (!result || Object.keys(result).length === 0) ? `Er zijn geen inzendingen gevonden. De csv is niet gemaakt met optie: ${params.genereerCsvOptie}. Controleer eventueel de inzendingen van de laatste maand om te zien of dit klopt.` : '';
+    if (errorMessageForSession) {
+      await session.setValue('errorMessageFormOverview', errorMessageForSession);
+    }
+    // Reload the  lambda as formoverview to render the page. This prevents a browser refresh to send the form again.
+    return Response.redirect('/sport', 302, session.getCookie());
+
+
   }
   async handleDownloadFileRequest(session: Session, params: SportOverviewRequestHandlerParams) {
     const key: string = session.getValue('sportkey', 'S');
@@ -92,6 +122,7 @@ export class SportOverviewRequestHandler {
     }));
 
     const allowedSportFormsInText = getSportPermissionDescriptions(session.getValue('permissions', 'SS')).join(', ');
+    const allowedGenerateCsvOptions = getAllowedCsvOptions(session.getValue('permissions', 'SS'));
     const data = {
       title: 'Sportformulieren',
       shownav: true,
@@ -101,6 +132,7 @@ export class SportOverviewRequestHandler {
       submissions: formattedSubmissionsResults,
       error: errormessage,
       allowedSportFormsInText: allowedSportFormsInText,
+      allowedGenerateCsvOptions: allowedGenerateCsvOptions,
     };
     // render page
     const html = await render(data, sportoverviewTemplate.default);
@@ -271,4 +303,27 @@ export interface SportSubmissionsForTemplate {
   telAndMail: string; // from telefoonnummer and email with a space in between
   activities: string; // comma separated activities where checkbox is true
   comments: string; // opmerkingen from form
+}
+
+function getAllowedCsvOptions(permissions: PermissionOptions[] ): {val: string; description: string}[] {
+  if (hasSportAdminPermission(permissions)) {
+    // Return all options with "Totaaloverzicht" as the first option
+    return [
+      { val: 'all', description: 'Totaaloverzicht' },
+      ...SPORT_PERMISSION_OPTIONS
+        .filter(isSportPermissionOption)
+        .map(option => ({
+          val: option,
+          description: SPORT_PERMISSION_DESCRIPTIONS[option],
+        })),
+    ];
+  } else {
+    // Return only the options the user has permission for
+    return permissions
+      .filter(isSportPermissionOption)
+      .map(permission => ({
+        val: permission,
+        description: SPORT_PERMISSION_DESCRIPTIONS[permission],
+      }));
+  }
 }
