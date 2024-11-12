@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.686.0",
-    "@axe-core/playwright": "^4.10.0",
+    "@axe-core/playwright": "^4.10.1",
     "@glen/jest-raw-loader": "^2.0.0",
     "@playwright/test": "^1.48.2",
     "@types/jest": "^29.5.14",
