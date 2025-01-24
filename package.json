@@ -38,10 +38,10 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@aws-sdk/types": "^3.731.0",
+    "@aws-sdk/types": "^3.734.0",
     "@axe-core/playwright": "^4.10.1",
     "@glen/jest-raw-loader": "^2.0.0",
-    "@playwright/test": "^1.49.1",
+    "@playwright/test": "^1.50.0",
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^29.5.14",
     "@types/node": "^18",
@@ -65,8 +65,8 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^1.18.1",
-    "@aws-sdk/client-dynamodb": "^3.733.0",
-    "@aws-sdk/client-secrets-manager": "^3.731.1",
+    "@aws-sdk/client-dynamodb": "^3.734.0",
+    "@aws-sdk/client-secrets-manager": "^3.734.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "^2.76.0",
     "@gemeentenijmegen/apiclient": "^0.0.23",
     "@gemeentenijmegen/apigateway-http": "^0.0.20",
