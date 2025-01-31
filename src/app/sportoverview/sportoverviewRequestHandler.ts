@@ -47,8 +47,8 @@ export class SportOverviewRequestHandler {
   }
   async handleGenerateCsvSeasonStart(session: Session, params: SportOverviewRequestHandlerParams) {
     console.log('[handleGenerateCsvSeasonStart]', session, params);
-    const currentYear: string = new Date().getFullYear().toString();
-    const startdatum: string = `${currentYear}-08-01`;
+
+    const startdatum: string = this.getSeasonStartDate();
     // Get appid from param indien all, dan wordt undefined
     const appId = params.genereerCsvOptie == 'all' ? undefined : params.genereerCsvOptie;
     let errorMessageForSession = '';
@@ -288,6 +288,25 @@ export class SportOverviewRequestHandler {
   private async getEncryptedFileName(session: Session, filename: string): Promise<string> {
     let key: string = session.getValue('sportkey', 'S');
     return EncryptFilename.encrypt(key, filename);
+  }
+
+  /**
+   * Method that calculates the sport season start date
+   * The startdate is three months before today when today is before november 1 that year (between 01-01 and 11-01)
+   *
+   * @returns string pattern yyyy-mm-dd
+   */
+  getSeasonStartDate(): string {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const octoberFirst = new Date(currentYear, 10, 1); // Three months after the season start august 1
+
+    if (today < octoberFirst) {
+      return `${currentYear}-08-01`;
+    }
+    today.setMonth(today.getMonth() - 3);
+    const threeMonthsBeforeToday = today.toISOString().substring(0, 'yyyy-mm-dd'.length);
+    return threeMonthsBeforeToday;
   }
 
 }
