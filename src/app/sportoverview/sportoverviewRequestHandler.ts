@@ -48,7 +48,7 @@ export class SportOverviewRequestHandler {
   }
   async handleGenerateCsvSeasonStart(session: Session, params: SportOverviewRequestHandlerParams) {
     console.log('[handleGenerateCsvSeasonStart]', session, params);
-    if(!params.formStartDate) console.warn('[handleGenerateCsvSeasonStart] undefined formStartDate unexpected. Replaced by seasonStartDate.')
+    if (!params.formStartDate) console.warn('[handleGenerateCsvSeasonStart] undefined formStartDate unexpected. Replaced by seasonStartDate.');
     const startdatum: string = params.formStartDate ?? this.getSeasonStartDate();
     // Get appid from param indien all, dan wordt undefined
     const appId = params.genereerCsvOptie == 'all' ? undefined : params.genereerCsvOptie;
@@ -303,10 +303,10 @@ export class SportOverviewRequestHandler {
   getSeasonStartDate(): string {
     const today = new Date();
     const currentYear = today.getFullYear();
-  
+
     const januaryFirst = `${currentYear}-01-01`;
     const augustFirst = `${currentYear}-08-01`;
-  
+
     if (today < new Date(augustFirst)) {
       return januaryFirst;
     } else {

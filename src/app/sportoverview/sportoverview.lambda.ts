@@ -48,7 +48,7 @@ function getFormParamsFromBody(event: APIGatewayProxyEventV2) {
     urlencodedform = (event?.isBase64Encoded) ? Buffer.from(event?.body, 'base64').toString('utf-8') : event.body;
     const parsedQuerystring = querystring.parse(urlencodedform);
     const genereerCsvOptie = parsedQuerystring['genereer-csv-keuze-element'];
-    const formStartDate = parsedQuerystring['formStartDate'];
+    const formStartDate = parsedQuerystring.formStartDate;
     return {
       genereerCsvOptie: genereerCsvOptie ? genereerCsvOptie as string : undefined,
       formStartDate: formStartDate ?? undefined,
