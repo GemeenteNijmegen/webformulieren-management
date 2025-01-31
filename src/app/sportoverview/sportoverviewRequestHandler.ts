@@ -18,6 +18,7 @@ export interface SportOverviewRequestHandlerParams {
   downloadfile?: string;
   downloadpdf?: string;
   genereerCsvOptie?: string;
+  formStartDate?: string;
 }
 export class SportOverviewRequestHandler {
   private dynamoDBClient: DynamoDBClient;
@@ -47,8 +48,8 @@ export class SportOverviewRequestHandler {
   }
   async handleGenerateCsvSeasonStart(session: Session, params: SportOverviewRequestHandlerParams) {
     console.log('[handleGenerateCsvSeasonStart]', session, params);
-    const currentYear: string = new Date().getFullYear().toString();
-    const startdatum: string = `${currentYear}-08-01`;
+    if (!params.formStartDate) console.warn('[handleGenerateCsvSeasonStart] undefined formStartDate unexpected. Replaced by seasonStartDate.');
+    const startdatum: string = params.formStartDate ?? this.getSeasonStartDate();
     // Get appid from param indien all, dan wordt undefined
     const appId = params.genereerCsvOptie == 'all' ? undefined : params.genereerCsvOptie;
     let errorMessageForSession = '';
@@ -133,6 +134,7 @@ export class SportOverviewRequestHandler {
       error: errormessage,
       allowedSportFormsInText: allowedSportFormsInText,
       allowedGenerateCsvOptions: allowedGenerateCsvOptions,
+      startdatum: this.getSeasonStartDate(),
     };
     // render page
     const html = await render(data, sportoverviewTemplate.default);
@@ -288,6 +290,28 @@ export class SportOverviewRequestHandler {
   private async getEncryptedFileName(session: Session, filename: string): Promise<string> {
     let key: string = session.getValue('sportkey', 'S');
     return EncryptFilename.encrypt(key, filename);
+  }
+
+  /**
+   * Method that calculates the sport season start date
+   * The seasons start on the first of january and first of august
+   * Check if today is before 08-01 of the year then it returns currentyear-01-01
+   * Check if today is after 08-01 of the year then it returns currentyear-08-01
+   *
+   * @returns string pattern yyyy-mm-dd
+   */
+  getSeasonStartDate(): string {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+
+    const januaryFirst = `${currentYear}-01-01`;
+    const augustFirst = `${currentYear}-08-01`;
+
+    if (today < new Date(augustFirst)) {
+      return januaryFirst;
+    } else {
+      return augustFirst;
+    }
   }
 
 }
