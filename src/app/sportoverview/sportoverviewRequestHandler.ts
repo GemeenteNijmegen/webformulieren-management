@@ -18,6 +18,7 @@ export interface SportOverviewRequestHandlerParams {
   downloadfile?: string;
   downloadpdf?: string;
   genereerCsvOptie?: string;
+  formStartDate?: string;
 }
 export class SportOverviewRequestHandler {
   private dynamoDBClient: DynamoDBClient;
@@ -47,8 +48,8 @@ export class SportOverviewRequestHandler {
   }
   async handleGenerateCsvSeasonStart(session: Session, params: SportOverviewRequestHandlerParams) {
     console.log('[handleGenerateCsvSeasonStart]', session, params);
-
-    const startdatum: string = this.getSeasonStartDate();
+    if(!params.formStartDate) console.warn('[handleGenerateCsvSeasonStart] undefined formStartDate unexpected. Replaced by seasonStartDate.')
+    const startdatum: string = params.formStartDate ?? this.getSeasonStartDate();
     // Get appid from param indien all, dan wordt undefined
     const appId = params.genereerCsvOptie == 'all' ? undefined : params.genereerCsvOptie;
     let errorMessageForSession = '';
@@ -133,6 +134,7 @@ export class SportOverviewRequestHandler {
       error: errormessage,
       allowedSportFormsInText: allowedSportFormsInText,
       allowedGenerateCsvOptions: allowedGenerateCsvOptions,
+      startdatum: this.getSeasonStartDate(),
     };
     // render page
     const html = await render(data, sportoverviewTemplate.default);
@@ -292,21 +294,24 @@ export class SportOverviewRequestHandler {
 
   /**
    * Method that calculates the sport season start date
-   * The startdate is three months before today when today is before november 1 that year (between 01-01 and 11-01)
+   * The seasons start on the first of january and first of august
+   * Check if today is before 08-01 of the year then it returns currentyear-01-01
+   * Check if today is after 08-01 of the year then it returns currentyear-08-01
    *
    * @returns string pattern yyyy-mm-dd
    */
   getSeasonStartDate(): string {
     const today = new Date();
     const currentYear = today.getFullYear();
-    const octoberFirst = new Date(currentYear, 10, 1); // Three months after the season start august 1
-
-    if (today < octoberFirst) {
-      return `${currentYear}-08-01`;
+  
+    const januaryFirst = `${currentYear}-01-01`;
+    const augustFirst = `${currentYear}-08-01`;
+  
+    if (today < new Date(augustFirst)) {
+      return januaryFirst;
+    } else {
+      return augustFirst;
     }
-    today.setMonth(today.getMonth() - 3);
-    const threeMonthsBeforeToday = today.toISOString().substring(0, 'yyyy-mm-dd'.length);
-    return threeMonthsBeforeToday;
   }
 
 }
