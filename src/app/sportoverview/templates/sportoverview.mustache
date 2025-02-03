@@ -27,9 +27,9 @@
         <div class="row align-items-center">
             <!-- Select Dropdown AppId-->
       
-            <div class="col-12 col-md-8 mb-3 mb-md-0"> 
+            <div class="col-12 col-md-4 mb-3 mb-md-0"> 
                 <div class="aria-select">
-                    <label id="genereer-csv-label" for="genereer-csv-select-button">Genereer een csv beginnend vanaf 1 augustus dit jaar</label>
+                    <label id="genereer-csv-label" for="genereer-csv-select-button">Stadsdeel</label>
                     <button aria-haspopup="true" aria-controls="genereer-csv-select-list" aria-labelledby="genereer-csv-select-button genereer-csv-label" id="genereer-csv-select-button">
                         Selecteer een optie
                     </button>
@@ -42,6 +42,13 @@
                     </ul>
                     <input type="hidden" id="genereer-csv-keuze-element" name="genereer-csv-keuze-element">
                 </div>
+            </div>
+            <!--End op selection dropdown-->
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
+
+                    <label for="reference">startdatum (jjjj-mm-dd):</label>
+                    <input type="text" id="formStartDate" class="form-control" name="formStartDate" value="{{startdatum}}"
+                        placeholder="{{startdatum}}">
             </div>
     
             <!-- Button -->
