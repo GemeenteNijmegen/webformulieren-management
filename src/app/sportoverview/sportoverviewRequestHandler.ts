@@ -294,9 +294,7 @@ export class SportOverviewRequestHandler {
 
   /**
    * Method that calculates the sport season start date
-   * The seasons start on the first of january and first of august
-   * Check if today is before 08-01 of the year then it returns currentyear-01-01
-   * Check if today is after 08-01 of the year then it returns currentyear-08-01
+   * The seasons start on first of august
    *
    * @returns string pattern yyyy-mm-dd
    */
@@ -304,14 +302,10 @@ export class SportOverviewRequestHandler {
     const today = new Date();
     const currentYear = today.getFullYear();
 
-    const januaryFirst = `${currentYear}-01-01`;
-    const augustFirst = `${currentYear}-08-01`;
+    // Bepaal of we vóór 1 augustus zitten → vorige jaar gebruiken
+    const seasonYear = today < new Date(`${currentYear}-08-01`) ? currentYear - 1 : currentYear;
 
-    if (today < new Date(augustFirst)) {
-      return januaryFirst;
-    } else {
-      return augustFirst;
-    }
+    return `${seasonYear}-08-01`;
   }
 
 }
