@@ -65,8 +65,8 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^1.18.1",
-    "@aws-sdk/client-dynamodb": "^3.786.0",
-    "@aws-sdk/client-secrets-manager": "^3.782.0",
+    "@aws-sdk/client-dynamodb": "^3.787.0",
+    "@aws-sdk/client-secrets-manager": "^3.787.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "^2.83.0",
     "@gemeentenijmegen/apiclient": "^0.0.29",
     "@gemeentenijmegen/apigateway-http": "^0.0.24",
@@ -82,7 +82,7 @@
     "cdk-remote-stack": "^2.1.0",
     "constructs": "^10.0.5",
     "cookie": "^0.7.2",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "mustache": "^4.2.0",
     "openid-client": "^5.7.1",
     "zod": "^3.24.2"
