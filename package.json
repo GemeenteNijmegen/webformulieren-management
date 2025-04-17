@@ -73,7 +73,7 @@
     "@gemeentenijmegen/aws-constructs": "^0.0.33",
     "@gemeentenijmegen/projen-project-type": "^1.10.1",
     "@gemeentenijmegen/session": "^0.0.24",
-    "@gemeentenijmegen/utils": "^0.0.27",
+    "@gemeentenijmegen/utils": "^0.0.28",
     "@gemeentenijmegen/webapp": "^1.1.6",
     "@types/aws-lambda": "^8.10.149",
     "@types/mustache": "^4.2.5",
@@ -85,7 +85,7 @@
     "dotenv": "^16.5.0",
     "mustache": "^4.2.0",
     "openid-client": "^5.7.1",
-    "zod": "^3.24.2"
+    "zod": "^3.24.3"
   },
   "license": "EUPL-1.2",
   "publishConfig": {
