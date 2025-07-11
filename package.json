@@ -41,7 +41,7 @@
     "@aws-sdk/types": "^3.840.0",
     "@axe-core/playwright": "^4.10.2",
     "@glen/jest-raw-loader": "^2.0.0",
-    "@playwright/test": "^1.53.2",
+    "@playwright/test": "^1.54.0",
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^29.5.14",
     "@types/node": "^18",
