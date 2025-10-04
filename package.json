@@ -75,7 +75,7 @@
     "@gemeentenijmegen/session": "^0.0.30",
     "@gemeentenijmegen/utils": "^0.0.38",
     "@gemeentenijmegen/webapp": "^1.1.11",
-    "@types/aws-lambda": "^8.10.153",
+    "@types/aws-lambda": "^8.10.155",
     "@types/mustache": "^4.2.6",
     "aws-cdk-lib": "^2.22.0",
     "axios": "^1.12.2",
