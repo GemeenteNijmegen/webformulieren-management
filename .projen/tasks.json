@@ -68,7 +68,7 @@
       "description": "Create a JavaScript bundle from src/app/formoverview/formoverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/formoverview/formoverview.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/formoverview/formoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
+          "exec": "esbuild --bundle src/app/formoverview/formoverview.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/formoverview/formoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
         }
       ]
     },
@@ -77,7 +77,7 @@
       "description": "Continuously update the JavaScript bundle from src/app/formoverview/formoverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/formoverview/formoverview.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/formoverview/formoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
+          "exec": "esbuild --bundle src/app/formoverview/formoverview.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/formoverview/formoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },
@@ -86,7 +86,7 @@
       "description": "Create a JavaScript bundle from src/app/home/home.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/home/home.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/home/home.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
+          "exec": "esbuild --bundle src/app/home/home.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/home/home.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
         }
       ]
     },
@@ -95,7 +95,7 @@
       "description": "Continuously update the JavaScript bundle from src/app/home/home.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/home/home.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/home/home.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
+          "exec": "esbuild --bundle src/app/home/home.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/home/home.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },
@@ -104,7 +104,7 @@
       "description": "Create a JavaScript bundle from src/app/post-login/postlogin.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/post-login/postlogin.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/post-login/postlogin.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
+          "exec": "esbuild --bundle src/app/post-login/postlogin.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/post-login/postlogin.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
         }
       ]
     },
@@ -113,7 +113,7 @@
       "description": "Continuously update the JavaScript bundle from src/app/post-login/postlogin.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/post-login/postlogin.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/post-login/postlogin.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
+          "exec": "esbuild --bundle src/app/post-login/postlogin.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/post-login/postlogin.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },
@@ -122,7 +122,7 @@
       "description": "Create a JavaScript bundle from src/app/resubmit/resubmit.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
+          "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
         }
       ]
     },
@@ -131,7 +131,7 @@
       "description": "Continuously update the JavaScript bundle from src/app/resubmit/resubmit.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
+          "exec": "esbuild --bundle src/app/resubmit/resubmit.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/resubmit/resubmit.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },
@@ -140,7 +140,7 @@
       "description": "Create a JavaScript bundle from src/app/sportoverview/sportoverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/sportoverview/sportoverview.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/sportoverview/sportoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
+          "exec": "esbuild --bundle src/app/sportoverview/sportoverview.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/sportoverview/sportoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text"
         }
       ]
     },
@@ -149,7 +149,7 @@
       "description": "Continuously update the JavaScript bundle from src/app/sportoverview/sportoverview.lambda.ts",
       "steps": [
         {
-          "exec": "esbuild --bundle src/app/sportoverview/sportoverview.lambda.ts --target=\"node22\" --platform=\"node\" --outfile=\"assets/app/sportoverview/sportoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
+          "exec": "esbuild --bundle src/app/sportoverview/sportoverview.lambda.ts --target=\"node24\" --platform=\"node\" --outfile=\"assets/app/sportoverview/sportoverview.lambda/index.js\" --tsconfig=\"tsconfig.dev.json\" --external:@aws-sdk/* --loader:.mustache=text --watch"
         }
       ]
     },
