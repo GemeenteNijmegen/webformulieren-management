@@ -398,7 +398,7 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@aws-sdk/types,@axe-core/playwright,@glen/jest-raw-loader,@playwright/test,@types/jest,@types/node,aws-sdk-client-mock,axios-mock-adapter,copyfiles,esbuild,eslint-import-resolver-typescript,eslint-plugin-import,jest,projen,ts-jest,ts-node,typescript,@aws-lambda-powertools/logger,@aws-sdk/client-dynamodb,@aws-sdk/client-secrets-manager,@aws-solutions-constructs/aws-lambda-dynamodb,@gemeentenijmegen/apiclient,@gemeentenijmegen/apigateway-http,@gemeentenijmegen/aws-constructs,@gemeentenijmegen/projen-project-type,@gemeentenijmegen/session,@gemeentenijmegen/utils,@gemeentenijmegen/webapp,@types/aws-lambda,@types/mustache,axios,cdk-remote-stack,cookie,dotenv,mustache,openid-client,zod"
+          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@aws-sdk/types,@axe-core/playwright,@glen/jest-raw-loader,@playwright/test,@types/jest,@types/node,aws-sdk-client-mock,axios-mock-adapter,copyfiles,esbuild,eslint-import-resolver-typescript,eslint-plugin-import,jest,ts-jest,ts-node,typescript,@aws-lambda-powertools/logger,@aws-sdk/client-dynamodb,@aws-sdk/client-secrets-manager,@aws-solutions-constructs/aws-lambda-dynamodb,@gemeentenijmegen/apiclient,@gemeentenijmegen/apigateway-http,@gemeentenijmegen/aws-constructs,@gemeentenijmegen/projen-project-type,@gemeentenijmegen/session,@gemeentenijmegen/utils,@gemeentenijmegen/webapp,@types/aws-lambda,@types/mustache,axios,cdk-remote-stack,cookie,dotenv,mustache,openid-client,zod"
         },
         {
           "exec": "yarn install --check-files"
