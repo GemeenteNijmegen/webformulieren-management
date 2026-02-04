@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.973.1",
-    "@axe-core/playwright": "^4.11.0",
+    "@axe-core/playwright": "^4.11.1",
     "@glen/jest-raw-loader": "^2.0.0",
     "@playwright/test": "^1.58.1",
     "@stylistic/eslint-plugin": "^2",
@@ -65,8 +65,8 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^1.18.1",
-    "@aws-sdk/client-dynamodb": "^3.981.0",
-    "@aws-sdk/client-secrets-manager": "^3.981.0",
+    "@aws-sdk/client-dynamodb": "^3.982.0",
+    "@aws-sdk/client-secrets-manager": "^3.982.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "^2.98.0",
     "@gemeentenijmegen/apiclient": "^0.0.39",
     "@gemeentenijmegen/apigateway-http": "^0.0.35",
