@@ -78,7 +78,7 @@
     "@types/aws-lambda": "^8.10.160",
     "@types/mustache": "^4.2.6",
     "aws-cdk-lib": "^2.22.0",
-    "axios": "^1.13.4",
+    "axios": "^1.13.5",
     "cdk-remote-stack": "^2.1.0",
     "constructs": "^10.0.5",
     "cookie": "^0.7.2",
