@@ -65,10 +65,10 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^1.18.1",
-    "@aws-sdk/client-dynamodb": "^3.1009.0",
-    "@aws-sdk/client-secrets-manager": "^3.1009.0",
+    "@aws-sdk/client-dynamodb": "^3.1010.0",
+    "@aws-sdk/client-secrets-manager": "^3.1010.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "^2.100.1",
-    "@gemeentenijmegen/apiclient": "^0.0.40",
+    "@gemeentenijmegen/apiclient": "^0.0.41",
     "@gemeentenijmegen/apigateway-http": "^0.0.37",
     "@gemeentenijmegen/aws-constructs": "^0.0.49",
     "@gemeentenijmegen/projen-project-type": "^1.12.2",
